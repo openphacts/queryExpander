@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.man.cs.openphacts</groupId>
+    <artifactId>query.expander</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>IMS SPARQL Query Expander</name>
+    <!--url>http://maven.apache.org</url-->
+
+    <properties>
+         <sesame.version>2.6.4</sesame.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-rio-api</artifactId>
+            <version>${sesame.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-queryparser-sparql</artifactId>
+            <version>${sesame.version}</version>
+        </dependency>
+  		<dependency>
+  			<groupId>junit</groupId>
+  			<artifactId>junit</artifactId>
+  			<version>4.4</version>
+  			<scope>test</scope>
+  		</dependency>
+    </dependencies>
+
+	<!-- Set the compiler version to 1.6 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>aduna-repo</id>
+            <name>Aduna repository</name>
+            <url>http://repo.aduna-software.org/maven2/releases/</url>
+        </repository>
+    </repositories>
+</project>
