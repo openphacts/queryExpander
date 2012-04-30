@@ -1,0 +1,13 @@
+# ignore project files #
+.classpath
+.project
+.settings/
+nbactions.xml
+
+# ignore target files #
+target/
+bin/
+
+# ignore log files #
+*.log
+
