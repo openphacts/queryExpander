@@ -229,7 +229,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Difference dfrnc) throws QueryExpansionException {
-        throw new QueryExpansionException("Difference not supported yet.");
+        dfrnc.getLeftArg().visit(this);
+        queryString.append(" MINUS {");
+        dfrnc.getRightArg().visit(this);
+        queryString.append(" }");
     }
 
     @Override
@@ -249,7 +252,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Exists exists) throws QueryExpansionException {
-        throw new QueryExpansionException("Exists not supported yet.");
+        queryString.append(" EXISTS {");
+        exists.getSubQuery().visit(this);
+        queryString.append(" }");
     }
 
     @Override
@@ -416,9 +421,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Not not) throws QueryExpansionException {
-        queryString.append(" !(");
+        //queryString.append(" !(");  //NOT EXISTS can not use the !
+        //THis may well need a look ahead depening on what the arg is.
+        queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
         not.getArg().visit(this);
-        queryString.append(")");
+        //queryString.append(")");
     }
 
     //@Override
@@ -1175,6 +1182,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Union union) throws QueryExpansionException {
+        writeWhereIfRequired();
         queryString.append("{");
         union.getLeftArg().visit(this);
         newLine();
