@@ -131,6 +131,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
+    //Use for having
+    Map<String, String> extensionMappings;
+            
     //private int nextAnon = 1;
     
     //private Map<String,String> anonMapper;
@@ -203,6 +206,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }*/
     
     void writeAnon(String name){
+        if (extensionMappings != null){
+            String replace = extensionMappings.get(name);
+            if (replace != null){
+               queryString.append(replace); 
+               return;
+            }
+        }
         if (propertyPath != null){
             propertyPath = null;;
         } else if (name.startsWith("-anon-") || name.startsWith("nps-x-")){
@@ -347,7 +357,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Group group) throws QueryExpansionException {
-        throw new QueryExpansionException("Group not supported yet.");
+        group.getArg().visit(this);
+        closeWhereIfRequired();
+        Set<String> groupings = group.getGroupBindingNames();
+        if (groupings.size() > 0){
+            newLine();
+            queryString.append("GROUP BY ");
+            for (String grouping:groupings){
+                queryString.append(" ?");
+                queryString.append(grouping);
+            }
+        }
     }
 
     @Override
@@ -393,7 +413,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Join join) throws QueryExpansionException {
-        writeWhereIfRequired();
+        writeWhereIfRequired(join);
         if (join.getLeftArg() instanceof BindingSetAssignment){
             join.getRightArg().visit(this);
             closeWhereIfRequired();
@@ -404,11 +424,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void writeWhereIfRequired() throws QueryExpansionException {
+    private void writeWhereIfRequired(TupleExpr tupleExpr) throws QueryExpansionException {
         if (!whereOpen){
-            newLine();
-            queryString.append("WHERE {");
-            whereOpen= true;
+            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
+                newLine();
+                queryString.append("WHERE {");
+                whereOpen= true;
+            }
         }
     }
     
@@ -491,7 +513,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      */
     public void meet(LeftJoin lj) throws QueryExpansionException {
         
-        writeWhereIfRequired();
+        writeWhereIfRequired(lj);
         //The leftArg is the stuff outside of the optional.
         //May be a SingletonSet in which case nothing is written
         lj.getLeftArg().visit(this);
@@ -1004,15 +1026,43 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     @Override
     public void meet(Filter filter) throws QueryExpansionException {
-        writeWhereIfRequired();
+        writeWhereIfRequired(filter);
         newLine();
         if (writeNotPredicate(filter)) return;
+        if (writeHaving(filter)) return;
         queryString.append("FILTER ");
         filter.getCondition().visit(this);
         //Arguements add the brackets
         filter.getArg().visit(this);
     }
+    
+    /**
+     * This captures where the filter is a having
+     * @param filter
+     * @return 
+     */
+    private boolean writeHaving(Filter filter) throws QueryExpansionException{
+        //May prove to be incomplete
+        if (this.whereOpen) return false;
+        extensionMappings = ExtensionMapperVisitor.getMappings(filter.getArg());
+        TupleExpr arg = filter.getArg();
+        if (arg instanceof Extension){
+            Extension extension = (Extension)arg;
+            arg = extension.getArg();
+        }
+        arg.visit(this);
+        newLine();
+        queryString.append("HAVING ");
+        this.closeWhereIfRequired();
+        filter.getCondition().visit(this);
+        return true;
+    }
 
+    /**
+     * This captures the case where the predicate path of a negated predicate is used.
+     * 
+     * For example { ?x !rdf:type ?y }
+     */
     private boolean writeNotPredicate(Filter filter) throws QueryExpansionException{
         ValueExpr conditionExpr = filter.getCondition();
         if (!(conditionExpr instanceof Compare)) return false;
@@ -1033,7 +1083,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     @Override
     public void meet(SingletonSet ss) throws QueryExpansionException {
-        writeWhereIfRequired();
+        writeWhereIfRequired(ss);
         newLine();
         queryString.append("{} ");
         //Expected no children but just to be sure.
@@ -1063,7 +1113,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     private void beforeStatmentPattern(StatementPattern sp) throws QueryExpansionException{
-        writeWhereIfRequired();
+        writeWhereIfRequired(sp);
         //Double check that then statement has the expected context 
         if (contexts.get(0) == null){
             if (sp.getContextVar() != null) {
@@ -1289,7 +1339,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Union union) throws QueryExpansionException {
-        writeWhereIfRequired();
+        writeWhereIfRequired(union);
         queryString.append("{");
         union.getLeftArg().visit(this);
         newLine();
@@ -1541,7 +1591,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Sum sum) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("SUM(");
+        sum.getArg().visit(this);
+        queryString.append(") ");
     }
 
     @Override

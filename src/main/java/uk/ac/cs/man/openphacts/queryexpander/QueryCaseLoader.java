@@ -94,8 +94,13 @@ public class QueryCaseLoader {
         loadSparql10_1a3();
         loadSparql10_1a4();
         loadSparql10_1b();
- //       loadSparql10_2a();
+        loadSparql10_2a();
         loadSparql10_2b();
+        loadSparql11_1a1();
+        loadSparql11_1a2();
+        loadSparql11_1a3();
+        loadSparql11_1a4();
+        loadSparql11_1a5();
     }
     
     private void loadSparql2_1() {
@@ -1033,7 +1038,86 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
-   private void loadSparql() {
+   private void loadSparql11_1a1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_1a";
+        queryCase.name = "Sparql Specification section 11.1 Aggregate Example simplified";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (SUM(?lprice) AS ?totalPrice)\n"
+                + "WHERE {\n"
+                + "  ?org :affiliates ?auth .\n"
+                + "  ?auth :writesBook ?book .\n"
+                + "  ?book :price ?lprice .\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+   
+   private void loadSparql11_1a2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_1a2";
+        queryCase.name = "Sparql Specification section 11.1 Aggregate Example No Having";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (SUM(?lprice) AS ?totalPrice)\n"
+                + "WHERE {\n"
+                + "  ?org :affiliates ?auth .\n"
+                + "  ?auth :writesBook ?book .\n"
+                + "  ?book :price ?lprice .\n"
+                + "}\n"
+                + "GROUP BY ?org";                
+        queries.put(queryCase.key, queryCase);
+   }
+   
+   private void loadSparql11_1a3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_1a3";
+        queryCase.name = "Sparql Specification section 11.1 Aggregate Example";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (SUM(?lprice) AS ?totalPrice)\n"
+                + "WHERE {\n"
+                + "  FILTER (?lprice > 10)\n"
+                + "  ?org :affiliates ?auth .\n"
+                + "  ?auth :writesBook ?book .\n"
+                + "  ?book :price ?lprice .\n"
+                + "}\n"
+                + "GROUP BY ?org\n"
+               // + "HAVING (?lprice > 10)"
+                + "";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql11_1a4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_1a4";
+        queryCase.name = "Sparql Specification section 11.1 Aggregate Example simple having";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (SUM(?lprice) AS ?totalPrice)\n"
+                + "WHERE {\n"
+                + "  ?org :affiliates ?auth .\n"
+                + "  ?auth :writesBook ?book .\n"
+                + "  ?book :price ?lprice .\n"
+                + "}\n"
+                + "GROUP BY ?org\n"
+                + "HAVING (?lprice > 10)";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql11_1a5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_1a5";
+        queryCase.name = "Sparql Specification section 11.1 Aggregate Example simple having";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (SUM(?lprice) AS ?totalPrice)\n"
+                + "WHERE {\n"
+                + "  ?org :affiliates ?auth .\n"
+                + "  ?auth :writesBook ?book .\n"
+                + "  ?book :price ?lprice .\n"
+                + "}\n"
+                + "GROUP BY ?org\n"
+                + "HAVING (SUM(?lprice) > SUM(?book))";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparq() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
         queryCase.name = "Sparql Specification section ";
