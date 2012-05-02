@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.query.Binding;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.Add;
 import org.openrdf.query.algebra.And;
@@ -124,7 +127,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     //List of the number of options clauses pushed under the graph clause.
     int optionInGraph = 0;
     
-    private boolean whereToBeWritten = true;
+    private boolean whereOpen = false;
+    
+    private String propertyPath = null;
+    
+    //private int nextAnon = 1;
+    
+    //private Map<String,String> anonMapper;
     
     /**
      * Sets up the visitor for writing the query.
@@ -164,7 +173,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * The reason for this is that the semantic sugar ; method of writing statements 
      *    allows the same annonous variable to be used more than once.
      * @param name 
-     */
+     * /
     void writeAnon(String name){
         //-anon-1
         String numberPart = name.substring(6);
@@ -178,8 +187,34 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             ending = Character.toChars(64 + anonBig);
             queryString.append(ending);        
         }
-    }
+    }*/
     
+    /*void writeAnon(String name){
+        if (anonMapper == null){
+            anonMapper = new HashMap<String, String>();
+        } 
+        String subValue = anonMapper.get(name);
+        if (subValue == null){
+            subValue = "_:_" + this.nextAnon;
+            nextAnon++;
+            anonMapper.put(name, subValue);
+        }
+        queryString.append(subValue);
+    }*/
+    
+    void writeAnon(String name){
+        if (propertyPath != null){
+            propertyPath = null;;
+        } else if (name.startsWith("-anon-") || name.startsWith("nps-x-")){
+            String numberPart = name.substring(6);
+            queryString.append(" _:_");
+            queryString.append(numberPart);
+        } else {
+            propertyPath = name;
+            queryString.append("/");
+        }
+    }
+
     @Override
     public void meet(BNodeGenerator bng) throws QueryExpansionException {
         //queryString.append(" [] ");
@@ -232,7 +267,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         dfrnc.getLeftArg().visit(this);
         queryString.append(" MINUS {");
         dfrnc.getRightArg().visit(this);
-        queryString.append(" }");
+        queryString.append(" } #Difference");
+        newLine();
     }
 
     @Override
@@ -254,7 +290,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Exists exists) throws QueryExpansionException {
         queryString.append(" EXISTS {");
         exists.getSubQuery().visit(this);
-        queryString.append(" }");
+        queryString.append(" } #EXITS");
+        newLine();
     }
 
     @Override
@@ -270,11 +307,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(ExtensionElem ee) throws QueryExpansionException {
+        if (whereOpen){
+            queryString.append(" BIND");
+        }
         queryString.append(" (");
         ee.getExpr().visit(this);
         queryString.append(" as ?");
         queryString.append(ee.getName());        
         queryString.append(") ");
+        if (whereOpen){
+            queryString.append(" . ");
+        }
     }
 
     @Override
@@ -351,15 +394,21 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     @Override
     public void meet(Join join) throws QueryExpansionException {
         writeWhereIfRequired();
-        join.getLeftArg().visit(this);
-        join.getRightArg().visit(this);
+        if (join.getLeftArg() instanceof BindingSetAssignment){
+            join.getRightArg().visit(this);
+            closeWhereIfRequired();
+            join.getLeftArg().visit(this);
+        } else {
+            join.getLeftArg().visit(this);
+            join.getRightArg().visit(this);
+        }
     }
 
     private void writeWhereIfRequired() throws QueryExpansionException {
-        if (whereToBeWritten){
+        if (!whereOpen){
             newLine();
             queryString.append("WHERE {");
-            whereToBeWritten = false;
+            whereOpen= true;
         }
     }
     
@@ -396,7 +445,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(MathExpr me) throws QueryExpansionException {
-        throw new QueryExpansionException("MathExpr not supported yet.");
+        queryString.append("(");
+        me.getLeftArg().visit(this);
+        //queryString.append(" ");
+        queryString.append(me.getOperator().getSymbol());
+        //queryString.append(" ");
+        me.getRightArg().visit(this);
+        queryString.append(")");
     }
 
     @Override
@@ -544,8 +599,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     @Override
     public void meet(Order order) throws QueryExpansionException {
         order.getArg().visit(this);
-        queryString.append(" } ");
-        newLine();
+        closeWhereIfRequired();
         queryString.append("ORDER BY ");
         List<OrderElem> orderElems = order.getElements();
         for (OrderElem orderElem: orderElems){
@@ -592,7 +646,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         newLine();
         printDataset();
         prjctn.getArg().visit(this);
-        closeProjectionUnlessOrderHas(prjctn.getArg());
+        closeWhereIfRequired();
     }
 
     /**
@@ -602,7 +656,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * In which case another } would cause an invalid query
      * @param expr 
      */
-    private void closeProjectionUnlessOrderHas(TupleExpr expr){
+    private void closeProjectionUnlessOrderHasX(TupleExpr expr){
         if (expr instanceof Order) return;
         if (expr instanceof Extension){
             Extension extnsn = (Extension) expr;
@@ -613,6 +667,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         newLine();
     }
     
+    private void closeWhereIfRequired(){
+        if (whereOpen){
+            newLine();
+            queryString.append(" } # WHERE");
+            newLine();
+            whereOpen = false;
+        }
+    }
     private void printDataset(){
         if (originalDataSet == null) return;
         queryString.append(originalDataSet);
@@ -729,11 +791,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                     queryString.append("CONSTRUCT {");
                     HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);
                     meet (prjctn.getProjectionElemList(), mappedExstensionElements);
-                    queryString.append("}");
+                    queryString.append("} #Reduced CONSTRUCT");
                     newLine();
                     queryString.append("{");
                     prjctn.getArg().visit(this);
-                    closeProjectionUnlessOrderHas(prjctn.getArg());
+                    closeWhereIfRequired();
                     break;
                 case DESCRIBE:
                     if (prjctnArg instanceof Filter){
@@ -756,11 +818,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append("CONSTRUCT {");
             HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);
             meet (mp.getProjections(), mappedExstensionElements);
-            queryString.append("}");
+            queryString.append("} #Reduced MultiProjection1");
             newLine();
             queryString.append("{");
             mp.getArg().visit(this);
-            queryString.append("}");
+            queryString.append("} #Reduced MultiProjection2");
+            newLine();
         } else {
             throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }
@@ -799,7 +862,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (isAsk(slice)){
             queryString.append("ASK  {");
             slice.getArg().visit(this);
-            queryString.append("}");
+            queryString.append("} #Slice ASK");
+            newLine();
         } else {
             slice.getArg().visit(this);
             if (slice.hasLimit()){
@@ -857,7 +921,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             newLine();
             queryString.append (" WHERE {");
             filter.getArg().visit(this);
-            queryString.append (" }");
+            queryString.append (" } #writeDescribe");
+            newLine();
         }
     }
 
@@ -941,14 +1006,34 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Filter filter) throws QueryExpansionException {
         writeWhereIfRequired();
         newLine();
+        if (writeNotPredicate(filter)) return;
         queryString.append("FILTER ");
         filter.getCondition().visit(this);
         //Arguements add the brackets
         filter.getArg().visit(this);
     }
 
+    private boolean writeNotPredicate(Filter filter) throws QueryExpansionException{
+        ValueExpr conditionExpr = filter.getCondition();
+        if (!(conditionExpr instanceof Compare)) return false;
+        Compare compare = (Compare)conditionExpr;
+        if (!(compare.getOperator().getSymbol().equals("!="))) return false;
+        TupleExpr agrExpression = filter.getArg();
+        if (!(agrExpression instanceof StatementPattern)) return false;
+        StatementPattern statementPattern = (StatementPattern)agrExpression;
+        if (!(compare.getLeftArg().equals(statementPattern.getPredicateVar()))) return false;
+        beforeStatmentPattern(statementPattern);
+        writeStatementPart(statementPattern.getSubjectVar());
+        queryString.append(" !");
+        compare.getRightArg().visit(this);
+        writeStatementPart(statementPattern.getObjectVar()); 
+        afterStatmentPattern(statementPattern);
+        return true;
+    }
+    
     @Override
     public void meet(SingletonSet ss) throws QueryExpansionException {
+        writeWhereIfRequired();
         newLine();
         queryString.append("{} ");
         //Expected no children but just to be sure.
@@ -967,8 +1052,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         meet(var);
     }
 
-    //@Override
+    //Stetement Pattern split inb three as meetArbitraryLengthPath method process StatementPatterns
+    //And these also need to handle context.
+    @Override
     public void meet(StatementPattern sp) throws QueryExpansionException  {
+        beforeStatmentPattern(sp);
+        
+        writeStatementPattern(sp);
+        afterStatmentPattern(sp);
+    }
+    
+    private void beforeStatmentPattern(StatementPattern sp) throws QueryExpansionException{
         writeWhereIfRequired();
         //Double check that then statement has the expected context 
         if (contexts.get(0) == null){
@@ -979,13 +1073,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (!(contexts.get(0).equals(sp.getContextVar()))) {
                throw new QueryExpansionException ("Expected context  " + contexts.get(0) + " in statement: " + sp); 
             }
-        }
-        
+        }       
         //Remove the context from the list, so it only has future contexts in it.
         contexts.remove(sp.getContextVar());       
         
-        openNewContextIfRequired(sp); 
-        
+        openNewContextIfRequired(sp);         
+
         //Add an optional pushed down if required.
         if (swapGraphAndOptional) {
             newLine();
@@ -993,18 +1086,33 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             swapGraphAndOptional = false;
         }
         
-        if (isDescribePattern(sp)) {
-            //No need to write the describe pattern the parser will do that
-        //} else if (canEliminate(sp)) {
+    }
+    
+    private void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
+        //No need to write the describe pattern the parser will do that
+        if (isDescribePattern(sp)) return;
         //    //No need to write a pattern for eliminated elements.
+        //if (canEliminate(sp)) return; 
+        if (propertyPath == null) newLine(); 
+        if (propertyPath != null && propertyPath.equals(sp.getObjectVar().getName())){
+            //sp.getObjectVar().isAnonymous()){
+            queryString.append("^");
+            propertyPath = null;
+            sp.getPredicateVar().visit(this);
+            //Inverted so write the subject now.
+            writeStatementPart(sp.getSubjectVar());  
         } else {
-            //write the actual statement.
-            newLine();
+            //write the actual normal statement.
             writeStatementPart(sp.getSubjectVar());
             sp.getPredicateVar().visit(this);
             writeStatementPart(sp.getObjectVar());
+        }
+        if (propertyPath == null){
             queryString.append(". ");
         }
+    }
+
+    private void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
         //Now use the look ahead provided by the context list. 
         if (contexts.isEmpty()){
             //Last Statement so close and flush filters
@@ -1017,9 +1125,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         } else {
             //New context coming so close the context
             closeContext();
-        }
+        }    
     }
-
     /**
      * Close the context (GRAPH clause) and any optional clauses opened inside the graph.
      * 
@@ -1189,7 +1296,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("} UNION {");
         union.getRightArg().visit(this);
         newLine();
-        queryString.append("}");
+        queryString.append("} #Union");
+        newLine();
     }
 
     @Override
@@ -1217,13 +1325,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     private void addValue(Value value){
-        if (value instanceof URI){
+        if (value == null){
+            queryString.append("UNDEF ");
+        } else if (value instanceof URI){
             queryString.append("<");
             queryString.append(value.stringValue());
             queryString.append(">"); 
         } else {
             queryString.append(value);
         }
+        queryString.append(" ");
     }
     
     void newLine(){
@@ -1257,7 +1368,75 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Limited implenation expanded as discovered so far
+        TupleExpr path = alp.getPathExpression();
+        if (path instanceof StatementPattern){
+            meetArbitraryLengthPath(alp, (StatementPattern)path);
+        } else if (path instanceof Union){
+            meetArbitraryLengthPath(alp, (Union)path);
+        } else {
+            throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with none StatementPattern or Union path not yet supported");
+        }
+    }
+
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, StatementPattern sp) throws QueryExpansionException{
+        beforeStatmentPattern(sp);
+        Var object = sp.getObjectVar();
+        writeStatementPart(sp.getSubjectVar());
+        sp.getPredicateVar().visit(this);
+        if (object.isAnonymous() && !(object.hasValue())){
+            queryString.append("+/");
+            propertyPath = object.getName();        
+        } else {
+            queryString.append("*");
+            sp.getObjectVar().visit(this);
+        }
+        afterStatmentPattern(sp);
+    }
+    
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, Union union) throws QueryExpansionException{
+        TupleExpr leftExpr = union.getLeftArg();
+        if (!(leftExpr instanceof StatementPattern)){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if left is a StatementPattern not.");                            
+        }
+        StatementPattern leftStatement = (StatementPattern)leftExpr;
+        TupleExpr rightExpr = union.getRightArg();
+        if (!(rightExpr instanceof StatementPattern)){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if right is a StatementPattern");                            
+        }
+        StatementPattern rightStatement = (StatementPattern)rightExpr;
+        if (leftStatement.getSubjectVar().hasValue()){
+            if (!leftStatement.getSubjectVar().getValue().equals(rightStatement.getSubjectVar().getValue())){
+                throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with Union only supported if Subjects have the same value.");                                    
+            }
+        } else if (!(leftStatement.getSubjectVar().equals(rightStatement.getSubjectVar()))){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                                  
+        }
+        if (leftStatement.getObjectVar().hasValue()){
+            if (!leftStatement.getObjectVar().getValue().equals(rightStatement.getObjectVar().getValue())){
+                throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with Union only supported if Objects have the same value.");                                    
+            }
+        } else if (!(leftStatement.equals(rightStatement.getObjectVar()))){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                             
+        }
+        beforeStatmentPattern(leftStatement);
+        beforeStatmentPattern(rightStatement);
+        writeStatementPart(leftStatement.getSubjectVar());
+        queryString.append("(");
+        leftStatement.getPredicateVar().visit(this);
+        queryString.append("|");
+        rightStatement.getPredicateVar().visit(this);
+        queryString.append(")+ ");
+        writeStatementPart(leftStatement.getObjectVar());
+        afterStatmentPattern(leftStatement);
+        afterStatmentPattern(rightStatement);
     }
 
     @Override
@@ -1267,7 +1446,22 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("BINDINGS");
+        for(String name:bsa.getBindingNames()){
+            queryString.append(" ?");
+            queryString.append(name);
+        }
+        queryString.append("{");
+        newLine();
+        for (BindingSet bindingSet:bsa.getBindingSets()){
+            queryString.append(" (");
+            for(String name:bsa.getBindingNames()){
+                addValue(bindingSet.getValue(name));
+            }
+            queryString.append(") ");
+        }
+        queryString.append(" }");
+        newLine();
     }
 
     @Override

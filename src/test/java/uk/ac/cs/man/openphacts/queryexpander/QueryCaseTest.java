@@ -27,6 +27,7 @@ public class QueryCaseTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
+            //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery);
             System.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));

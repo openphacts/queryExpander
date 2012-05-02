@@ -2,6 +2,8 @@ package uk.ac.cs.man.openphacts.queryexpander.visitor;
 
 import java.util.ArrayList;
 import org.openrdf.query.algebra.ExtensionElem;
+import org.openrdf.query.algebra.Join;
+import org.openrdf.query.algebra.LeftJoin;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
@@ -19,7 +21,17 @@ public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpan
     public void meet(ExtensionElem ee) throws QueryExpansionException {
         foundNames.add(ee.getName());
     }
+    
+    @Override
+    public void meet(Join join) throws QueryExpansionException {
+        //No need to look father as now in statements
+    }
 
+    @Override
+    public void meet(LeftJoin join) throws QueryExpansionException {
+        //No need to look father as now in statements
+    }
+    
     private ArrayList<String> getNamesFound(){
         return foundNames;
     }
