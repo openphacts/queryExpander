@@ -117,17 +117,20 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //These are solved without using Extension Mapping so stop looking
     }
 
     @Override
     public void meet(Avg avg) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.extension.append(" AVG (");
+        avg.getArg().visit(this);
+        this.extension.append(") ");        
     }
 
     @Override
     public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //No TuplExpr children
+        //No Extensions in Binding sets so stop looking
     }
 
     @Override
@@ -192,7 +195,9 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Difference dfrnc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //should be ok bit keep checking just in case.
+        dfrnc.getLeftArg().visit(this);
+        dfrnc.getRightArg().visit(this);
     }
 
     @Override
@@ -215,19 +220,23 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
         for (ExtensionElem extensionElem:extnsn.getElements()){
             meet(extensionElem);
         }
+        extnsn.getArg().visit(this);
     }
 
     @Override
     public void meet(ExtensionElem ee) throws QueryExpansionException {
-        extension = new StringBuilder();
-        ee.getExpr().visit(this);
-        extensionMappings.put(ee.getName(), extension.toString());
-        extension = null;
+        String name = ee.getName();
+        if (name.startsWith("-") || name.startsWith("_")){
+            extension = new StringBuilder();
+            ee.getExpr().visit(this);
+            extensionMappings.put(ee.getName(), extension.toString());
+            extension = null;
+        }
     }
 
     @Override
     public void meet(Filter filter) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        filter.getArg().visit(this);
     }
 
     @Override
@@ -237,7 +246,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Group group) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Should be ok but keep checking just in case
+        group.getArg().visit(this);
     }
 
     @Override
@@ -302,7 +312,9 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Join join) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //should be ok bit keep checking just in case.
+        join.getLeftArg().visit(this);
+        join.getRightArg().visit(this);
     }
 
     @Override
@@ -322,7 +334,9 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(LeftJoin lj) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //should be ok bit keep checking just in case.
+        lj.getLeftArg().visit(this);
+        lj.getRightArg().visit(this);
     }
 
     @Override
@@ -347,12 +361,16 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Max max) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.extension.append(" MAX(");
+        max.getArg().visit(this);
+        this.extension.append(") ");        
     }
 
     @Override
     public void meet(Min min) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.extension.append(" MIN(");
+        min.getArg().visit(this);
+        this.extension.append(") ");        
     }
 
     @Override
@@ -437,7 +455,7 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(SingletonSet ss) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+       //Nothing here
     }
 
     @Override
@@ -447,12 +465,14 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(StatementPattern sp) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Extensions come before SatemementPatterns so stop looking
     }
 
     @Override
     public void meet(Str str) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.extension.append(" STR(");
+        str.getArg().visit(this);
+        this.extension.append(") ");        
     }
 
     @Override
@@ -464,7 +484,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Union union) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        union.getLeftArg().visit(this);
+        union.getRightArg().visit(this);
     }
 
     @Override

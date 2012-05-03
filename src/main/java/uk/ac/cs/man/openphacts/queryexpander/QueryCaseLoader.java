@@ -101,6 +101,10 @@ public class QueryCaseLoader {
         loadSparql11_1a3();
         loadSparql11_1a4();
         loadSparql11_1a5();
+        loadSparql11_2();
+        loadSparql11_3();
+        loadSparql11_4();
+        loadSparql11_5();
     }
     
     private void loadSparql2_1() {
@@ -1117,14 +1121,67 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
-   private void loadSparq() {
+   private void loadSparql11_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_2";
+        queryCase.name = "Sparql Specification section 11.2 GROUP BY";
+        queryCase.originalQuery = "PREFIX : <http://books.example/>\n"
+                + "SELECT (AVG(?y) AS ?avg)\n"
+                + "WHERE {\n"
+                + "  ?a :x ?x ;\n"
+                + "     :y ?y .}\n\n"
+                + "GROUP BY ?x";                
+        queries.put(queryCase.key, queryCase);
+   }
+   
+   private void loadSparql11_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_3";
+        queryCase.name = "Sparql Specification section 11.3 HAVING";
+        queryCase.originalQuery = "PREFIX : <http://data.example/>\n"
+                + "SELECT (AVG(?size) AS ?asize)\n"
+                + "WHERE {\n"
+                + "  ?x :size ?size\n"
+                + "}\n"
+                + "GROUP BY ?x\n"
+                + "HAVING(AVG(?size) > 10)";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql11_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_4";
+        queryCase.name = "Sparql Specification section 11.4 Aggregate Projection Restrictions";
+        queryCase.originalQuery = "PREFIX : <http://example.com/data/#>\n"
+                + "SELECT ?x (MIN(?y) * 2 AS ?min)\n"
+                + "WHERE {\n"
+                + "  ?x :p ?y .\n"
+                + "  ?x :q ?z .\n"
+                + "} GROUP BY ?x (STR(?z))";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql11_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_5";
+        queryCase.name = "Sparql Specification section 11.5 Aggregate Example (with errors)";
+        queryCase.originalQuery = "PREFIX : <http://example.com/data/#>\n"
+                + "SELECT ?g (AVG(?p) AS ?avg) ((MIN(?p) + MAX(?p)) / 2 AS ?c)\n"
+                + "WHERE {\n"
+                + "  ?g :p ?p .\n"
+                + "}\n"
+                + "GROUP BY ?g";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
         queryCase.name = "Sparql Specification section ";
         queryCase.originalQuery = "";                
         queries.put(queryCase.key, queryCase);
    }
-   
+
    public Set<String> keySet(){
        return queries.keySet();
    }

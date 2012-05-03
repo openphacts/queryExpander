@@ -206,13 +206,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }*/
     
     void writeAnon(String name){
-        if (extensionMappings != null){
-            String replace = extensionMappings.get(name);
-            if (replace != null){
-               queryString.append(replace); 
-               return;
-            }
-        }
+        if (writeMappedExtension(name)) return;
         if (propertyPath != null){
             propertyPath = null;;
         } else if (name.startsWith("-anon-") || name.startsWith("nps-x-")){
@@ -225,6 +219,18 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
+    private boolean writeMappedExtension(String name){
+        if (extensionMappings != null){
+            //ystem.out.println("extensionMappings = " + extensionMappings);
+            String replace = extensionMappings.get(name);
+            if (replace != null){
+               queryString.append(replace); 
+               return true;
+            }
+        }        
+        return false;
+    }
+    
     @Override
     public void meet(BNodeGenerator bng) throws QueryExpansionException {
         //queryString.append(" [] ");
@@ -317,6 +323,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(ExtensionElem ee) throws QueryExpansionException {
+        String name = ee.getName();
+        if (name.startsWith("-") || name.startsWith("_")){
+            //will be writen by writeanon so not here
+            return;
+        }
         if (whereOpen){
             queryString.append(" BIND");
         }
@@ -364,8 +375,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             newLine();
             queryString.append("GROUP BY ");
             for (String grouping:groupings){
-                queryString.append(" ?");
-                queryString.append(grouping);
+                if (!writeMappedExtension(grouping)) {
+                   queryString.append(" ?");
+                   queryString.append(grouping);
+                }
             }
         }
     }
@@ -478,12 +491,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Max max) throws QueryExpansionException {
-        throw new QueryExpansionException("Max not supported yet.");
+        queryString.append("MAX(");
+        max.getArg().visit(this);
+        queryString.append(") ");
     }
 
     @Override
     public void meet(Min min) throws QueryExpansionException {
-        throw new QueryExpansionException("Min not supported yet.");
+        queryString.append("MIN(");
+        min.getArg().visit(this);
+        queryString.append(") ");
     }
 
     @Override
@@ -664,6 +681,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         //    }
         //}
         //Call the ProjectionElementList even if there are requiredAttributes as this sets eliminatedAttributes
+        this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
+        System.out.println("in projection " + extensionMappings);
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
@@ -982,7 +1001,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
            if (" ?-descr-subj".equals(leftName)){
                writeDescribeVariable(term.getRightArg());
            } else {
-               //System.out.println(leftName);
+               //ystem.out.println(leftName);
            }
         } else {
             throw new QueryExpansionException ("Expected Or when extracting DescribeVariable");
@@ -1044,12 +1063,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     private boolean writeHaving(Filter filter) throws QueryExpansionException{
         //May prove to be incomplete
         if (this.whereOpen) return false;
-        extensionMappings = ExtensionMapperVisitor.getMappings(filter.getArg());
+        //Must add to the mappings as normally lookahead stops when it hit
+        extensionMappings.putAll(ExtensionMapperVisitor.getMappings(filter.getArg()));
         TupleExpr arg = filter.getArg();
-        if (arg instanceof Extension){
-            Extension extension = (Extension)arg;
-            arg = extension.getArg();
-        }
         arg.visit(this);
         newLine();
         queryString.append("HAVING ");
@@ -1491,7 +1507,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Avg avg) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("AVG(");
+        avg.getArg().visit(this);
+        queryString.append(") ");
     }
 
     @Override
