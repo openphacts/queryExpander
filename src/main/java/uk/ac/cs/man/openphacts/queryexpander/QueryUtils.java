@@ -12,6 +12,7 @@ import org.openrdf.query.algebra.helpers.QueryModelTreePrinter;
 import org.openrdf.query.impl.DatasetImpl;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
+import uk.ac.cs.man.openphacts.queryexpander.visitor.AnonymousTweakerVisitor;
 
 /**
  * Provides a few static Utility methods.
@@ -115,8 +116,15 @@ public class QueryUtils {
         TupleExpr tupleExpr1 =  parsedQuery1.getTupleExpr();
         ParsedQuery parsedQuery2 = parser.parseQuery(query2, null); 
         TupleExpr tupleExpr2 =  parsedQuery2.getTupleExpr();
-        //if (compare(tupleExpr1, tupleExpr2)){
-        if ((tupleExpr1.equals(tupleExpr2))){
+        boolean equal = tupleExpr1.equals(tupleExpr2);
+        if (!equal){
+            //Lets check for and remove any UUIDs in Anonymous vars
+            AnonymousTweakerVisitor tweaker = new AnonymousTweakerVisitor();
+            tupleExpr1.visit(tweaker);
+            tupleExpr2.visit(tweaker);
+        }
+        equal = tupleExpr1.equals(tupleExpr2);
+        if (equal){
             Dataset  dataset1 = parsedQuery1.getDataset();
             Dataset  dataset2 = parsedQuery2.getDataset();
             return compare(dataset1, dataset2, verbose);

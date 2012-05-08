@@ -277,7 +277,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Intersection i) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        i.getLeftArg().visit(this);
+        i.getRightArg().visit(this);
     }
 
     @Override
@@ -415,7 +416,7 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Projection prjctn) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //in subquery so stop
     }
 
     @Override

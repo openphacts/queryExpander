@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.openrdf.query.algebra.ExtensionElem;
 import org.openrdf.query.algebra.Join;
 import org.openrdf.query.algebra.LeftJoin;
+import org.openrdf.query.algebra.Projection;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
@@ -32,6 +33,11 @@ public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpan
         //No need to look father as now in statements
     }
     
+    @Override
+    public void meet(Projection prjctn) throws QueryExpansionException {
+        //in subquery so stop
+    }
+
     private ArrayList<String> getNamesFound(){
         return foundNames;
     }

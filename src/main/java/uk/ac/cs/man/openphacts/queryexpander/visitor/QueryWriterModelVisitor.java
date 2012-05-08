@@ -2,13 +2,11 @@ package uk.ac.cs.man.openphacts.queryexpander.visitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
-import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.Add;
@@ -103,7 +101,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     StringBuilder queryString = new StringBuilder();
    
     //Used to add the FROM clause
-    private Dataset originalDataSet;
+    Dataset originalDataSet;
     
     //The current context (GRAPH clause) the writer is in. (or null if not in a context.
     Var context = null;
@@ -114,7 +112,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     //private List<String>  requiredAttributes;
     
     //List of attributes to be removed. See requiredAttributes warning!
-    private Set<String> eliminatedAttributes;
+    //private Set<String> eliminatedAttributes;
     
     //Flag that the writing of an Optional has been delayed until a Graph clause is added
     boolean swapGraphAndOptional = false;
@@ -122,7 +120,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     //List of the Contexts (including null) for all the Statements not yet met.
     ArrayList<Var> contexts;
     
+    //This is the name of all the functions found to go in the select clause.
     ArrayList<String> namesInExtensions;
+    
+    //This names temp variables to the functions that should go in their place 
+    Map<String, String> extensionMappings;
     
     //List of the number of options clauses pushed under the graph clause.
     int optionInGraph = 0;
@@ -131,8 +133,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
-    //Use for having
-    Map<String, String> extensionMappings;
             
     //private int nextAnon = 1;
     
@@ -144,21 +144,92 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * @param dataSet dataSets listed in the original Queries FROM clause.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryWriterModelVisitor(Dataset dataSet, ArrayList<Var> contexts, ArrayList<String> namesInExtensions){
+    QueryWriterModelVisitor(Dataset dataSet){
         originalDataSet = dataSet;
-        eliminatedAttributes = new HashSet<String>();
-        //if (requiredAttributes == null || requiredAttributes.isEmpty()) {
-        //    this.requiredAttributes = null;
-        //} else {
-        //    this.requiredAttributes = requiredAttributes;
-        //}
-        this.contexts = contexts;
-        this.namesInExtensions = namesInExtensions;
     }
 
     @Override
-    public void meet(QueryRoot qr) throws QueryExpansionException {
-        throw new QueryExpansionException("QueryRoot not supported yet.");
+    public QueryWriterModelVisitor clone(){
+        return new QueryWriterModelVisitor(originalDataSet);
+    }
+    
+    @Override
+    public void meet(Add add) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
+        //Limited implenation expanded as discovered so far
+        TupleExpr path = alp.getPathExpression();
+        if (path instanceof StatementPattern){
+            meetArbitraryLengthPath(alp, (StatementPattern)path);
+        } else if (path instanceof Union){
+            meetArbitraryLengthPath(alp, (Union)path);
+        } else {
+            throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with none StatementPattern or Union path not yet supported");
+        }
+    }
+
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, StatementPattern sp) throws QueryExpansionException{
+        beforeStatmentPattern(sp);
+        Var object = sp.getObjectVar();
+        writeStatementPart(sp.getSubjectVar());
+        sp.getPredicateVar().visit(this);
+        if (object.isAnonymous() && !(object.hasValue())){
+            queryString.append("+/");
+            propertyPath = object.getName();  
+            System.out.println("propertyPath set in meetArbitraryLengthPath " + propertyPath);
+        } else {
+            queryString.append("*");
+            sp.getObjectVar().visit(this);
+        }
+        afterStatmentPattern(sp);
+    }
+    
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, Union union) throws QueryExpansionException{
+        TupleExpr leftExpr = union.getLeftArg();
+        if (!(leftExpr instanceof StatementPattern)){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if left is a StatementPattern not.");                            
+        }
+        StatementPattern leftStatement = (StatementPattern)leftExpr;
+        TupleExpr rightExpr = union.getRightArg();
+        if (!(rightExpr instanceof StatementPattern)){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if right is a StatementPattern");                            
+        }
+        StatementPattern rightStatement = (StatementPattern)rightExpr;
+        if (leftStatement.getSubjectVar().hasValue()){
+            if (!leftStatement.getSubjectVar().getValue().equals(rightStatement.getSubjectVar().getValue())){
+                throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with Union only supported if Subjects have the same value.");                                    
+            }
+        } else if (!(leftStatement.getSubjectVar().equals(rightStatement.getSubjectVar()))){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                                  
+        }
+        if (leftStatement.getObjectVar().hasValue()){
+            if (!leftStatement.getObjectVar().getValue().equals(rightStatement.getObjectVar().getValue())){
+                throw new UnsupportedOperationException
+                    ("ArbitraryLengthPath with Union only supported if Objects have the same value.");                                    
+            }
+        } else if (!(leftStatement.equals(rightStatement.getObjectVar()))){
+            throw new UnsupportedOperationException
+                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                             
+        }
+        beforeStatmentPattern(leftStatement);
+        beforeStatmentPattern(rightStatement);
+        writeStatementPart(leftStatement.getSubjectVar());
+        queryString.append("(");
+        leftStatement.getPredicateVar().visit(this);
+        queryString.append("|");
+        rightStatement.getPredicateVar().visit(this);
+        queryString.append(")+ ");
+        writeStatementPart(leftStatement.getObjectVar());
+        afterStatmentPattern(leftStatement);
+        afterStatmentPattern(rightStatement);
     }
 
     @Override
@@ -168,6 +239,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(" && ");
         and.getRightArg().visit(this);
         queryString.append(")");
+    }
+
+    @Override
+    public void meet(Avg avg) throws QueryExpansionException {
+        queryString.append("AVG(");
+        avg.getArg().visit(this);
+        queryString.append(") ");
     }
 
     /**
@@ -205,16 +283,33 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(subValue);
     }*/
     
+    private boolean writeInnerName(String name){
+        if (name.length() < 30) return false;
+        if (!(name.contains("-"))) return false;
+        String actualName = name.substring(0, name.indexOf('-'));
+        String tail = name.substring(name.indexOf('-'));
+        if (tail.matches("\\-\\w+\\-\\w+\\-\\w+\\-\\w+\\-\\w+")){
+            queryString.append(" ?");
+            queryString.append(actualName);
+            return true;
+        }
+        return false;
+    }
+    
     void writeAnon(String name){
         if (writeMappedExtension(name)) return;
         if (propertyPath != null){
-            propertyPath = null;;
+            propertyPath = null;
         } else if (name.startsWith("-anon-") || name.startsWith("nps-x-")){
             String numberPart = name.substring(6);
             queryString.append(" _:_");
             queryString.append(numberPart);
+        } else if(writeInnerName(name)){
+            //do nothing already written
         } else {
             propertyPath = name;
+            System.out.println(name);
+            System.out.println("propertyPath set in writeAnon " + propertyPath);
             queryString.append("/");
         }
     }
@@ -231,7 +326,27 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         return false;
     }
     
-    @Override
+     @Override
+    public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
+        queryString.append("BINDINGS");
+        for(String name:bsa.getBindingNames()){
+            queryString.append(" ?");
+            queryString.append(name);
+        }
+        queryString.append("{");
+        newLine();
+        for (BindingSet bindingSet:bsa.getBindingSets()){
+            queryString.append(" (");
+            for(String name:bsa.getBindingNames()){
+                addValue(bindingSet.getValue(name));
+            }
+            queryString.append(") ");
+        }
+        queryString.append(" }");
+        newLine();
+    }
+
+   @Override
     public void meet(BNodeGenerator bng) throws QueryExpansionException {
         //queryString.append(" [] ");
         //queryString.append(" _:hjk ");
@@ -243,6 +358,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("BOUND(");
         bound.getArg().visit(this);
         queryString.append(") ");        
+    }
+
+    @Override
+    public void meet(Clear clear) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(Coalesce clsc) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -267,8 +392,18 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
+    public void meet(Copy copy) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void meet(Count count) throws QueryExpansionException {
         throw new QueryExpansionException("Count not supported yet.");
+    }
+
+    @Override
+    public void meet(Create create) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -276,6 +411,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(" DATATYPE(");
         dtp.getArg().visit(this);
         queryString.append(")");
+    }
+
+    @Override
+    public void meet(DeleteData dd) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -342,6 +482,61 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
+    public void meet(Filter filter) throws QueryExpansionException {
+        writeWhereIfRequired(filter);
+        newLine();
+        if (writeNotPredicate(filter)) return;
+        if (writeHaving(filter)) return;
+        queryString.append("FILTER ");
+        filter.getCondition().visit(this);
+        //Arguements add the brackets
+        filter.getArg().visit(this);
+    }
+    
+    /**
+     * This captures where the filter is a having
+     * @param filter
+     * @return 
+     */
+    private boolean writeHaving(Filter filter) throws QueryExpansionException{
+        //May prove to be incomplete
+        if (this.whereOpen) return false;
+        //Must add to the mappings as normally lookahead stops when it hit
+        extensionMappings.putAll(ExtensionMapperVisitor.getMappings(filter.getArg()));
+        System.out.println("Write having " + extensionMappings);
+        TupleExpr arg = filter.getArg();
+        arg.visit(this);
+        newLine();
+        queryString.append("HAVING ");
+        this.closeWhereIfRequired();
+        filter.getCondition().visit(this);
+        return true;
+    }
+
+    /**
+     * This captures the case where the predicate path of a negated predicate is used.
+     * 
+     * For example { ?x !rdf:type ?y }
+     */
+    private boolean writeNotPredicate(Filter filter) throws QueryExpansionException{
+        ValueExpr conditionExpr = filter.getCondition();
+        if (!(conditionExpr instanceof Compare)) return false;
+        Compare compare = (Compare)conditionExpr;
+        if (!(compare.getOperator().getSymbol().equals("!="))) return false;
+        TupleExpr agrExpression = filter.getArg();
+        if (!(agrExpression instanceof StatementPattern)) return false;
+        StatementPattern statementPattern = (StatementPattern)agrExpression;
+        if (!(compare.getLeftArg().equals(statementPattern.getPredicateVar()))) return false;
+        beforeStatmentPattern(statementPattern);
+        writeStatementPart(statementPattern.getSubjectVar());
+        queryString.append(" !");
+        compare.getRightArg().visit(this);
+        writeStatementPart(statementPattern.getObjectVar()); 
+        afterStatmentPattern(statementPattern);
+        return true;
+    }
+    
+    @Override
     public void meet(FunctionCall fc) throws QueryExpansionException {
        //ystem.out.println(fc.getURI());
        //ystem.out.println(fc.getArgs());
@@ -384,8 +579,18 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
+    public void meet(GroupConcat gc) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void meet(GroupElem ge) throws QueryExpansionException {
         throw new QueryExpansionException("GroupElem not supported yet.");
+    }
+
+    @Override
+    public void meet(If i) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -394,8 +599,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
+    public void meet(InsertData id) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void meet(Intersection i) throws QueryExpansionException {
-        throw new QueryExpansionException("Intersection not supported yet.");
+        i.getLeftArg().visit(this);
+        i.getRightArg().visit(this);
+    }
+
+    @Override
+    public void meet(IRIFunction irif) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -410,6 +626,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(" ISLITERAL(");
         il.getArg().visit(this);
         queryString.append(")");
+    }
+
+    @Override
+    public void meet(IsNumeric in) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -466,60 +687,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(" ,");
         lm.getRightArg().visit(this);
         queryString.append(")");
-    }
-
-    @Override
-    public void meet(Like like) throws QueryExpansionException {
-        throw new QueryExpansionException("Like not supported yet.");
-    }
-
-    @Override
-    public void meet(LocalName ln) throws QueryExpansionException {
-        throw new QueryExpansionException("LocalName not supported yet.");
-    }
-
-    @Override
-    public void meet(MathExpr me) throws QueryExpansionException {
-        queryString.append("(");
-        me.getLeftArg().visit(this);
-        //queryString.append(" ");
-        queryString.append(me.getOperator().getSymbol());
-        //queryString.append(" ");
-        me.getRightArg().visit(this);
-        queryString.append(")");
-    }
-
-    @Override
-    public void meet(Max max) throws QueryExpansionException {
-        queryString.append("MAX(");
-        max.getArg().visit(this);
-        queryString.append(") ");
-    }
-
-    @Override
-    public void meet(Min min) throws QueryExpansionException {
-        queryString.append("MIN(");
-        min.getArg().visit(this);
-        queryString.append(") ");
-    }
-
-    @Override
-    public void meet(MultiProjection mp) throws QueryExpansionException {
-        throw new QueryExpansionException("MultiProjection not supported yet.");
-    }
-
-    @Override
-    public void meet(Namespace nmspc) throws QueryExpansionException {
-        throw new QueryExpansionException("Namespace not supported yet.");
-    }
-
-    @Override
-    public void meet(Not not) throws QueryExpansionException {
-        //queryString.append(" !(");  //NOT EXISTS can not use the !
-        //THis may well need a look ahead depening on what the arg is.
-        queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
-        not.getArg().visit(this);
-        //queryString.append(")");
     }
 
     //@Override
@@ -627,6 +794,75 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
+    public void meet(Like like) throws QueryExpansionException {
+        throw new QueryExpansionException("Like not supported yet.");
+    }
+
+    @Override
+    public void meet(Load load) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(LocalName ln) throws QueryExpansionException {
+        throw new QueryExpansionException("LocalName not supported yet.");
+    }
+
+    @Override
+    public void meet(MathExpr me) throws QueryExpansionException {
+        queryString.append("(");
+        me.getLeftArg().visit(this);
+        //queryString.append(" ");
+        queryString.append(me.getOperator().getSymbol());
+        //queryString.append(" ");
+        me.getRightArg().visit(this);
+        queryString.append(")");
+    }
+
+    @Override
+    public void meet(Max max) throws QueryExpansionException {
+        queryString.append("MAX(");
+        max.getArg().visit(this);
+        queryString.append(") ");
+    }
+
+    @Override
+    public void meet(Min min) throws QueryExpansionException {
+        queryString.append("MIN(");
+        min.getArg().visit(this);
+        queryString.append(") ");
+    }
+
+    @Override
+    public void meet(Modify modify) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(Move move) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(MultiProjection mp) throws QueryExpansionException {
+        throw new QueryExpansionException("MultiProjection not supported yet.");
+    }
+
+    @Override
+    public void meet(Namespace nmspc) throws QueryExpansionException {
+        throw new QueryExpansionException("Namespace not supported yet.");
+    }
+
+    @Override
+    public void meet(Not not) throws QueryExpansionException {
+        //queryString.append(" !(");  //NOT EXISTS can not use the !
+        //THis may well need a look ahead depening on what the arg is.
+        queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
+        not.getArg().visit(this);
+        //queryString.append(")");
+    }
+
+    @Override
     public void meet(Or or) throws QueryExpansionException {
         queryString.append("(");
         or.getLeftArg().visit(this);
@@ -659,7 +895,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Projection prjctn) throws QueryExpansionException {
-        meet (prjctn, "");
+        if (this.whereOpen){
+            newLine();
+            queryString.append("{ #open subquery");
+            newLine();
+            queryString.append(this.convertToQueryString(prjctn, originalDataSet));
+            newLine();
+            queryString.append("} #closesubquery");
+            newLine();
+        } else {
+            meet (prjctn, "");
+        }
     }
 
     /**
@@ -674,13 +920,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("SELECT ");
         queryString.append(modifier);
         addExpanded(prjctn);
-        //if (this.requiredAttributes != null){
-        //    for (String requiredAttribute:requiredAttributes){
-        //        queryString.append(" ?");
-        //        queryString.append(requiredAttribute);
-        //    }
-        //}
-        //Call the ProjectionElementList even if there are requiredAttributes as this sets eliminatedAttributes
+        contexts = ContextListerVisitor.getContexts(prjctn.getArg());
+        //This gets the names that represent functions in the select statemenet.
+        this.namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(prjctn.getArg());
+        //This mapes to sub functions.
         this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
         System.out.println("in projection " + extensionMappings);
         prjctn.getProjectionElemList().visit(this);
@@ -792,9 +1035,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         //        //requiredAttributes are written by so not written here..
         //    }
         //} else {
+     //   System.out.println(pe);
         if (!namesInExtensions.contains(sourceName)){
             queryString.append(" ?");
             queryString.append(sourceName);
+     //   } else {
+     //        System.out.println(pe + " in " + namesInExtensions);
         }
         //}
     }
@@ -818,6 +1064,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         } else {
             mapped.visit(this);
         }
+    }
+
+    @Override
+    public void meet(QueryRoot qr) throws QueryExpansionException {
+        throw new QueryExpansionException("QueryRoot not supported yet.");
     }
 
     //REDUCE is found both in CONSTRUCT AND SELECT QUERIES
@@ -884,66 +1135,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         return  mappedExstensionElements;
     }
     
-    @Override
-    public void meet(Regex regex) throws QueryExpansionException {
-        queryString.append("regex(");
-        regex.getArg().visit(this);
-        queryString.append(",");
-        regex.getPatternArg().visit(this);
-        ValueExpr flag = regex.getFlagsArg();
-        if (flag != null){
-            queryString.append(",");
-            flag.visit(this);
-        }
-        queryString.append(")");
-    }
-
-    @Override
-    public void meet(Slice slice) throws QueryExpansionException {
-        if (isAsk(slice)){
-            queryString.append("ASK  {");
-            slice.getArg().visit(this);
-            queryString.append("} #Slice ASK");
-            newLine();
-        } else {
-            slice.getArg().visit(this);
-            if (slice.hasLimit()){
-                newLine();
-                queryString.append("LIMIT ");
-                queryString.append(slice.getLimit());     
-            }
-            if (slice.hasOffset()){
-                newLine();
-                queryString.append("OFFSET ");
-                queryString.append(slice.getOffset());     
-            }
-        }
-    }
-
-    private boolean isAsk(Slice slice){
-        if (!(slice.hasLimit())) return false;
-        if (slice.getLimit() > 1) return false;
-        TupleExpr arg = slice.getArg();
-        if (arg instanceof Reduced){
-            arg = ((Reduced)arg).getArg();
-        } else if (arg instanceof Distinct){
-            arg = ((Distinct)arg).getArg();
-        } 
-        if (arg instanceof Projection){
-            return false;
-        }
-        return true;
-    }
-    
-    @Override
-    public void meet(SameTerm st) throws QueryExpansionException {
-        queryString.append(" SAMETERM(");
-        st.getLeftArg().visit(this);
-        queryString.append(" ,");
-        st.getRightArg().visit(this);
-        queryString.append(")");
-    }
-
     /**
      * Writes a Describe query based on a Filter that has been dettermined to be a Describe.
      * 
@@ -1030,6 +1221,72 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             throw new QueryExpansionException ("Expected Var when extracting a name");
         }
     }
+
+    @Override
+    public void meet(Regex regex) throws QueryExpansionException {
+        queryString.append("regex(");
+        regex.getArg().visit(this);
+        queryString.append(",");
+        regex.getPatternArg().visit(this);
+        ValueExpr flag = regex.getFlagsArg();
+        if (flag != null){
+            queryString.append(",");
+            flag.visit(this);
+        }
+        queryString.append(")");
+    }
+
+    @Override
+    public void meet(Sample sample) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void meet(Slice slice) throws QueryExpansionException {
+        if (isAsk(slice)){
+            queryString.append("ASK  {");
+            slice.getArg().visit(this);
+            queryString.append("} #Slice ASK");
+            newLine();
+        } else {
+            slice.getArg().visit(this);
+            if (slice.hasLimit()){
+                newLine();
+                queryString.append("LIMIT ");
+                queryString.append(slice.getLimit());     
+            }
+            if (slice.hasOffset()){
+                newLine();
+                queryString.append("OFFSET ");
+                queryString.append(slice.getOffset());     
+            }
+        }
+    }
+
+    private boolean isAsk(Slice slice){
+        if (!(slice.hasLimit())) return false;
+        if (slice.getLimit() > 1) return false;
+        TupleExpr arg = slice.getArg();
+        if (arg instanceof Reduced){
+            arg = ((Reduced)arg).getArg();
+        } else if (arg instanceof Distinct){
+            arg = ((Distinct)arg).getArg();
+        } 
+        if (arg instanceof Projection){
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public void meet(SameTerm st) throws QueryExpansionException {
+        queryString.append(" SAMETERM(");
+        st.getLeftArg().visit(this);
+        queryString.append(" ,");
+        st.getRightArg().visit(this);
+        queryString.append(")");
+    }
+
     
     /**
      * Gets the String for a URI.
@@ -1044,59 +1301,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(Filter filter) throws QueryExpansionException {
-        writeWhereIfRequired(filter);
-        newLine();
-        if (writeNotPredicate(filter)) return;
-        if (writeHaving(filter)) return;
-        queryString.append("FILTER ");
-        filter.getCondition().visit(this);
-        //Arguements add the brackets
-        filter.getArg().visit(this);
-    }
-    
-    /**
-     * This captures where the filter is a having
-     * @param filter
-     * @return 
-     */
-    private boolean writeHaving(Filter filter) throws QueryExpansionException{
-        //May prove to be incomplete
-        if (this.whereOpen) return false;
-        //Must add to the mappings as normally lookahead stops when it hit
-        extensionMappings.putAll(ExtensionMapperVisitor.getMappings(filter.getArg()));
-        TupleExpr arg = filter.getArg();
-        arg.visit(this);
-        newLine();
-        queryString.append("HAVING ");
-        this.closeWhereIfRequired();
-        filter.getCondition().visit(this);
-        return true;
+    public void meet(Service srvc) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * This captures the case where the predicate path of a negated predicate is used.
-     * 
-     * For example { ?x !rdf:type ?y }
-     */
-    private boolean writeNotPredicate(Filter filter) throws QueryExpansionException{
-        ValueExpr conditionExpr = filter.getCondition();
-        if (!(conditionExpr instanceof Compare)) return false;
-        Compare compare = (Compare)conditionExpr;
-        if (!(compare.getOperator().getSymbol().equals("!="))) return false;
-        TupleExpr agrExpression = filter.getArg();
-        if (!(agrExpression instanceof StatementPattern)) return false;
-        StatementPattern statementPattern = (StatementPattern)agrExpression;
-        if (!(compare.getLeftArg().equals(statementPattern.getPredicateVar()))) return false;
-        beforeStatmentPattern(statementPattern);
-        writeStatementPart(statementPattern.getSubjectVar());
-        queryString.append(" !");
-        compare.getRightArg().visit(this);
-        writeStatementPart(statementPattern.getObjectVar()); 
-        afterStatmentPattern(statementPattern);
-        return true;
-    }
-    
     @Override
     public void meet(SingletonSet ss) throws QueryExpansionException {
         writeWhereIfRequired(ss);
@@ -1162,6 +1370,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (propertyPath == null) newLine(); 
         if (propertyPath != null && propertyPath.equals(sp.getObjectVar().getName())){
             //sp.getObjectVar().isAnonymous()){
+            System.out.println("propertyPath "  + propertyPath);
             queryString.append("^");
             propertyPath = null;
             sp.getPredicateVar().visit(this);
@@ -1354,6 +1563,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
+    public void meet(Sum sum) throws QueryExpansionException {
+        queryString.append("SUM(");
+        sum.getArg().visit(this);
+        queryString.append(") ");
+    }
+
+    @Override
     public void meet(Union union) throws QueryExpansionException {
         writeWhereIfRequired(union);
         queryString.append("{");
@@ -1383,6 +1599,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append(" ?");
             queryString.append(var.getName());
         }
+    }
+
+    @Override
+    public void meet(ZeroLengthPath zlp) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -1420,202 +1641,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet) 
             throws QueryExpansionException{
-        ArrayList<Var> contexts = ContextListerVisitor.getContexts(tupleExpr);
-        ArrayList<String> namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(tupleExpr);
-        QueryWriterModelVisitor writer = new QueryWriterModelVisitor(dataSet, contexts, namesInExtensions);
+        QueryWriterModelVisitor writer = new QueryWriterModelVisitor(dataSet);
+        System.out.println("new propertyPath "  + writer.propertyPath);
+
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
 
-    @Override
-    public void meet(Add add) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
-        //Limited implenation expanded as discovered so far
-        TupleExpr path = alp.getPathExpression();
-        if (path instanceof StatementPattern){
-            meetArbitraryLengthPath(alp, (StatementPattern)path);
-        } else if (path instanceof Union){
-            meetArbitraryLengthPath(alp, (Union)path);
-        } else {
-            throw new UnsupportedOperationException
-                    ("ArbitraryLengthPath with none StatementPattern or Union path not yet supported");
-        }
-    }
-
-    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, StatementPattern sp) throws QueryExpansionException{
-        beforeStatmentPattern(sp);
-        Var object = sp.getObjectVar();
-        writeStatementPart(sp.getSubjectVar());
-        sp.getPredicateVar().visit(this);
-        if (object.isAnonymous() && !(object.hasValue())){
-            queryString.append("+/");
-            propertyPath = object.getName();        
-        } else {
-            queryString.append("*");
-            sp.getObjectVar().visit(this);
-        }
-        afterStatmentPattern(sp);
-    }
-    
-    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, Union union) throws QueryExpansionException{
-        TupleExpr leftExpr = union.getLeftArg();
-        if (!(leftExpr instanceof StatementPattern)){
-            throw new UnsupportedOperationException
-                ("ArbitraryLengthPath with Union only supported if left is a StatementPattern not.");                            
-        }
-        StatementPattern leftStatement = (StatementPattern)leftExpr;
-        TupleExpr rightExpr = union.getRightArg();
-        if (!(rightExpr instanceof StatementPattern)){
-            throw new UnsupportedOperationException
-                ("ArbitraryLengthPath with Union only supported if right is a StatementPattern");                            
-        }
-        StatementPattern rightStatement = (StatementPattern)rightExpr;
-        if (leftStatement.getSubjectVar().hasValue()){
-            if (!leftStatement.getSubjectVar().getValue().equals(rightStatement.getSubjectVar().getValue())){
-                throw new UnsupportedOperationException
-                    ("ArbitraryLengthPath with Union only supported if Subjects have the same value.");                                    
-            }
-        } else if (!(leftStatement.getSubjectVar().equals(rightStatement.getSubjectVar()))){
-            throw new UnsupportedOperationException
-                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                                  
-        }
-        if (leftStatement.getObjectVar().hasValue()){
-            if (!leftStatement.getObjectVar().getValue().equals(rightStatement.getObjectVar().getValue())){
-                throw new UnsupportedOperationException
-                    ("ArbitraryLengthPath with Union only supported if Objects have the same value.");                                    
-            }
-        } else if (!(leftStatement.equals(rightStatement.getObjectVar()))){
-            throw new UnsupportedOperationException
-                ("ArbitraryLengthPath with Union only supported if Subjects are the same");                             
-        }
-        beforeStatmentPattern(leftStatement);
-        beforeStatmentPattern(rightStatement);
-        writeStatementPart(leftStatement.getSubjectVar());
-        queryString.append("(");
-        leftStatement.getPredicateVar().visit(this);
-        queryString.append("|");
-        rightStatement.getPredicateVar().visit(this);
-        queryString.append(")+ ");
-        writeStatementPart(leftStatement.getObjectVar());
-        afterStatmentPattern(leftStatement);
-        afterStatmentPattern(rightStatement);
-    }
-
-    @Override
-    public void meet(Avg avg) throws QueryExpansionException {
-        queryString.append("AVG(");
-        avg.getArg().visit(this);
-        queryString.append(") ");
-    }
-
-    @Override
-    public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
-        queryString.append("BINDINGS");
-        for(String name:bsa.getBindingNames()){
-            queryString.append(" ?");
-            queryString.append(name);
-        }
-        queryString.append("{");
-        newLine();
-        for (BindingSet bindingSet:bsa.getBindingSets()){
-            queryString.append(" (");
-            for(String name:bsa.getBindingNames()){
-                addValue(bindingSet.getValue(name));
-            }
-            queryString.append(") ");
-        }
-        queryString.append(" }");
-        newLine();
-    }
-
-    @Override
-    public void meet(Clear clear) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Coalesce clsc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Copy copy) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Create create) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(DeleteData dd) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(GroupConcat gc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(If i) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(InsertData id) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(IRIFunction irif) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(IsNumeric in) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Load load) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Modify modify) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Move move) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Sample sample) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Service srvc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void meet(Sum sum) throws QueryExpansionException {
-        queryString.append("SUM(");
-        sum.getArg().visit(this);
-        queryString.append(") ");
-    }
-
-    @Override
-    public void meet(ZeroLengthPath zlp) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+                                
 }

@@ -1,6 +1,7 @@
 package uk.ac.cs.man.openphacts.queryexpander.visitor;
 
 import java.util.ArrayList;
+import org.openrdf.query.algebra.Projection;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
@@ -37,6 +38,11 @@ public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpansionEx
     public void meet(StatementPattern sp) throws QueryExpansionException {
         //Record the context even if NULL.
         contexts.add(sp.getContextVar());
+    }
+
+    @Override
+    public void meet(Projection prjctn) throws QueryExpansionException {
+        //in subquery so stop
     }
 
     /**

@@ -105,6 +105,8 @@ public class QueryCaseLoader {
         loadSparql11_3();
         loadSparql11_4();
         loadSparql11_5();
+        loadSparql12a1();
+        loadSparql12a2();
     }
     
     private void loadSparql2_1() {
@@ -1171,6 +1173,38 @@ public class QueryCaseLoader {
                 + "  ?g :p ?p .\n"
                 + "}\n"
                 + "GROUP BY ?g";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql12a1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql12a1";
+        queryCase.name = "Sparql Specification section 12 Subqueries  inner query";
+        //removed double prefix
+        queryCase.originalQuery = "PREFIX : <http://people.example/>\n"
+                + "    SELECT ?y (MIN(?name) AS ?minName)\n"
+                + "    WHERE {\n"
+                + "      ?y :name ?name .\n"
+                + "    } GROUP BY ?y";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql12a2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql12a2";
+        queryCase.name = "Sparql Specification section 12 Subqueries";
+        //removed double prefix
+        queryCase.originalQuery = "PREFIX : <http://people.example/>\n"
+                + "SELECT ?y ?minName\n"
+                + "WHERE {\n"
+                + "  :alice :knows ?y .\n"
+                + "  {\n"
+                + "    SELECT ?y (MIN(?pizza) AS ?minName)\n"
+                + "    WHERE {\n"
+                + "      ?y :name ?pizza .\n"
+                + "    } GROUP BY ?y\n"
+                + "  }\n"
+                + "}";                
         queries.put(queryCase.key, queryCase);
    }
 

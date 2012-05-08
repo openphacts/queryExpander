@@ -45,10 +45,14 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper, ArrayList<Var> contexts, 
-            ArrayList<String> namesInExtensions){
-        super(dataset, contexts, namesInExtensions);
+    QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper){
+        super(dataset);
         this.mapper = mapper;    
+    }
+    
+    @Override
+    public QueryWriterModelVisitor clone(){
+        return new QueryExpandAndWriteVisitor(originalDataSet, mapper);
     }
     
     /**
@@ -387,10 +391,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
 
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper, 
             List<String> requiredAttributes) throws QueryExpansionException{
-        ArrayList<Var> contexts = ContextListerVisitor.getContexts(tupleExpr);
-        ArrayList<String> namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(tupleExpr);
-       
-        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(dataSet, mapper, contexts, namesInExtensions);
+        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(dataSet, mapper);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
