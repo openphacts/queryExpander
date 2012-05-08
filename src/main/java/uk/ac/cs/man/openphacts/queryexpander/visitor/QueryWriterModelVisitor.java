@@ -900,9 +900,32 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append("} #closesubquery");
             newLine();
         } else {
-            meet (prjctn, "");
+            switch (workoutQueryType(prjctn.getProjectionElemList())){
+                case CONSTRUCT: 
+                    writeConstruct(prjctn);
+                    break;
+                case SELECT:    
+                    meet (prjctn, "");
+                    break;
+                default: 
+                    throw new QueryExpansionException("Unexpected QueryType");
+            }
         }
     }
+
+    private void writeConstruct(Projection prjctn) throws QueryExpansionException{
+        queryString.append("CONSTRUCT {");
+        HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctn.getArg());
+        meet (prjctn.getProjectionElemList(), mappedExstensionElements);
+        queryString.append("} #writeConstruct");
+        newLine();
+        contexts = ContextListerVisitor.getContexts(prjctn.getArg());
+        prjctn.getArg().visit(this);
+        closeWhereIfRequired();
+    }
+    
+/*                switch (workoutQueryType(prjctn.getProjectionElemList())){
+                case CONSTRUCT:
 
     /**
      * Used by sub classes to add expaned list if required.
@@ -1072,14 +1095,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             TupleExpr prjctnArg = prjctn.getArg();
             switch (workoutQueryType(prjctn.getProjectionElemList())){
                 case CONSTRUCT:
-                    queryString.append("CONSTRUCT {");
-                    HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);
-                    meet (prjctn.getProjectionElemList(), mappedExstensionElements);
-                    queryString.append("} #Reduced CONSTRUCT");
-                    newLine();
-                    queryString.append("{");
-                    prjctn.getArg().visit(this);
-                    closeWhereIfRequired();
+                    writeConstruct(prjctn);
                     break;
                 case DESCRIBE:
                     if (prjctnArg instanceof Filter){
@@ -1100,11 +1116,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             MultiProjection mp = (MultiProjection)arg;
             TupleExpr prjctnArg = mp.getArg();
             queryString.append("CONSTRUCT {");
-            HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);
+            HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);   
+            contexts = ContextListerVisitor.getContexts(mp);
             meet (mp.getProjections(), mappedExstensionElements);
             queryString.append("} #Reduced MultiProjection1");
-            newLine();
-            queryString.append("{");
             mp.getArg().visit(this);
             queryString.append("} #Reduced MultiProjection2");
             newLine();

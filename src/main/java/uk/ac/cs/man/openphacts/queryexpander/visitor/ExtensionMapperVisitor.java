@@ -406,7 +406,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Order order) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Don't expect one in the order element but no harm looking
+        order.getArg();
     }
 
     @Override
@@ -492,20 +493,23 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(ValueConstant vc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        addValue(vc.getValue());
     }
 
+    private void addValue(Value value){
+        if (value instanceof URI){
+            this.extension.append("<");
+            this.extension.append(value.stringValue());
+            this.extension.append(">"); 
+        } else {
+            this.extension.append(value);
+        }
+    }
+    
     @Override
     public void meet(Var var) throws QueryExpansionException {
         if (var.hasValue()){
-            Value value = var.getValue();
-            if (value instanceof URI){
-                this.extension.append("<");
-                this.extension.append(value.stringValue());
-                this.extension.append(">"); 
-            } else {
-                this.extension.append(value);
-            }
+            addValue(var.getValue());
         } else if (var.isAnonymous()){
             throw new UnsupportedOperationException("Anon Not supported yet.");
         } else {

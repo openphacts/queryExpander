@@ -21,6 +21,7 @@ public class QueryCaseLoader {
         private String originalQuery;
         private String key;
         private String noReplaceQuery;
+        private String note;
         
         public QueryCase() {
         }
@@ -116,12 +117,31 @@ public class QueryCaseLoader {
         loadFederatedSparql2_1();
         loadFederatedSparql2_2();
         loadFederatedSparql2_3();
-       /* loadFederatedSparql2_4a();
+        loadFederatedSparql2_4a();
         loadFederatedSparql2_4b();
         loadFederatedSparql2_4c();
         loadFederatedSparql2_4d();
         loadFederatedSparql4();
-    */}
+        loadSparql15_1a();
+        loadSparql15_1b();
+        loadSparql15_1c();
+        loadSparql15_2();
+        loadSparql15_3();
+        loadSparql15_3_1();
+        loadSparql15_3_2();
+        loadSparql15_4();
+        loadSparql15_5();
+        loadSparql16_1_1();
+        loadSparql16_1_2a();
+        loadSparql16_1_2b();
+        loadSparql16_2();
+        loadSparql16_2_1();
+        loadSparql16_2_2a();
+        loadSparql16_2_2b();
+        loadSparql16_2_3();
+        loadSparql16_2_4a();
+        loadSparql16_2_4b();
+    }
     
     private void loadSparql2_1() {
         QueryCase queryCase = new QueryCase();
@@ -1367,6 +1387,9 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
+   /**
+    * Warning the SILENT keyword does not appear to be supported by this OpenRDF
+    */
    private void loadFederatedSparql2_3() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "FederatedSparql2_3";
@@ -1377,7 +1400,8 @@ public class QueryCaseLoader {
                 + "{\n"
                 + "  SERVICE SILENT <http://people.example.org/sparql> { \n"
                 + "    <http://example.org/people15> foaf:name ?name . }\n"
-                + "}";                
+                + "}";       
+        queryCase.note = "Warning the SILENT keyword does not appear to be supported by this OpenRDF";
         queries.put(queryCase.key, queryCase);
    }
 
@@ -1452,10 +1476,243 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
+  private void loadSparql15_1a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_1a";
+        queryCase.name = "Sparql Specification section 15.1 ORDER BY 1st query";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE { ?x foaf:name ?name }\n"
+                + "ORDER BY ?name";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_1b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_1b";
+        queryCase.name = "Sparql Specification section 15.1 ORDER BY 2nd query";
+        queryCase.originalQuery = "PREFIX     :    <http://example.org/ns#>\n"
+                + "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE { ?x foaf:name ?name ; :empId ?emp }\n"
+                + "ORDER BY DESC(?emp)";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_1c() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_1c";
+        queryCase.name = "Sparql Specification section 15.1 ORDER BY 3rd query";
+        queryCase.originalQuery = "PREFIX     :    <http://example.org/ns#>\n"
+                + "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE { ?x foaf:name ?name ; :empId ?emp }\n"
+                + "ORDER BY ?name DESC(?emp)";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_2";
+        queryCase.name = "Sparql Specification section 15.2 Projection";
+        queryCase.originalQuery = "PREFIX foaf:       <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE\n"
+                + " { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_3";
+        queryCase.name = "Sparql Specification section 15.3 Duplicate Solutions";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name WHERE { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_3_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_3_1";
+        queryCase.name = "Sparql Specification section 15.3.1 DISTINCT";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT DISTINCT ?name WHERE { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_3_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_3_2";
+        queryCase.name = "Sparql Specification section 15.3.2 REDUCED";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT REDUCED ?name WHERE { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_4";
+        queryCase.name = "Sparql Specification section 15.4 OFFSET";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT  ?name\n"
+                + "WHERE   { ?x foaf:name ?name }\n"
+                + "ORDER BY ?name\n"
+                + "LIMIT   5\n"
+                + "OFFSET  10";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql15_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql15_5";
+        queryCase.name = "Sparql Specification section 15.5 LIMIT";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE { ?x foaf:name ?name }\n"
+                + "LIMIT 20";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_1_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_1_1";
+        queryCase.name = "Sparql Specification section 16.1.1 Projection";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?nameX ?nameY ?nickY\n"
+                + "WHERE\n"
+                + "  { ?x foaf:knows ?y ;\n"
+                + "       foaf:name ?nameX .\n"
+                + "    ?y foaf:name ?nameY .\n"
+                + "    OPTIONAL { ?y foaf:nick ?nickY }\n"
+                + "  }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_1_2a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_1_2a";
+        queryCase.name = "Sparql Specification section 16.1.2 SELECT Expressions 1st query";
+        queryCase.originalQuery = "PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX  ns:  <http://example.org/ns#>\n"
+                + "SELECT  ?title (?p*(1-?discount) AS ?price)\n"
+                + "{ ?x ns:price ?p .\n"
+                + "  ?x dc:title ?title . \n"
+                + "  ?x ns:discount ?discount \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_1_2b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_1_2b";
+        queryCase.name = "Sparql Specification section 16.1.2 SELECT Expressions 2nd query";
+        queryCase.originalQuery = "PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX  ns:  <http://example.org/ns#>\n"
+                + "SELECT  ?title (?p AS ?fullPrice) (?fullPrice*(1-?discount) AS ?customerPrice)\n"
+                + "{ ?x ns:price ?p .\n"
+                + "   ?x dc:title ?title . \n"
+                + "   ?x ns:discount ?discount \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2";
+        queryCase.name = "Sparql Specification section 16.2 CONSTRUCT";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX vcard:   <http://www.w3.org/2001/vcard-rdf/3.0#>\n"
+                + "CONSTRUCT   { <http://example.org/person#Alice> vcard:FN ?name }\n"
+                + "WHERE       { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_1";
+        queryCase.name = "Sparql Specification section 16.2.1 Templates with Blank Nodes";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX vcard:   <http://www.w3.org/2001/vcard-rdf/3.0#>\n"
+                + "CONSTRUCT { ?x  vcard:N _:v .\n"
+                + "            _:v vcard:givenName ?gname .\n"
+                + "            _:v vcard:familyName ?fname }\n"
+                + "WHERE\n"
+                + " {\n"
+                + "    { ?x foaf:firstname ?gname } UNION  { ?x foaf:givenname   ?gname } .\n"
+                + "    { ?x foaf:surname   ?fname } UNION  { ?x foaf:family_name ?fname } .\n"
+                + " }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_2a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_2a";
+        queryCase.name = "Sparql Specification section 16.2.2 Accessing Graphs in the RDF Dataset 1st query";
+        queryCase.originalQuery = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/aGraph> { ?s ?p ?o } . }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_2b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_2b";
+        queryCase.name = "Sparql Specification section 16.2.2 Accessing Graphs in the RDF Dataset 2nd query";
+        queryCase.originalQuery = "PREFIX  dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX app: <http://example.org/ns#>\n"
+                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+                + "CONSTRUCT { ?s ?p ?o } WHERE\n"
+                + " {\n"
+                + "   GRAPH ?g { ?s ?p ?o } .\n"
+                + "   ?g dc:publisher <http://www.w3.org/> .\n"
+                + "   ?g dc:date ?date .\n"
+                + "   FILTER ( app:customDate(?date) > \"2005-02-28T00:00:00Z\"^^xsd:dateTime ) .\n"
+                + " }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_3";
+        queryCase.name = "Sparql Specification section 16.2.3 Solution Modifiers and CONSTRUCT";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX site: <http://example.org/stats#>\n"
+                + "CONSTRUCT { [] foaf:name ?name }\n"
+                + "WHERE\n"
+                + "{ [] foaf:name ?name ;\n"
+                + "     site:hits ?hits .\n"
+                + "}\n"
+                + "ORDER BY desc(?hits)\n"
+                + "LIMIT 2";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_4a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_4a";
+        queryCase.name = "Sparql Specification section 16.2.4 CONSTRUCT WHERE 1st query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "CONSTRUCT WHERE { ?x foaf:name ?name } ";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "CONSTRUCT { ?x foaf:name ?name } \n"
+                + "WHERE\n"
+                + "{ ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_2_4b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_2_4b";
+        queryCase.name = "Sparql Specification section 16.2.4 CONSTRUCT WHERE 2nd query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "CONSTRUCT { ?x foaf:name ?name } \n"
+                + "WHERE\n"
+                + "{ ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
   private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
-        queryCase.name = "Sparql Specification section ";
+        queryCase.name = "Sparql Specification section";
         queryCase.originalQuery = "";                
         queries.put(queryCase.key, queryCase);
    }
