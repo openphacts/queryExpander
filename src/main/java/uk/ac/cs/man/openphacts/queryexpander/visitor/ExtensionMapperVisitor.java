@@ -451,7 +451,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Service srvc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+       //Don't expect exstension here but not sure so lets check
+        srvc.getArg().visit(this);
     }
 
     @Override

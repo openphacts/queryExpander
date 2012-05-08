@@ -180,7 +180,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (object.isAnonymous() && !(object.hasValue())){
             queryString.append("+/");
             propertyPath = object.getName();  
-            System.out.println("propertyPath set in meetArbitraryLengthPath " + propertyPath);
         } else {
             queryString.append("*");
             sp.getObjectVar().visit(this);
@@ -308,8 +307,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             //do nothing already written
         } else {
             propertyPath = name;
-            System.out.println(name);
-            System.out.println("propertyPath set in writeAnon " + propertyPath);
             queryString.append("/");
         }
     }
@@ -503,7 +500,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (this.whereOpen) return false;
         //Must add to the mappings as normally lookahead stops when it hit
         extensionMappings.putAll(ExtensionMapperVisitor.getMappings(filter.getArg()));
-        System.out.println("Write having " + extensionMappings);
         TupleExpr arg = filter.getArg();
         arg.visit(this);
         newLine();
@@ -925,7 +921,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         this.namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(prjctn.getArg());
         //This mapes to sub functions.
         this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
-        System.out.println("in projection " + extensionMappings);
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
@@ -1035,12 +1030,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         //        //requiredAttributes are written by so not written here..
         //    }
         //} else {
-     //   System.out.println(pe);
-        if (!namesInExtensions.contains(sourceName)){
+         if (!namesInExtensions.contains(sourceName)){
             queryString.append(" ?");
             queryString.append(sourceName);
-     //   } else {
-     //        System.out.println(pe + " in " + namesInExtensions);
         }
         //}
     }
@@ -1302,7 +1294,22 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     @Override
     public void meet(Service srvc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        writeWhereIfRequired(srvc);
+        //ystem.out.println(srvc);
+        //ystem.out.println("BaseURI:" +srvc.getBaseURI());
+        //ystem.out.println("prefix:" + srvc.getPrefixDeclarations());
+        //ystem.out.println("serviceEXpr: " + srvc.getServiceExpr());
+        //ystem.out.println("serviceref " + srvc.getServiceRef());
+        //ystem.out.println("var: " + srvc.getServiceVars());
+        //ystem.out.println("arg: " + srvc.getArg());
+        newLine();
+        queryString.append("SERVICE ");
+        srvc.getServiceRef().visit(this);
+        newLine();
+        queryString.append("{ ");        
+        srvc.getArg().visit(this);
+        newLine();
+        queryString.append("} #Service");
     }
 
     @Override
@@ -1370,7 +1377,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (propertyPath == null) newLine(); 
         if (propertyPath != null && propertyPath.equals(sp.getObjectVar().getName())){
             //sp.getObjectVar().isAnonymous()){
-            System.out.println("propertyPath "  + propertyPath);
             queryString.append("^");
             propertyPath = null;
             sp.getPredicateVar().visit(this);
@@ -1642,8 +1648,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet) 
             throws QueryExpansionException{
         QueryWriterModelVisitor writer = new QueryWriterModelVisitor(dataSet);
-        System.out.println("new propertyPath "  + writer.propertyPath);
-
+ 
         tupleExpr.visit(writer);
         return writer.getQuery();
     }

@@ -107,7 +107,21 @@ public class QueryCaseLoader {
         loadSparql11_5();
         loadSparql12a1();
         loadSparql12a2();
-    }
+        loadSparql13_2_1();
+        loadSparql13_2_3();
+        loadSparql13_3_1();
+        loadSparql13_3_2();
+        loadSparql13_3_3();
+        loadSparql13_3_4();
+        loadFederatedSparql2_1();
+        loadFederatedSparql2_2();
+        loadFederatedSparql2_3();
+       /* loadFederatedSparql2_4a();
+        loadFederatedSparql2_4b();
+        loadFederatedSparql2_4c();
+        loadFederatedSparql2_4d();
+        loadFederatedSparql4();
+    */}
     
     private void loadSparql2_1() {
         QueryCase queryCase = new QueryCase();
@@ -1208,7 +1222,237 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
-   private void loadSparql() {
+   private void loadSparql13_2_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_2_1";
+        queryCase.name = "Sparql Specification section 13.2.1 Specifying the Default Graph";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT  ?name\n"
+                + "FROM    <http://example.org/foaf/aliceFoaf>\n"
+                + "WHERE   { ?x foaf:name ?name }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql13_2_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_2_3";
+        queryCase.name = "Sparql Specification section 13.2.3 Combining FROM and FROM NAMED";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?who ?g ?mbox\n"
+                + "FROM <http://example.org/dft.ttl>\n"
+                + "FROM NAMED <http://example.org/alice>\n"
+                + "FROM NAMED <http://example.org/bob>\n"
+                + "WHERE\n"
+                + "{\n"
+                + "   ?g dc:publisher ?who .\n"
+                + "   GRAPH ?g { ?x foaf:mbox ?mbox }\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql13_3_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_3_1";
+        queryCase.name = "Sparql Specification section 13.3.1 Accessing Graph Names";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?src ?bobNick\n"
+                + "FROM NAMED <http://example.org/foaf/aliceFoaf>\n"
+                + "FROM NAMED <http://example.org/foaf/bobFoaf>\n"
+                + "WHERE\n"
+                + "  {\n"
+                + "    GRAPH ?src\n"
+                + "    { ?x foaf:mbox <mailto:bob@work.example> .\n"
+                + "      ?x foaf:nick ?bobNick\n"
+                + "    }\n"
+                + "  }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql13_3_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_3_2";
+        queryCase.name = "Sparql Specification section 13.3.2 Restricting by Graph IRI";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX data: <http://example.org/foaf/>\n"
+                + "SELECT ?nick\n"
+                + "FROM NAMED <http://example.org/foaf/aliceFoaf>\n"
+                + "FROM NAMED <http://example.org/foaf/bobFoaf>\n"
+                + "WHERE\n"
+                + "  {\n"
+                + "     GRAPH data:bobFoaf {\n"
+                + "         ?x foaf:mbox <mailto:bob@work.example> .\n"
+                + "         ?x foaf:nick ?nick }\n"
+                + "  }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql13_3_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_3_3";
+        queryCase.name = "Sparql Specification section ";
+        queryCase.originalQuery = "PREFIX  data:  <http://example.org/foaf/>\n"
+                + "PREFIX  foaf:  <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX  rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "SELECT ?mbox ?nick ?ppd\n"
+                + "FROM NAMED <http://example.org/foaf/aliceFoaf>\n"
+                + "FROM NAMED <http://example.org/foaf/bobFoaf>\n"
+                + "WHERE\n"
+                + "{\n"
+                + "  GRAPH data:aliceFoaf\n"
+                + "  {\n"
+                + "    ?alice foaf:mbox <mailto:alice@work.example> ;\n"
+                + "           foaf:knows ?whom .\n"
+                + "    ?whom  foaf:mbox ?mbox ;\n"
+                + "           rdfs:seeAlso ?ppd .\n"
+                + "    ?ppd  a foaf:PersonalProfileDocument .\n"
+                + "  } .\n"
+                + "  GRAPH ?ppd\n"
+                + "  {\n"
+                + "      ?w foaf:mbox ?mbox ;\n"
+                + "         foaf:nick ?nick\n"
+                + "  }\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadSparql13_3_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql13_3_4";
+        queryCase.name = "Sparql Specification section 13.3.4 Named and Default Graphs";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?name ?mbox ?date\n"
+                + "WHERE\n"
+                + "  {  ?g dc:publisher ?name ;\n"
+                + "        dc:date ?date .\n"
+                + "    GRAPH ?g\n"
+                + "      { ?person foaf:name ?name ; foaf:mbox ?mbox }\n"
+                + "  }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_1";
+        queryCase.name = "Federated Sparql Specification section 2.1 Simple query to a remote SPARQL endpoint";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "FROM <http://example.org/myfoaf.rdf>\n"
+                + "WHERE\n"
+                + "{\n"
+                + "  <http://example.org/myfoaf/I> foaf:knows ?person .\n"
+                + "  SERVICE <http://people.example.org/sparql> { \n"
+                + "    ?person foaf:name ?name . } \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_2";
+        queryCase.name = "Federated Sparql Specification section 2.2 SPARQL query with OPTIONAL to two remote SPARQL endpoints";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?person ?interest ?known\n"
+                + "WHERE\n"
+                + "{\n"
+                + "  SERVICE <http://people.example.org/sparql> { \n"
+                + "    ?person foaf:name ?name .  \n"
+                + "    OPTIONAL { \n"
+                + "      ?person foaf:interest ?interest .\n"
+                + "      SERVICE <http://people2.example.org/sparql> { \n"
+                + "        ?person foaf:knows ?known . } }\n"
+                + "  }    \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_3";
+        queryCase.name = "Federated Sparql Specification section 2.3 Service Execution Failure";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + "WHERE\n"
+                + "{\n"
+                + "  SERVICE SILENT <http://people.example.org/sparql> { \n"
+                + "    <http://example.org/people15> foaf:name ?name . }\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_4a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_4a";
+        queryCase.name = 
+                "Federated Sparql Specification section 2.4 Interplay of SERVICE and BINDINGS (Informative) 1st query ";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?s\n"
+                + "{\n"
+                + "  ?s a foaf:Person .\n"
+                + "  SERVICE <http://example.org/sparql> {?s foaf:knows ?o }\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_4b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_4b";
+        queryCase.name = 
+                "Federated Sparql Specification section 2.4 Interplay of SERVICE and BINDINGS (Informative) 2nd query";
+        queryCase.originalQuery = "PREFIX : <http://example.org/>\n"
+                + "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?s\n"
+                + "{\n"
+                + "  ?s a foaf:Person\n"
+                + "} ";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_4c() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2-4c";
+        queryCase.name = "Federated Sparql Specification section 2.4 Interplay of SERVICE and BINDINGS (Informative)";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX : <http://example.org/>\n"
+                + "SELECT * {?s foaf:knows ?o } BINDINGS ?s { (:a) (:b) }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql2_4d() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql2_4d";
+        queryCase.name = "Federated Sparql Specification section 2.4 Interplay of SERVICE and BINDINGS (Informative)";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?s ?o\n"
+                + "{\n"
+                + "  ?s a foaf:Person\n"
+                + "  SERVICE <http://example.org/sparql> {?s foaf:knows ?o }\n"
+                + "} ";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadFederatedSparql4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "FederatedSparql4";
+        queryCase.name = "Federated Sparql Specification section ";
+        queryCase.originalQuery = "PREFIX  void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX  dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX  doap: <http://usefulinc.com/ns/doap#> \n"
+                + "SELECT ?service ?projectName\n"
+                + "WHERE {\n"
+                + "  # Find the service with subject \"remote\".\n"
+                + "  ?p dc:subject ?projectSubject ;\n"
+                + "     void:sparqlEndpoint ?service .\n"
+                + "     FILTER regex(?projectSubject, \"remote\")\n"
+                + "  # Query that service projects.\n"
+                + "  SERVICE ?service {\n"
+                + "     ?project  doap:name ?projectName . } \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
         queryCase.name = "Sparql Specification section ";
