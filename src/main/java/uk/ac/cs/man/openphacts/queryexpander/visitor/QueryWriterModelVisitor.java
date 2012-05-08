@@ -1251,7 +1251,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     @Override
     public void meet(Slice slice) throws QueryExpansionException {
         if (isAsk(slice)){
-            queryString.append("ASK  {");
+            queryString.append("ASK ");
+            contexts = ContextListerVisitor.getContexts(slice);
             slice.getArg().visit(this);
             queryString.append("} #Slice ASK");
             newLine();

@@ -141,6 +141,8 @@ public class QueryCaseLoader {
         loadSparql16_2_3();
         loadSparql16_2_4a();
         loadSparql16_2_4b();
+        loadSparql16_3a();
+        loadSparql16_3b();
     }
     
     private void loadSparql2_1() {
@@ -1690,7 +1692,8 @@ public class QueryCaseLoader {
         queryCase.key = "Sparql16_2_4a";
         queryCase.name = "Sparql Specification section 16.2.4 CONSTRUCT WHERE 1st query";
         queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
-                + "CONSTRUCT WHERE { ?x foaf:name ?name } ";                
+                + "CONSTRUCT WHERE { ?x foaf:name ?name } ";   
+        //Sparql docs say these are the same so why worry!
         queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
                 + "CONSTRUCT { ?x foaf:name ?name } \n"
                 + "WHERE\n"
@@ -1709,10 +1712,29 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
+  private void loadSparql16_3a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_3a";
+        queryCase.name = "Sparql Specification section 16.3 ASK 1st query";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "ASK  { ?x foaf:name  \"Alice\" }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_3b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_3b";
+        queryCase.name = "Sparql Specification section 16.3 ASK 2nd query";
+        queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "ASK  { ?x foaf:name  \"Alice\" ;\n"
+                + "          foaf:mbox  <mailto:alice@work.example> }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
   private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
-        queryCase.name = "Sparql Specification section";
+        queryCase.name = "Sparql Specification section ";
         queryCase.originalQuery = "";                
         queries.put(queryCase.key, queryCase);
    }
