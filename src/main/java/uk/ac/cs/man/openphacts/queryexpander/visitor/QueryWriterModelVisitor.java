@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.Add;
@@ -345,9 +346,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
    @Override
     public void meet(BNodeGenerator bng) throws QueryExpansionException {
-        //queryString.append(" [] ");
-        //queryString.append(" _:hjk ");
-        throw new QueryExpansionException("BNodeGenerator not supported yet.");
+        queryString.append(" BNODE() ");
     }
 
     @Override
@@ -364,7 +363,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Coalesce clsc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("COALESCE(");
+        List<ValueExpr> children = clsc.getArguments();
+        children.get(0).visit(this);
+        for (int i = 1; i< children.size(); i++){
+            queryString.append(" , ");
+            children.get(i).visit(this);
+        }
+        queryString.append(") ");     
     }
 
     @Override
@@ -484,10 +490,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         newLine();
         if (writeNotPredicate(filter)) return;
         if (writeHaving(filter)) return;
-        queryString.append("FILTER ");
+        queryString.append("FILTER (");
         filter.getCondition().visit(this);
-        //Arguements add the brackets
+        queryString.append(" )");
+        //Many Arguements add the brackets but false does not
         filter.getArg().visit(this);
+
     }
     
     /**
@@ -537,13 +545,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
        //ystem.out.println(fc.getURI());
        //ystem.out.println(fc.getArgs());
        //ystem.out.println(fc.getSignature());
-        String URI = fc.getURI();
-        if (URI.startsWith("http://www.w3.org/2005/xpath-functions#")){
-            queryString.append(URI.substring(39));
+        String uriString = fc.getURI();
+        if (uriString.startsWith("http://www.w3.org/2005/xpath-functions#")){
+            queryString.append(uriString.substring(39));
         } else {
-            queryString.append("<");
-            queryString.append(fc.getURI());
-            queryString.append(">");
+            try {
+                URIImpl uri = new URIImpl(uriString);
+                queryString.append("<");
+                queryString.append(uri);
+                queryString.append(">");
+            } catch (IllegalArgumentException ex){
+                //Not a uriString so must be pure
+                queryString.append(uriString);                
+            }
         }
         queryString.append("(");
         List<ValueExpr> args = fc.getArgs();
@@ -586,11 +600,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(If i) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println(i);
+        queryString.append("IF ( ");
+        i.getCondition().visit(this);
+        queryString.append(" , ");
+        i.getResult().visit(this);
+        queryString.append(" , ");
+        i.getAlternative().visit(this);
+        queryString.append(") ");        
     }
 
     @Override
     public void meet(In in) throws QueryExpansionException {
+        //So far in all examples the parse replaces the in with alteratives
         throw new QueryExpansionException("In not supported yet.");
     }
 
@@ -607,7 +629,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(IRIFunction irif) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append(" IRI(");
+        irif.getArg().visit(this);
+        queryString.append(")");
     }
 
     @Override
@@ -626,8 +650,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(IsNumeric in) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        queryString.append(" ISNUMERIC(");
+        in.getArg().visit(this);
+        queryString.append(")");    }
 
     @Override
     public void meet(IsResource ir) throws QueryExpansionException {
@@ -713,7 +738,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             //Write the Optional part
             lj.getRightArg().visit(this);
             //Write any filters in the OPTIONAL clause
-            //This is Filters in the original query not URI replacement filters.
+            //This is Filters in the original query not uriString replacement filters.
             if (lj.hasCondition()){
                 newLine();
                 queryString.append("    FILTER ");
@@ -734,7 +759,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             //Write the Optional part
             lj.getRightArg().visit(this);
             //Write any filters in the OPTIONAL clause
-            //This is Filters in the original query not URI replacement filters.
+            //This is Filters in the original query not uriString replacement filters.
             if (lj.hasCondition()){
                 newLine();
                 queryString.append("    FILTER ");
@@ -851,11 +876,15 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Not not) throws QueryExpansionException {
-        //queryString.append(" !(");  //NOT EXISTS can not use the !
-        //THis may well need a look ahead depening on what the arg is.
-        queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
-        not.getArg().visit(this);
-        //queryString.append(")");
+        ValueExpr inner = not.getArg();
+        if (inner instanceof Exists){
+            queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
+            inner.visit(this);
+        } else {
+            queryString.append(" (!");  
+            inner.visit(this);
+            queryString.append(")");
+        }
     }
 
     @Override
@@ -1167,7 +1196,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     /**
      * Writes the describe Variable.
      * <p>
-     * Subclasses may replace a URI with mapped URIs
+     * Subclasses may replace a uriString with mapped URIs
      * @param decribeVariable
      * @throws QueryExpansionException 
      */
@@ -1296,7 +1325,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     
     /**
-     * Gets the String for a URI.
+     * Gets the String for a uriString.
      * 
      * Designed to be overwritten by a method that can get mapped uris.
      * 
@@ -1640,7 +1669,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append(value.stringValue());
             queryString.append(">"); 
         } else {
-            queryString.append(value);
+            String stringValue = value.toString();
+            System.out.println(stringValue);
+            //Replace each single slash with a double slash
+            stringValue = stringValue.replaceAll("\\\\", "\\\\\\\\");
+            System.out.println(stringValue);
+            queryString.append(" ");
+            queryString.append(stringValue);
         }
         queryString.append(" ");
     }

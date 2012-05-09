@@ -148,6 +148,30 @@ public class QueryCaseLoader {
         loadSparql16_4_2b();
         loadSparql16_4_2c();
         loadSparql16_4_3();
+        loadSparql17a();
+        loadSparql17b();
+        loadSparql17_3();
+        loadSparql11_4_1_1a();
+        loadSparql11_4_1_1b();
+        loadSparql17_4_1_2();
+        loadSparql17_4_1_3();
+        loadSparql17_4_1_7a();
+        loadSparql17_4_1_7b();
+        loadSparql17_4_1_8a();
+        loadSparql17_4_1_8b();
+        loadSparql17_4_1_9();
+        loadSparql17_4_1_10a();
+        loadSparql17_4_1_10b();
+        loadSparql17_4_2_1();
+        loadSparql17_4_2_2();
+        loadSparql17_4_2_3();
+        loadSparql17_4_2_4();
+        loadSparql17_4_2_5();
+        loadSparql17_4_2_6();
+        loadSparql17_4_2_7();
+        loadSparql17_4_2_8();
+        loadSparql17_4_2_9();
+        loadSparql17_4_2_10();
     }
     
     private void loadSparql2_1() {
@@ -1783,17 +1807,512 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
    }
 
-  private void loadSparql() {
+  private void loadSparql17a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17a";
+        queryCase.name = "Sparql Specification section 17 Expressions and Testing Values";
+        queryCase.originalQuery = "PREFIX a:      <http://www.w3.org/2000/10/annotation-ns#>\n"
+                + "PREFIX dc:     <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?annot\n"
+                + "WHERE { ?annot  a:annotates  <http://www.w3.org/TR/rdf-sparql-query/> .\n"
+                + "        ?annot  dc:date      ?date .\n"
+                + "        FILTER ( ?date > \"2005-01-01T00:00:00Z\"^^xsd:dateTime ) }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17b";
+        queryCase.name = "Sparql Specification section 17 Expressions and Testing Values 2n Filter";
+        queryCase.originalQuery = "PREFIX a:      <http://www.w3.org/2000/10/annotation-ns#>\n"
+                + "PREFIX dc:     <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?annot\n"
+                + "WHERE { ?annot  a:annotates  <http://www.w3.org/TR/rdf-sparql-query/> .\n"
+                + "        ?annot  dc:date      ?date .\n"
+                + "        FILTER ( xsd:dateTime(?date) < xsd:dateTime(\"2005-01-01T00:00:00Z\") ) }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_3";
+        queryCase.name = "Sparql Specification section 17.3 Operator Mapping";
+        queryCase.note = "Query is purely to test all operations. Clear it will never return any data.";
+        queryCase.originalQuery = "SELECT ?a "
+                + "WHERE {"
+                + "      FILTER (?a = 2)\n"
+                + "      FILTER (?a != 2)\n"
+                + "      FILTER (?a < 2)\n"
+                + "      FILTER (?a > 2)\n"
+                + "      FILTER (?a <= 2)\n"
+                + "      FILTER (?a >= 2)\n"
+                + "      FILTER (?a = 2 * 3)\n"
+                + "      FILTER (?a = 2 / 3)\n"
+                + "      FILTER (?a = 2 + 3)\n"
+                + "      FILTER (?a = 2 - 3)\n"
+                + "      FILTER ((?a = 2) || (?a = 3))\n"
+                + "      FILTER ((?a = 2) && (?a = 3))\n"
+                + "      FILTER (!(?a = 2))\n"
+                + "}";   
+        //Parser reverse the order
+        queryCase.noReplaceQuery = "SELECT ?a "
+                + "WHERE {"
+                + "      FILTER (!(?a = 2))\n"
+                + "      FILTER ((?a = 2) && (?a = 3))\n"
+                + "      FILTER ((?a = 2) || (?a = 3))\n"
+                + "      FILTER (?a = 2 - 3)\n"
+                + "      FILTER (?a = 2 + 3)\n"
+                + "      FILTER (?a = 2 / 3)\n"
+                + "      FILTER (?a = 2 * 3)\n"
+                + "      FILTER (?a >= 2)\n"
+                + "      FILTER (?a <= 2)\n"
+                + "      FILTER (?a > 2)\n"
+                + "      FILTER (?a < 2)\n"
+                + "      FILTER (?a != 2)\n"
+                + "      FILTER (?a = 2)\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql11_4_1_1a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_4_1_1a";
+        queryCase.name = "Sparql Specification section 17.4.1.1 bound 1st query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?givenName\n"
+                + " WHERE { ?x foaf:givenName  ?givenName .\n"
+                + "         OPTIONAL { ?x dc:date ?date } .\n"
+                + "         FILTER ( bound(?date) ) }";    
+        //Parser moves filters up
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?givenName\n"
+                + " WHERE { ?x foaf:givenName  ?givenName .\n"
+                + "         FILTER ( bound(?date) ) "
+                + "         OPTIONAL { ?x dc:date ?date } .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql11_4_1_1b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql11_4_1_1b";
+        queryCase.name = "Sparql Specification section 17.4.1.1 bound 2nd query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?name\n"
+                + " WHERE { ?x foaf:givenName  ?name .\n"
+                + "         OPTIONAL { ?x dc:date ?date } .\n"
+                + "         FILTER (!bound(?date)) "
+                + "}";                
+        //Parser moves filters up
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX dc:   <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?name\n"
+                + " WHERE { ?x foaf:givenName  ?name .\n"
+                + "         FILTER (!bound(?date)) "
+                + "         OPTIONAL { ?x dc:date ?date } .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_2";
+        queryCase.name = "Sparql Specification section 17.4.1.2 IF";
+        queryCase.originalQuery = "SELECT \n"
+                + "     ( IF(?x = 2, \"yes\", \"no\") AS ?x1 )\n"
+                + "     ( IF(bound(?y), \"yes\", \"no\") AS ?x2 )\n"
+                + "     ( IF(?x=2, \"yes\", 1/?z) AS ?x3 )\n"
+                + "     ( IF(?x=1, \"yes\", 1/?z) AS ?x4 )\n"
+                + "     ( IF(\"2\" > 1, \"yes\", \"no\") AS ?x5 )\n"
+                + "WHERE { \n"
+                + "} ";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_3";
+        queryCase.name = "Sparql Specification section 17.4.1.3 COALESCE";
+        queryCase.originalQuery = "SELECT \n"
+                + "     ( COALESCE(?x, 1/0) AS ?x1 )\n"
+                + "     ( COALESCE(1/0, ?x) AS ?x2 )\n"
+                + "     ( COALESCE(5, ?x) AS ?x3 )\n"
+                + "     ( COALESCE(?y, 3) AS ?x4 )\n"
+                + "     ( COALESCE(?y) AS ?x5 )\n"
+                + "WHERE { \n"
+                + "} ";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+   //Sparql8_1_2 and Sparql8_1_1 do exists and not exists
+  //Sparql17_3 includes and(&&) and or(||)
+  
+  private void loadSparql17_4_1_7a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_7a";
+        queryCase.name = "Sparql Specification section 17.4.1.7 RDFterm-equal 1st query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name1 ?name2\n"
+                + "WHERE { ?x foaf:name  ?name1 ;\n"
+                + "        foaf:mbox  ?mbox1 .\n"
+                + "        ?y foaf:name  ?name2 ;\n"
+                + "        foaf:mbox  ?mbox2 .\n"
+                + "        FILTER (?mbox1 = ?mbox2 && ?name1 != ?name2)\n"
+                + "      }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_7b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_7b";
+        queryCase.name = "Sparql Specification section 17.4.1.7 RDFterm-equal 2nd query";
+        queryCase.originalQuery = "PREFIX a:      <http://www.w3.org/2000/10/annotation-ns#>\n"
+                + "PREFIX dc:     <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?annotates\n"
+                + "WHERE { ?annot  a:annotates  ?annotates .\n"
+                + "        ?annot  dc:date      ?date .\n"
+                + "        FILTER ( ?date = xsd:dateTime(\"2005-01-01T00:00:00Z\") ) \n"
+                + "      }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_8a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_8a";
+        queryCase.name = "Sparql Specification section 17.4.1.8 sameTerm 1st query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name1 ?name2\n"
+                + "WHERE { ?x foaf:name  ?name1 ;\n"
+                + "        foaf:mbox  ?mbox1 .\n"
+                + "         ?y foaf:name  ?name2 ;\n"
+                + "         foaf:mbox  ?mbox2 .\n"
+                + "         FILTER (sameTerm(?mbox1, ?mbox2) && !sameTerm(?name1, ?name2))\n"
+                + "      } ";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_8b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_8b";
+        queryCase.name = "Sparql Specification section 17.4.1.8 sameTerm 2nd query";
+        queryCase.originalQuery = "PREFIX  :      <http://example.org/WMterms#>\n"
+                + "PREFIX  t:     <http://example.org/types#>\n"
+                + "SELECT ?aLabel1 ?bLabel\n"
+                + "WHERE { ?a  :label        ?aLabel .\n"
+                + "        ?a  :weight       ?aWeight .\n"
+                + "        ?a  :displacement ?aDisp .\n"
+                + "        ?b  :label        ?bLabel .\n"
+                + "        ?b  :weight       ?bWeight .\n"
+                + "        ?b  :displacement ?bDisp .\n"
+                + "        FILTER ( sameTerm(?aWeight, ?bWeight) && !sameTerm(?aDisp, ?bDisp)) \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_9() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_9";
+        queryCase.name = "Sparql Specification section 17.4.1.9 IN";
+        queryCase.originalQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (2 IN (1, 2, 3))\n"
+                + "   FILTER (2 IN ())\n"
+                + "   FILTER (2 IN (<http://example/iri>, \"str\", 2.0))\n"
+                + "   FILTER (2 IN (1/0, 2))\n"
+                + "   FILTER (2 IN (2, 1/0))\n"
+                + "   FILTER (2 IN (3, 1/0))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queryCase.noReplaceQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (2 IN (3, 1/0))\n"
+                + "   FILTER (2 IN (2, 1/0))\n"
+                + "   FILTER (2 IN (1/0, 2))\n"
+                + "   FILTER (2 IN (<http://example/iri>, \"str\", 2.0))\n"
+                + "   FILTER (2 IN ())\n"
+                + "   FILTER (2 IN (1, 2, 3))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_10a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_10a";
+        queryCase.name = "Sparql Specification section 17.4.1.10 NOT IN";
+        queryCase.originalQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (2 NOT IN (1, 2, 3))\n"
+                + "   FILTER (2 NOT IN ())\n"
+                + "   FILTER (2 NOT IN (<http://example/iri>, \"str\", 2.0))\n"
+                + "   FILTER (2 NOT IN (1/0, 2))\n"
+                + "   FILTER (2 NOT IN (2, 1/0))\n"
+                + "   FILTER (2 NOT IN (3, 1/0))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queryCase.noReplaceQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (2 NOT IN (3, 1/0))\n"
+                + "   FILTER (2 NOT IN (2, 1/0))\n"
+                + "   FILTER (2 NOT IN (1/0, 2))\n"
+                + "   FILTER (2 NOT IN (<http://example/iri>, \"str\", 2.0))\n"
+                + "   FILTER (2 NOT IN ())\n"
+                + "   FILTER (2 NOT IN (1, 2, 3))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql17_4_1_10b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_1_10b";
+        queryCase.name = "Sparql Specification section 17.4.1.10 NOT IN usig !";
+        queryCase.originalQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (!(2 IN (1, 2, 3)))\n"
+                + "   FILTER (!(2 IN ()))\n"
+                + "   FILTER (!(2 IN (<http://example/iri>, \"str\", 2.0)))\n"
+                + "   FILTER (!(2 IN (1/0, 2)))\n"
+                + "   FILTER (!(2 IN (2, 1/0)))\n"
+                + "   FILTER (!(2 IN (3, 1/0)))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queryCase.noReplaceQuery = "SELECT ?x \n"
+                + "WHERE {\n"
+                + "   FILTER (!(2 IN (3, 1/0)))\n"
+                + "   FILTER (!(2 IN (2, 1/0)))\n"
+                + "   FILTER (!(2 IN (1/0, 2)))\n"
+                + "   FILTER (!(2 IN (<http://example/iri>, \"str\", 2.0)))\n"
+                + "   FILTER (!(2 IN ()))\n"
+                + "   FILTER (!(2 IN (1, 2, 3)))\n"
+                + "   ?x a ?y \n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_1";
+        queryCase.name = "Sparql Specification section 17.4.2.1 isIRI";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "         FILTER isIRI(?mbox) \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         FILTER isIRI(?mbox) \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_2";
+        queryCase.name = "Sparql Specification section 17.4.2.2 isBlank";
+        queryCase.originalQuery = "PREFIX a:      <http://www.w3.org/2000/10/annotation-ns#>\n"
+                + "PREFIX dc:     <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?given ?family\n"
+                + "WHERE { \n"
+                + "  ?annot  a:annotates  <http://www.w3.org/TR/rdf-sparql-query/> .\n"
+                + "  ?annot  dc:creator   ?c .\n"
+                + "  OPTIONAL { ?c  foaf:given   ?given ; foaf:family  ?family } .\n"
+                + "  FILTER isBlank(?c)\n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX a:      <http://www.w3.org/2000/10/annotation-ns#>\n"
+                + "PREFIX dc:     <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?given ?family\n"
+                + "WHERE { \n"
+                + "  FILTER isBlank(?c)\n"
+                + "  ?annot  a:annotates  <http://www.w3.org/TR/rdf-sparql-query/> .\n"
+                + "  ?annot  dc:creator   ?c .\n"
+                + "  OPTIONAL { ?c  foaf:given   ?given ; foaf:family  ?family } .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_3";
+        queryCase.name = "Sparql Specification section 17.4.2.3 isLiteral";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + "WHERE { \n"
+                + "        FILTER isLiteral(?mbox) \n"
+                + "        ?x foaf:name  ?name ;\n"
+                + "        foaf:mbox  ?mbox .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_4";
+        queryCase.name = "Sparql Specification section 17.4.2.4 isNumeric";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?name \n"
+                + "WHERE { "
+                + "        ?x foaf:name  ?name ;\n"
+                + "        FILTER (isNumeric(12)) \n"
+                + "        FILTER (isNumeric(\"12\"))\n"
+                + "        FILTER (isNumeric(\"12\"^^xsd:nonNegativeInteger))\n"
+                + "        FILTER (isNumeric(\"1200\"^^xsd:byte))\n"
+                + "        FILTER (isNumeric(<http://example/>))\n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT ?name \n"
+                + "WHERE { "
+                + "        FILTER (isNumeric(<http://example/>))\n"
+                + "        FILTER (isNumeric(\"1200\"^^xsd:byte))\n"
+                + "        FILTER (isNumeric(\"12\"^^xsd:nonNegativeInteger))\n"
+                + "        FILTER (isNumeric(\"12\"))\n"
+                + "        FILTER (isNumeric(12))\n"
+                + "        ?x foaf:name  ?name ;\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_5";
+        queryCase.name = "Sparql Specification section 17.4.2.5 str";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "         FILTER regex(str(?mbox), \"@work\\\\.example$\") \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         FILTER regex(str(?mbox), \"@work\\\\.example$\") \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_6() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_6";
+        queryCase.name = "Sparql Specification section 17.4.2.6 lang";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "         FILTER ( lang(?name) = \"es\" ) \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox\n"
+                + " WHERE { \n"
+                + "         FILTER ( lang(?name) = \"es\" ) \n"
+                + "         ?x foaf:name  ?name ;\n"
+                + "            foaf:mbox  ?mbox .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_7() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_7";
+        queryCase.name = "Sparql Specification section 17.4.2.7 datatype";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "PREFIX eg:   <http://biometrics.example/ns#>\n"
+                + "SELECT ?name ?shoeSize\n"
+                + " WHERE { \n"
+                + "         ?x foaf:name  ?name ; eg:shoeSize  ?shoeSize .\n"
+                + "         FILTER ( datatype(?shoeSize) = xsd:integer ) \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "PREFIX eg:   <http://biometrics.example/ns#>\n"
+                + "SELECT ?name ?shoeSize\n"
+                + " WHERE { \n"
+                + "         FILTER ( datatype(?shoeSize) = xsd:integer ) \n"
+                + "         ?x foaf:name  ?name ; eg:shoeSize  ?shoeSize .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_8() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_8";
+        queryCase.name = "Sparql Specification section 17.4.2.8 IRI";
+        queryCase.note = "Parse replaces URI function with IRI";
+        queryCase.originalQuery = "SELECT "
+                + " (IRI(?x) as ?iri1 )\n"
+                + " (IRI(\"example\") as ?iri2 )\n"
+                + " (IRI(<http:example.com/jumper>) as ?iri3 )\n"
+                + " (URI(?x) as ?uri1 )\n"
+                + " (URI(\"example\") as ?uri2 )\n"
+                + " (URI(<http:example.com/jumper>) as ?uri3 )\n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_9() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_2_9";
+        queryCase.name = "Sparql Specification section 17.4.2.9 BNODE";
+        queryCase.note = "Parse treats all BNODE statements the same";
+        queryCase.originalQuery = "select \n"
+                + "   (BNODE() AS ?a ) \n"
+                + "   (BNODE(\"john\") AS ?b ) \n"
+                + "   (BNODE(?x) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_2_10() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_2_10";
+        queryCase.name = "Sparql Specification section 117.4.2.10 STRDT";
+        queryCase.note = "Parse treats all BNODE statements the same";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (STRDT(\"123\", xsd:integer) AS ?a ) \n"
+                + "   (STRDT(\"iiii\", <http://example/romanNumeral>) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
         queryCase.name = "Sparql Specification section ";
         queryCase.originalQuery = "";                
         queries.put(queryCase.key, queryCase);
-   }
+    }
 
-   public Set<String> keySet(){
+    public Set<String> keySet(){
        return queries.keySet();
-   }
+    }
    
     String getQueryName(String key) {
        return queries.get(key).name;
