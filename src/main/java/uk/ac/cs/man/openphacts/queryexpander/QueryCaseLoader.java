@@ -143,6 +143,11 @@ public class QueryCaseLoader {
         loadSparql16_2_4b();
         loadSparql16_3a();
         loadSparql16_3b();
+        loadSparql16_4_1();
+        loadSparql16_4_2a();
+        loadSparql16_4_2b();
+        loadSparql16_4_2c();
+        loadSparql16_4_3();
     }
     
     private void loadSparql2_1() {
@@ -1728,6 +1733,53 @@ public class QueryCaseLoader {
         queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
                 + "ASK  { ?x foaf:name  \"Alice\" ;\n"
                 + "          foaf:mbox  <mailto:alice@work.example> }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_4_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_4_1";
+        queryCase.name = "Sparql Specification section 16.4.1 Explicit IRIs";
+        queryCase.originalQuery = "DESCRIBE <http://example.org/>";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_4_2a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_4_2a";
+        queryCase.name = "Sparql Specification section 16.4.2 Identifying Resources";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "DESCRIBE ?x\n"
+                + "WHERE    { ?x foaf:mbox <mailto:alice@org> }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_4_2b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_4_2b";
+        queryCase.name = "Sparql Specification section 16.4.2 Identifying Resources";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "DESCRIBE ?x\n"
+                + "WHERE    { ?x foaf:name \"Alice\" }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_4_2c() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_4_2c";
+        queryCase.name = "Sparql Specification section 16.4.2 Identifying Resources";
+        queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "DESCRIBE ?x\n"
+                + "WHERE    { ?x foaf:name \"Alice\" }";                
+        queries.put(queryCase.key, queryCase);
+   }
+
+  private void loadSparql16_4_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql16_4_3";
+        queryCase.name = "Sparql Specification section 16.4.3 Descriptions of Resources";
+        queryCase.originalQuery = "PREFIX ent:  <http://org.example.com/employees#>\n"
+                + "DESCRIBE ?x WHERE { ?x ent:employeeId \"1234\" }";                
         queries.put(queryCase.key, queryCase);
    }
 

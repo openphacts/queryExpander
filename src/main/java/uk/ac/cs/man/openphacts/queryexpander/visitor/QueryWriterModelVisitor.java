@@ -1149,6 +1149,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * @throws QueryExpansionException 
      */
     private void writeDescribe(Filter filter) throws QueryExpansionException {
+        contexts = ContextListerVisitor.getContexts(filter);
         queryString.append ("DESCRIBE ");
         ValueExpr condition = filter.getCondition();
         findandWriteDescribeVariable(condition);
@@ -1157,8 +1158,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (arg instanceof StatementPattern){
             //Do nothing as only statement patter is the automatically added -descr-subj -descr-pred -descr-obj
         } else {
-            newLine();
-            queryString.append (" WHERE {");
             filter.getArg().visit(this);
             queryString.append (" } #writeDescribe");
             newLine();
