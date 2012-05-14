@@ -401,7 +401,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Count count) throws QueryExpansionException {
-        throw new QueryExpansionException("Count not supported yet.");
+        queryString.append("COUNT(");
+        count.getArg().visit(this);
+        queryString.append(") ");
     }
 
     @Override
@@ -434,7 +436,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Distinct dstnct) throws QueryExpansionException {
         TupleExpr tupleExpr = dstnct.getArg();
         if (tupleExpr instanceof Projection){
-            meet ((Projection)tupleExpr, " DISTINCT");
+            if (this.whereOpen){
+                newLine();
+                queryString.append("{ #open subquery");
+                newLine();
+                queryString.append(this.convertToQueryString(dstnct, originalDataSet));
+                newLine();
+                queryString.append("} #closesubquery");
+                newLine();
+            } else {
+                meet ((Projection)tupleExpr, " DISTINCT");
+            }
         } else {
             throw new QueryExpansionException("Distinct only supported followed by Projection.");
         }
@@ -542,22 +554,15 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     @Override
     public void meet(FunctionCall fc) throws QueryExpansionException {
-       //ystem.out.println(fc.getURI());
-       //ystem.out.println(fc.getArgs());
-       //ystem.out.println(fc.getSignature());
         String uriString = fc.getURI();
-        if (uriString.startsWith("http://www.w3.org/2005/xpath-functions#")){
-            queryString.append(uriString.substring(39));
-        } else {
-            try {
-                URIImpl uri = new URIImpl(uriString);
-                queryString.append("<");
-                queryString.append(uri);
-                queryString.append(">");
-            } catch (IllegalArgumentException ex){
-                //Not a uriString so must be pure
-                queryString.append(uriString);                
-            }
+        try {
+            URIImpl uri = new URIImpl(uriString);
+            queryString.append("<");
+            queryString.append(uri);
+            queryString.append(">");
+        } catch (IllegalArgumentException ex){
+            //Not a uriString so must be pure
+            queryString.append(uriString);                
         }
         queryString.append("(");
         List<ValueExpr> args = fc.getArgs();
@@ -600,7 +605,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(If i) throws QueryExpansionException {
-        System.out.println(i);
         queryString.append("IF ( ");
         i.getCondition().visit(this);
         queryString.append(" , ");
@@ -623,6 +627,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Intersection i) throws QueryExpansionException {
+        System.out.println("Intersection" + i);
         i.getLeftArg().visit(this);
         i.getRightArg().visit(this);
     }
@@ -683,6 +688,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (!whereOpen){
             if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 newLine();
+                System.out.println("WHERE!");
                 queryString.append("WHERE {");
                 whereOpen= true;
             }
@@ -1273,47 +1279,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Sample sample) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("SAMPLE(");
+        sample.getArg().visit(this);
+        queryString.append(") ");
     }
 
-    @Override
-    public void meet(Slice slice) throws QueryExpansionException {
-        if (isAsk(slice)){
-            queryString.append("ASK ");
-            contexts = ContextListerVisitor.getContexts(slice);
-            slice.getArg().visit(this);
-            queryString.append("} #Slice ASK");
-            newLine();
-        } else {
-            slice.getArg().visit(this);
-            if (slice.hasLimit()){
-                newLine();
-                queryString.append("LIMIT ");
-                queryString.append(slice.getLimit());     
-            }
-            if (slice.hasOffset()){
-                newLine();
-                queryString.append("OFFSET ");
-                queryString.append(slice.getOffset());     
-            }
-        }
-    }
-
-    private boolean isAsk(Slice slice){
-        if (!(slice.hasLimit())) return false;
-        if (slice.getLimit() > 1) return false;
-        TupleExpr arg = slice.getArg();
-        if (arg instanceof Reduced){
-            arg = ((Reduced)arg).getArg();
-        } else if (arg instanceof Distinct){
-            arg = ((Distinct)arg).getArg();
-        } 
-        if (arg instanceof Projection){
-            return false;
-        }
-        return true;
-    }
-    
     @Override
     public void meet(SameTerm st) throws QueryExpansionException {
         queryString.append(" SAMETERM(");
@@ -1323,7 +1293,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append(")");
     }
 
-    
     /**
      * Gets the String for a uriString.
      * 
@@ -1377,6 +1346,44 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         meet(var);
     }
 
+    @Override
+    public void meet(Slice slice) throws QueryExpansionException {
+        if (isAsk(slice)){
+            queryString.append("ASK ");
+            contexts = ContextListerVisitor.getContexts(slice);
+            slice.getArg().visit(this);
+            queryString.append("} #Slice ASK");
+            newLine();
+        } else {
+            slice.getArg().visit(this);
+            if (slice.hasLimit()){
+                newLine();
+                queryString.append("LIMIT ");
+                queryString.append(slice.getLimit());     
+            }
+            if (slice.hasOffset()){
+                newLine();
+                queryString.append("OFFSET ");
+                queryString.append(slice.getOffset());     
+            }
+        }
+    }
+
+    private boolean isAsk(Slice slice){
+        if (!(slice.hasLimit())) return false;
+        if (slice.getLimit() > 1) return false;
+        TupleExpr arg = slice.getArg();
+        if (arg instanceof Reduced){
+            arg = ((Reduced)arg).getArg();
+        } else if (arg instanceof Distinct){
+            arg = ((Distinct)arg).getArg();
+        } 
+        if (arg instanceof Projection){
+            return false;
+        }
+        return true;
+    }
+    
     //Stetement Pattern split inb three as meetArbitraryLengthPath method process StatementPatterns
     //And these also need to handle context.
     @Override
@@ -1670,10 +1677,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append(">"); 
         } else {
             String stringValue = value.toString();
-            System.out.println(stringValue);
             //Replace each single slash with a double slash
             stringValue = stringValue.replaceAll("\\\\", "\\\\\\\\");
-            System.out.println(stringValue);
             queryString.append(" ");
             queryString.append(stringValue);
         }

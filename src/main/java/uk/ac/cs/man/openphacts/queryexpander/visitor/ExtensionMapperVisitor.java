@@ -202,7 +202,8 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
 
     @Override
     public void meet(Distinct dstnct) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //probably a sub query but lets go down to double check.
+        dstnct.getArg().visit(this);
     }
 
     @Override

@@ -172,6 +172,59 @@ public class QueryCaseLoader {
         loadSparql17_4_2_8();
         loadSparql17_4_2_9();
         loadSparql17_4_2_10();
+        loadSparql17_4_2_11();
+        loadSparql17_4_3_2();
+        loadSparql17_4_3_3();
+        loadSparql17_4_3_4();
+        loadSparql17_4_3_5();
+        loadSparql17_4_3_6();
+        loadSparql17_4_3_7();
+        loadSparql17_4_3_8();
+        loadSparql17_4_3_9();
+        loadSparql17_4_3_10();
+        loadSparql17_4_3_11();
+        loadSparql17_4_3_12();
+        loadSparql17_4_3_13a();
+        loadSparql17_4_3_13b();
+        loadSparql17_4_3_14();
+        loadSparql17_4_3_15();
+        loadSparql17_4_4_1();
+        loadSparql17_4_4_2();
+        loadSparql17_4_4_3();
+        loadSparql17_4_4_4();
+        loadSparql17_4_4_5();
+        loadSparql17_4_5_1();
+        loadSparql17_4_5_2();
+        loadSparql17_4_5_3();
+        loadSparql17_4_5_4();
+        loadSparql17_4_5_5();
+        loadSparql17_4_5_6();
+        loadSparql17_4_5_7();
+        loadSparql17_4_5_8();
+        loadSparql17_4_5_9();        
+        loadSparql17_4_6_1();
+        loadSparql17_4_6_2();
+        loadSparql17_4_6_3();
+        loadSparql17_4_6_4();
+        loadSparql17_4_6_5();
+        loadSparql17_6a();
+        loadSparql17_6b();
+        loadSparql18_2_3a();
+        loadSparql18_2_3b();
+        loadSparql18_2_3c();
+        loadSparql18_2_3d();
+        loadSparql18_2_3e();
+        loadSparql18_2_3f();
+        loadSparql18_2_3g();
+        loadSparql18_2_3h();
+        loadSparql18_2_3i();
+        loadSparql18_2_3j();
+        loadSparql18_2_3k();
+        loadSparql18_2_3l();
+        loadSparql18_2_3m1();
+        loadSparql18_2_3m2();
+        loadSparql18_2_4_1();
+        loadSparql18_4_1_8();
     }
     
     private void loadSparql2_1() {
@@ -2276,7 +2329,7 @@ public class QueryCaseLoader {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql17_4_2_9";
         queryCase.name = "Sparql Specification section 17.4.2.9 BNODE";
-        queryCase.note = "Parse treats all BNODE statements the same";
+        queryCase.note = "Parser treats all BNODE statements the same";
         queryCase.originalQuery = "select \n"
                 + "   (BNODE() AS ?a ) \n"
                 + "   (BNODE(\"john\") AS ?b ) \n"
@@ -2290,8 +2343,7 @@ public class QueryCaseLoader {
     private void loadSparql17_4_2_10() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "17_4_2_10";
-        queryCase.name = "Sparql Specification section 117.4.2.10 STRDT";
-        queryCase.note = "Parse treats all BNODE statements the same";
+        queryCase.name = "Sparql Specification section 17.4.2.10 STRDT";
         queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
                 + "SELECT \n"
                 + "   (STRDT(\"123\", xsd:integer) AS ?a ) \n"
@@ -2302,7 +2354,752 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
     }
 
-    private void loadSparql() {
+    private void loadSparql17_4_2_11() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_2_11";
+        queryCase.name = "Sparql Specification section 17.4.2.11 STRLANG";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (STRLANG(\"chat\", \"en\") AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_2";
+        queryCase.name = "Sparql Specification section 17.4.3.2 STRLEN";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (strlen(\"chat\") AS ?a ) \n"
+                + "   (strlen(\"chat\"@en) AS ?b ) \n"
+                + "   (strlen(\"chat\"^^xsd:string) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_3";
+        queryCase.name = "Sparql Specification section 17.4.3.3 SUBSTR";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (substr(\"foobar\", 4) AS ?a ) \n"
+                + "   (substr(\"foobar\"@en, 4) AS ?b ) \n"
+                + "   (substr(\"foobar\"^^xsd:string, 4) AS ?c ) \n"
+                + "   (substr(\"foobar\", 4, 1) AS ?d ) \n"
+                + "   (substr(\"foobar\"@en, 4, 1) AS ?e ) \n"
+                + "   (substr(\"foobar\"^^xsd:string, 4, 1) AS ?f ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_4";
+        queryCase.name = "Sparql Specification section 17.4.3.4 UCASE";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (ucase(\"foo\") AS ?a ) \n"
+                + "   (ucase(\"foo\"@en) AS ?b ) \n"
+                + "   (ucase(\"foo\"^^xsd:string) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_5";
+        queryCase.name = "Sparql Specification section 17.4.3.5 LCASE";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (lcase(\"BAR\") AS ?a ) \n"
+                + "   (lcase(\"BAR\"@en) AS ?b ) \n"
+                + "   (lcase(\"BAR\"^^xsd:string) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_6() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_6";
+        queryCase.name = "Sparql Specification section 17.4.3.6 STRSTARTS";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (strStarts(\"foobar\", \"foo\") AS ?a ) \n"
+                + "   (strStarts(\"foobar\"@en, \"foo\"@en) AS ?b ) \n"
+                + "   (strStarts(\"foobar\"^^xsd:string, \"foo\"^^xsd:string) AS ?c ) \n"
+                + "   (strStarts(\"foobar\"^^xsd:string, \"foo\") AS ?d ) \n"
+                + "   (strStarts(\"foobar\", \"foo\"^^xsd:string) AS ?e ) \n"
+                + "   (strStarts(\"foobar\"@en, \"foo\") AS ?f ) \n"
+                + "   (strStarts(\"foobar\"@en, \"foo\"^^xsd:string) AS ?g ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_7() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_7";
+        queryCase.name = "Sparql Specification section 17.4.3.7 STRENDS";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (strEnds(\"foobar\", \"foo\") AS ?a ) \n"
+                + "   (strEnds(\"foobar\"@en, \"foo\"@en) AS ?b ) \n"
+                + "   (strEnds(\"foobar\"^^xsd:string, \"foo\"^^xsd:string) AS ?c ) \n"
+                + "   (strEnds(\"foobar\"^^xsd:string, \"foo\") AS ?d ) \n"
+                + "   (strEnds(\"foobar\", \"foo\"^^xsd:string) AS ?e ) \n"
+                + "   (strEnds(\"foobar\"@en, \"foo\") AS ?f ) \n"
+                + "   (strEnds(\"foobar\"@en, \"foo\"^^xsd:string) AS ?g ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_8() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_8";
+        queryCase.name = "Sparql Specification section 17.4.3.8 CONTAINS";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (contains(\"foobar\", \"foo\") AS ?a ) \n"
+                + "   (contains(\"foobar\"@en, \"foo\"@en) AS ?b ) \n"
+                + "   (contains(\"foobar\"^^xsd:string, \"foo\"^^xsd:string) AS ?c ) \n"
+                + "   (contains(\"foobar\"^^xsd:string, \"foo\") AS ?d ) \n"
+                + "   (contains(\"foobar\", \"foo\"^^xsd:string) AS ?e ) \n"
+                + "   (contains(\"foobar\"@en, \"foo\") AS ?f ) \n"
+                + "   (contains(\"foobar\"@en, \"foo\"^^xsd:string) AS ?g ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_9() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_9";
+        queryCase.name = "Sparql Specification section 17.4.3.9 STRBEFORE";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (strbefore(\"abc\",\"b\") AS ?a ) \n"
+                + "   (strbefore(\"abc\"@en,\"bc\") AS ?b ) \n"
+                + "   (strbefore(\"abc\"@en,\"b\"@cy) AS ?c ) \n"
+                + "   (strbefore(\"abc\"^^xsd:string,\"\") AS ?d ) \n"
+                + "   (strbefore(\"abc\",\"xyz\") AS ?e ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_10() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_10";
+        queryCase.name = "Sparql Specification section 17.4.3.10 STRAFTER";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (strafter(\"abc\",\"b\") AS ?a ) \n"
+                + "   (strafter(\"abc\"@en,\"bc\") AS ?b ) \n"
+                + "   (strafter(\"abc\"@en,\"b\"@cy) AS ?c ) \n"
+                + "   (strafter(\"abc\"^^xsd:string,\"\") AS ?d ) \n"
+                + "   (strafter(\"abc\",\"xyz\") AS ?e ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_11() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_11";
+        queryCase.name = "Sparql Specification section 7.4.3.11 ENCODE_FOR_URI";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (encode_for_uri(\"Los Angeles\") AS ?a ) \n"
+                + "   (encode_for_uri(\"Los Angeles\"@en) AS ?b ) \n"
+                + "   (encode_for_uri(\"Los Angeles\"^^xsd:string) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_12() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_12";
+        queryCase.name = "Sparql Specification section 17.4.3.12 CONCAT";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (concat(\"foo\", \"bar\") AS ?a ) \n"
+                + "   (concat(\"foo\"@en, \"foo\"@en) AS ?b ) \n"
+                + "   (concat(\"foo\"^^xsd:string, \"bar\"^^xsd:string) AS ?c ) \n"
+                + "   (concat(\"foo\", \"bar\"^^xsd:string) AS ?d ) \n"
+                + "   (concat(\"foo\"@en, \"foo\") AS ?e ) \n"
+                + "   (concat(\"foo\"@en, \"bar\"^^xsd:string)AS ?f ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_13a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_3_13a";
+        queryCase.name = "Sparql Specification section 17.4.3.13 langMatches 1st Query";
+        queryCase.originalQuery = "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?title\n"
+                + " WHERE { ?x dc:title  \"That Seventies Show\"@en ;\n"
+                + "            dc:title  ?title .\n"
+                + "         FILTER langMatches( lang(?title), \"FR\" ) }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_13b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_3_13b";
+        queryCase.name = "Sparql Specification section 17.4.3.13 langMatches 2nd query";
+        queryCase.originalQuery = "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "SELECT ?title\n"
+                + " WHERE { ?x dc:title  ?title .\n"
+                + "         FILTER langMatches( lang(?title), \"*\" ) }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_14() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_4_3_14";
+        queryCase.name = "Sparql Specification section 17.4.3.14 REGEX";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name\n"
+                + " WHERE { ?x foaf:name  ?name\n"
+                + "         FILTER regex(?name, \"^ali\", \"i\") }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_3_15() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_3_15";
+        queryCase.name = "Sparql Specification section 17.4.3.15 REPLACE";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (replace(\"abcd\", \"b\", \"Z\") AS ?a ) \n"
+                + "   (replace(\"abab\", \"B\", \"Z\",\"i\") AS ?b ) \n"
+                + "   (replace(\"abab\", \"B.\", \"Z\",\"i\") AS ?c ) \n"
+                 + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_4_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_4_1";
+        queryCase.name = "Sparql Specification section 17.4.4.1 abs";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (abs(1) AS ?a ) \n"
+                + "   (abs(-1.5) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_4_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_4_2";
+        queryCase.name = "Sparql Specification section 17.4.4.2 round";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (round(2.4999) AS ?a ) \n"
+                + "   (round(2.5) AS ?b ) \n"
+                + "   (round(-2.5) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_4_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_4_3";
+        queryCase.name = "Sparql Specification section 17.4.4.3 ceil";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (ceil(10.5) AS ?a ) \n"
+                + "   (ceil(-10.5) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_4_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_4_4";
+        queryCase.name = "Sparql Specification section 17.4.4.4 floor";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (floor(10.5) AS ?a ) \n"
+                + "   (floor(-10.5) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_4_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_4_5";
+        queryCase.name = "Sparql Specification section 17.4.4.5 RAND";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (RAND ( ) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_1";
+        queryCase.name = "Sparql Specification section 17.4.5.1 now";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (NOW () AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_2";
+        queryCase.name = "Sparql Specification section 17.4.5.2 year";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (year(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_3";
+        queryCase.name = "Sparql Specification section 17.4.5.3 month";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (month(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_4";
+        queryCase.name = "Sparql Specification section 17.4.5.4 day";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (day(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_5";
+        queryCase.name = "Sparql Specification section 17.4.5.5 hours";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (hours(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_6() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_6";
+        queryCase.name = "Sparql Specification section 17.4.5.6 minutes";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (minutes(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_7() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_7";
+        queryCase.name = "Sparql Specification section 17.4.5.7 seconds";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (seconds(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_8() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_8";
+        queryCase.name = "Sparql Specification section 17.4.5.8 timezone";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (timezone(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "   (timezone(\"2011-01-10T14:45:13.815Z\"^^xsd:dateTime) AS ?b ) \n"
+                + "   (timezone(\"2011-01-10T14:45:13.815\"^^xsd:dateTime) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_5_9() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_5_9";
+        queryCase.name = "Sparql Specification section 17.4.5.9 tz";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (tz(\"2011-01-10T14:45:13.815-05:00\"^^xsd:dateTime) AS ?a ) \n"
+                + "   (tz(\"2011-01-10T14:45:13.815Z\"^^xsd:dateTime) AS ?b ) \n"
+                + "   (tz(\"2011-01-10T14:45:13.815\"^^xsd:dateTime) AS ?c ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_6_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_6_1";
+        queryCase.name = "Sparql Specification section 17.4.6.1 MD5";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (MD5(\"abc\") AS ?a ) \n"
+                + "   (MD5(\"abc\"^^xsd:string) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_6_2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_6_2";
+        queryCase.name = "Sparql Specification section 17.4.6.2 SHA1";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (SHA1(\"abc\") AS ?a ) \n"
+                + "   (SHA1(\"abc\"^^xsd:string) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_6_3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_6_3";
+        queryCase.name = "Sparql Specification section 17.4.6.3 SHA256";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (SHA256(\"abc\") AS ?a ) \n"
+                + "   (SHA256(\"abc\"^^xsd:string) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_6_4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_6_4";
+        queryCase.name = "Sparql Specification section 17.4.6.4 SHA384";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (SHA384(\"abc\") AS ?a ) \n"
+                + "   (SHA384(\"abc\"^^xsd:string) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_4_6_5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "17_4_6_5";
+        queryCase.name = "Sparql Specification section 17.4.6.5 SHA512";
+        queryCase.originalQuery = "PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\n"
+                + "SELECT \n"
+                + "   (SHA512(\"abc\") AS ?a ) \n"
+                + "   (SHA512(\"abc\"^^xsd:string) AS ?b ) \n"
+                + "WHERE {"
+                + "  ?x <http://xmlns.com/foaf/0.1/mbox>  ?mbox\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_6a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_6a";
+        queryCase.name = "Sparql Specification section 17.6 Extensible Value Testing 1st query";
+        queryCase.originalQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX func: <http://example.org/functions#>\n"
+                + "SELECT ?name ?id\n"
+                + "WHERE {\n"
+                + "        ?x foaf:name  ?name ;\n"
+                + "           func:empId   ?id .\n"
+                + "        FILTER (func:even(?id)) \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "PREFIX func: <http://example.org/functions#>\n"
+                + "SELECT ?name ?id\n"
+                + "WHERE {\n"
+                + "        FILTER (func:even(?id)) \n"
+                + "        ?x foaf:name  ?name ;\n"
+                + "           func:empId   ?id .\n"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql17_6b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql17_6b";
+        queryCase.name = "Sparql Specification section 17.6 Extensible Value Testing 2nd query";
+        queryCase.originalQuery = "PREFIX aGeo: <http://example.org/geo#>\n"
+                + "SELECT ?neighbor\n"
+                + "WHERE { \n"
+                + "        ?a aGeo:placeName \"Grenoble\" .\n"
+                + "        ?a aGeo:location ?axLoc .\n"
+                + "        ?a aGeo:location ?ayLoc .\n"
+                + "        ?b aGeo:placeName ?neighbor .\n"
+                + "        ?b aGeo:location ?bxLoc .\n"
+                + "        ?b aGeo:location ?byLoc .\n"
+                + "        FILTER ( aGeo:distance(?axLoc, ?ayLoc, ?bxLoc, ?byLoc) < 10 ) .\n"
+                + "      }";                
+        queryCase.noReplaceQuery = "PREFIX aGeo: <http://example.org/geo#>\n"
+                + "SELECT ?neighbor\n"
+                + "WHERE { \n"
+                + "        FILTER ( aGeo:distance(?axLoc, ?ayLoc, ?bxLoc, ?byLoc) < 10 ) .\n"
+                + "        ?a aGeo:placeName \"Grenoble\" .\n"
+                + "        ?a aGeo:location ?axLoc .\n"
+                + "        ?a aGeo:location ?ayLoc .\n"
+                + "        ?b aGeo:placeName ?neighbor .\n"
+                + "        ?b aGeo:location ?bxLoc .\n"
+                + "        ?b aGeo:location ?byLoc .\n"
+                + "      }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3a";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 1st query";
+        queryCase.originalQuery = "SELECT * WHERE \n"
+                + "{ ?s ?p ?o } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3b() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3b";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 2nd query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 ; :p2 ?v2 } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3c() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3c";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 3rd query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ { ?s :p1 ?v1 } UNION {?s :p2 ?v2 } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3d() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3d";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 4th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ { ?s :p1 ?v1 } UNION {?s :p2 ?v2 } UNION {?s :p3 ?v3 } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3e() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3e";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 5th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 OPTIONAL {?s :p2 ?v2 } }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3f() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3f";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 6th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 OPTIONAL {?s :p2 ?v2 } OPTIONAL { ?s :p3 ?v3 } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3g() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3g";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 7th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 OPTIONAL {?s :p2 ?v2  OPTIONAL { ?s :p3 ?v3 } } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3h() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3h";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 8th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 OPTIONAL {?s :p2 ?v2 FILTER(?v1<3) } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3i() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3i";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 9th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ {?s :p1 ?v1} UNION {?s :p2 ?v2} OPTIONAL {?s :p3 ?v3} } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3j() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3j";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 10th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p1 ?v1 FILTER (?v1 < 3 ) OPTIONAL {?s :p2 ?v2} }";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3k() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3k";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 11th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ \n"
+                + "   ?s :p ?v . \n"
+                + "   BIND (2*?v AS ?v2) \n"
+                + "   ?s :p1 ?v2 \n"
+                + "} ";                
+        queryCase.noReplaceQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT ?s ?v ?v2 WHERE \n"
+                + "{ \n"
+                + "   BIND (2*?v AS ?v2) \n"
+                + "   ?s :p ?v . \n"
+                + "   ?s :p1 ?v2 \n"
+                + "} ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3l() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3l";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 12th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p ?v . MINUS {?s :p1 ?v2 } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3m1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3m1";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 13th query simplified ";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT DISTINCT ?o {?o ?p ?z} ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadSparql18_2_3m2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_3m2";
+        queryCase.name = "Sparql Specification section 18.2.3 Examples of Mapped Graph Patterns 13th query";
+        queryCase.originalQuery = "PREFIX :       <http://example/>\n"
+                + "SELECT * WHERE \n"
+                + "{ ?s :p ?o . {SELECT DISTINCT ?o {?o ?p ?z} } } ";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+   private void loadSparql18_2_4_1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_2_4_1";
+        queryCase.name = "Sparql Specification section 18.2.4.1 Grouping and Aggregation";
+        queryCase.originalQuery = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+                + "SELECT (SUM(?val) AS ?sum) (COUNT(?a) AS ?count)\n"
+                + "WHERE {\n"
+                + "  ?a rdf:value ?val .\n"
+                + "} GROUP BY ?a";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+   //18.2.5.1 ORDER BY see loadSparql15_1a
+   //18.2.5.3 DISTINCT see loadSparql8_2()
+   //18.2.5.4 REDUCED see loadSparql15_3_2()
+   //18.2.5.5 OFFSET and LIMIT see loadSparql15_4()
+   //18.4.1.2 Count see loadSparql18_2_4_1()
+   //18.4.1.3 Sum see loadSparql11_1a2()
+   //18.4.1.4 Avg see loadSparql11_3()
+   //18.4.1.5 Min see loadSparql11_5()
+   //18.4.1.6 Max see loadSparql11_5()
+   //18.4.1.7 GroupConcat see loadSparql2_5a()
+   
+   private void loadSparql18_4_1_8() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Sparql18_4_1_8";
+        queryCase.name = "Sparql Specification section ";
+        queryCase.originalQuery = "SELECT (Sample(?s) as ?anS) "
+                + "WHERE {"
+                + "  ?s ?p ?o"
+                + "}";                
+        queries.put(queryCase.key, queryCase);
+    }
+
+   private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
         queryCase.name = "Sparql Specification section ";
