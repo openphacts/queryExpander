@@ -31,11 +31,12 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery) throws MalformedQueryException, QueryExpansionException {
-        System.out.println(originalQuery);
+    public String expand(String originalQuery, boolean verbose) 
+            throws MalformedQueryException, QueryExpansionException {
+        if (verbose) System.out.println(originalQuery);
         ParsedQuery parsedQuery = parser.parseQuery(originalQuery, null); 
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
-        System.out.println(tupleExpr);
+        if (verbose) System.out.println(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
         return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
     }

@@ -595,7 +595,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(GroupConcat gc) throws QueryExpansionException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        queryString.append("GROUP_CONCAT(");
+        if (gc.isDistinct()) queryString.append(" DISTINCT ");
+        gc.getArg().visit(this);
+        if (gc.getSeparator() != null){
+            queryString.append(" ; SEPARATOR=");
+            gc.getSeparator().visit(this);
+        }
+        queryString.append(") ");
     }
 
     @Override
@@ -627,8 +634,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Intersection i) throws QueryExpansionException {
-        System.out.println("Intersection" + i);
-        i.getLeftArg().visit(this);
+       i.getLeftArg().visit(this);
         i.getRightArg().visit(this);
     }
 
@@ -688,7 +694,6 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (!whereOpen){
             if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 newLine();
-                System.out.println("WHERE!");
                 queryString.append("WHERE {");
                 whereOpen= true;
             }

@@ -10,5 +10,5 @@ package uk.ac.cs.man.openphacts.queryexpander;
  */
 public interface QueryExpander {
     
-    public String expand(String originalQuery) throws Exception;
+    public String expand(String originalQuery, boolean verbose) throws Exception;
 }

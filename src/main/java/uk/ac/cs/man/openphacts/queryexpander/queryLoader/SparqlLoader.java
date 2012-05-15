@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.cs.man.openphacts.queryexpander;
+package uk.ac.cs.man.openphacts.queryexpander.queryLoader;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,22 +14,9 @@ import java.util.Set;
 
  * @author Christian
  */
-public class QueryCaseLoader {
+public class SparqlLoader extends QueryCaseLoader{
 
-    private static class QueryCase {
-        private String name;
-        private String originalQuery;
-        private String key;
-        private String noReplaceQuery;
-        private String note;
-        
-        public QueryCase() {
-        }
-    }
-    
-    private Map<String, QueryCase> queries = new LinkedHashMap<String, QueryCase>();
-    
-    public QueryCaseLoader(){
+    public SparqlLoader(){
         loadSparql2_1();
         loadSparql2_2();
         loadSparql2_3_1a();
@@ -3091,7 +3078,7 @@ public class QueryCaseLoader {
    private void loadSparql18_4_1_8() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql18_4_1_8";
-        queryCase.name = "Sparql Specification section ";
+        queryCase.name = "Sparql Specification section 18_4_1_8 Sample";
         queryCase.originalQuery = "SELECT (Sample(?s) as ?anS) "
                 + "WHERE {"
                 + "  ?s ?p ?o"
@@ -3099,6 +3086,7 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
     }
 
+   //not used
    private void loadSparql() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql";
@@ -3107,24 +3095,6 @@ public class QueryCaseLoader {
         queries.put(queryCase.key, queryCase);
     }
 
-    public Set<String> keySet(){
-       return queries.keySet();
-    }
-   
-    String getQueryName(String key) {
-       return queries.get(key).name;
-    }
-
-   public String getOriginalQuery(String key){
-       return queries.get(key).originalQuery;
-   }
-
-   public String getNoReplaceQuery(String key){
-       if (queries.get(key).noReplaceQuery != null){
-           return queries.get(key).noReplaceQuery;
-       }
-       return queries.get(key).originalQuery;
-   }
 }
 
 

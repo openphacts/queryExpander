@@ -1,5 +1,8 @@
-package uk.ac.cs.man.openphacts.queryexpander;
+package uk.ac.cs.man.openphacts.queryexpander.queryLoader;
 
+import uk.ac.cs.man.openphacts.queryexpander.QueryUtils;
+import uk.ac.cs.man.openphacts.queryexpander.QueryExpanderImpl;
+import uk.ac.cs.man.openphacts.queryexpander.QueryExpander;
 import java.util.Set;
 import org.junit.Test;
 import uk.ac.cs.man.openphacts.queryexpander.mapper.DummyIMSMapper;
@@ -15,11 +18,11 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class QueryCaseTest {
+public class OpsQueryTest {
     
     @Test
     public void testAllNoMapping() throws Exception{
-        QueryCaseLoader loader = new QueryCaseLoader();
+        OpsQueryLoader loader = new OpsQueryLoader();
         Set<String> queryKeys = loader.keySet();
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
@@ -28,8 +31,8 @@ public class QueryCaseTest {
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery);
-            System.out.println(newQuery);
+            String newQuery = queryExpander.expand(originalQuery, true);
+            //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }
