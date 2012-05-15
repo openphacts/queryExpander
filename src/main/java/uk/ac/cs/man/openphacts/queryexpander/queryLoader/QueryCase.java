@@ -11,6 +11,7 @@ public class QueryCase {
     public String originalQuery;
     public String key;
     public String noReplaceQuery;
+    public String replaceQuery;
     public String note;
         
     public QueryCase() {

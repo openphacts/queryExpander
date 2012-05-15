@@ -49,12 +49,19 @@ public class DummyIMSMapper implements IMSMapper{
 
     @Override
     public List<URI> getMatchesForURI(URI uri) {
-        return uriMappings.get(uri);
+        List<URI> mapped = uriMappings.get(uri);
+        if (mapped == null){
+            mapped = new ArrayList<URI>();
+        }
+        if (!mapped.contains(uri)){
+            mapped.add(uri);
+        }
+        return mapped;
     }
 
     @Override
     public List<URI> getSpecificMatchesForURI(URI uri, String graph) {
-        return uriMappings.get(uri);
+        return getMatchesForURI(uri);
     }
     
 }

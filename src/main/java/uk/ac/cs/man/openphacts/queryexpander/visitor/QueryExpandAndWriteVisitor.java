@@ -71,7 +71,8 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             return mapper.getMatchesForURI(uri);            
         } else {
             if (context.hasValue()){
-                return mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+                return results;
             } else {
                 return mapper.getMatchesForURI(uri);   
             }
@@ -230,8 +231,9 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
-                queryString.append(getURIVariable((URI)value));
-            } else {
+                String uriValue = getURIVariable((URI)value);
+                queryString.append(uriValue);
+             } else {
                 meet(var);
             }
         } else {

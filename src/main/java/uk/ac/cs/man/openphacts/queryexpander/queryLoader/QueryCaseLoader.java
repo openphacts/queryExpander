@@ -39,6 +39,13 @@ public class QueryCaseLoader {
        }
        return queries.get(key).originalQuery;
    }
+
+   public String getReplaceQuery(String key){
+       if (queries.get(key).replaceQuery != null){
+           return queries.get(key).replaceQuery;
+       }
+       return getNoReplaceQuery(key);
+   }
 }
 
 
