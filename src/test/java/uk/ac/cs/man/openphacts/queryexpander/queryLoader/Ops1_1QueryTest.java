@@ -1,6 +1,7 @@
 package uk.ac.cs.man.openphacts.queryexpander.queryLoader;
 
-import uk.ac.cs.man.openphacts.queryexpander.mapper.HardCodedGraphMapper;
+import uk.ac.cs.man.openphacts.queryexpander.mapper.BridgeDBMapper;
+import uk.ac.cs.man.openphacts.queryexpander.mapper.HardCodedGraphResolver;
 import uk.ac.cs.man.openphacts.queryexpander.QueryUtils;
 import uk.ac.cs.man.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.cs.man.openphacts.queryexpander.QueryExpander;
@@ -25,7 +26,7 @@ public class Ops1_1QueryTest {
     public void testAllNoMapping() throws Exception{
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
-        DummyIMSMapper dummyMapper = new DummyIMSMapper();       
+ /*       DummyIMSMapper dummyMapper = new DummyIMSMapper();       
         dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
                 "http://data.kasabi.com/dataset/chembl-rdf/target/t197");
         dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
@@ -37,8 +38,9 @@ public class Ops1_1QueryTest {
         dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
                 "http://rdf.chemspider.com/187440");
         
-        HardCodedGraphMapper imsMapper = new HardCodedGraphMapper(dummyMapper);
+        HardCodedGraphResolver imsMapper = new HardCodedGraphResolver(dummyMapper);*/
         
+        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));

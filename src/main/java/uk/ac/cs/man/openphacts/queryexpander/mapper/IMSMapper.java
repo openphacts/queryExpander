@@ -1,8 +1,6 @@
 package uk.ac.cs.man.openphacts.queryexpander.mapper;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.openrdf.model.URI;
 import uk.ac.cs.man.openphacts.queryexpander.QueryExpansionException;
 
@@ -14,25 +12,6 @@ import uk.ac.cs.man.openphacts.queryexpander.QueryExpansionException;
 public interface IMSMapper {
     
     /**
-     * Maps each URI in a Set to an individual list of URI.
-     * <p>
-     * Does not take the context/graph into conisderation.
-     * <p>
-     * Intended to be faster by reducing the number of webservice calls.
-     * Other implementation may answer this by repeatedly calling getMatchesForURI(URI);
-     * <p>
-     * There is no guarantee that very URI in the set will be mapped to a List,
-     * However if there is a List mapped it should not be null.
-     * There is also no guarantee that the Map will only include URIs in the List.
-     * <p>
-     * Currently not used.
-     * 
-     * @param uriSet (Possibly empty) Set of URIs to Map.
-     * @return (Possibly empty) Map of each URI to a (Possibly empty) List (none null) of URIs.
-     */
-    Map<URI, List<URI>> getMatchesForURIs(Set<URI> uriSet);
-
-    /**
      * Maps an URI to a list of URI.
      * <p>
      * Does not take the context/graph into conisderation.
@@ -40,7 +19,7 @@ public interface IMSMapper {
      * @param uri A URI to Map.
      * @return (Possibly empty) List of URIs or even a null.
      */
-    List<URI> getMatchesForURI(URI uri);
+    List<URI> getMatchesForURI(URI uri) throws QueryExpansionException;
 
     /**
      * Maps an URI to a list of URI.

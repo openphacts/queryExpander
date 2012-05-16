@@ -43,11 +43,6 @@ public class DummyIMSMapper implements IMSMapper{
     }
     
     @Override
-    public Map<URI, List<URI>> getMatchesForURIs(Set<URI> uriSet) {
-       return uriMappings;
-    }
-
-    @Override
     public List<URI> getMatchesForURI(URI uri) {
         List<URI> mapped = uriMappings.get(uri);
         if (mapped == null){

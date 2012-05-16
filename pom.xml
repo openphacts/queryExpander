@@ -13,6 +13,7 @@
 
     <properties>
          <sesame.version>2.6.4</sesame.version>
+         <bridbgedb.version>2.0.0-SNAPSHOT</bridbgedb.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,12 @@
             <artifactId>sesame-queryparser-sparql</artifactId>
             <version>${sesame.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.bridgedb</groupId>
+			<artifactId>org.bridgedb.plus</artifactId>
+			<version>${bridbgedb.version}</version>
+			<scope>compile</scope>
+		</dependency>
   		<dependency>
   			<groupId>junit</groupId>
   			<artifactId>junit</artifactId>

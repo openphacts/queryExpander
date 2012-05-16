@@ -1,0 +1,2 @@
+http://www.conceptwiki.org/concept/	http://data.kasabi.com/dataset/chembl-rdf/target/	http://data.kasabi.com/dataset/chembl-rdf/molecule/	http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/	http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/	http://rdf.chemspider.com/
+38932552-111f-4a4e-a46a-4ed1d7bdf9d5	t197	m276734	228	DB00398	187440
