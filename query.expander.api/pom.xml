@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.ac.man.cs.openphacts</groupId>
-    <artifactId>query.expander.implentation</artifactId>
+    <artifactId>query.expander.api</artifactId>
     <packaging>jar</packaging>
-    <name>IMS SPARQL Query Expander Implentation</name>
+    <name>IMS SPARQL Query Expander API</name>
 
     <parent>
         <groupId>uk.ac.man.cs.openphacts</groupId>
@@ -15,11 +15,6 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>uk.ac.man.cs.openphacts</groupId>
-            <artifactId>query.expander.api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.openrdf.sesame</groupId>
             <artifactId>sesame-rio-api</artifactId>

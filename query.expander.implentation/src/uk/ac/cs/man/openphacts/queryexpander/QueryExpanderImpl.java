@@ -6,6 +6,8 @@ package uk.ac.cs.man.openphacts.queryexpander;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
@@ -31,10 +33,20 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
+    public String expand(String originalQuery) throws QueryExpansionException {
+        return expand(originalQuery, false);
+    }
+    
+    @Override
     public String expand(String originalQuery, boolean verbose) 
-            throws MalformedQueryException, QueryExpansionException {
+            throws QueryExpansionException {
         if (verbose) System.out.println(originalQuery);
-        ParsedQuery parsedQuery = parser.parseQuery(originalQuery, null); 
+        ParsedQuery parsedQuery; 
+        try {
+            parsedQuery = parser.parseQuery(originalQuery, null);
+        } catch (MalformedQueryException ex) {
+            throw new QueryExpansionException("Unable to parse the query " + originalQuery, ex);
+        }
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
         if (verbose) System.out.println(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
