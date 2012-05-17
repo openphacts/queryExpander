@@ -10,14 +10,19 @@
     <properties>
         <bridbgedb.version>2.0.0-SNAPSHOT</bridbgedb.version>
         <cxf.version>2.4.3</cxf.version>
+        <hamcrest.version>1.2</hamcrest.version>
         <junit.version>4.4</junit.version>
+        <jersey.version>1.10</jersey.version>
+        <mysql.version>5.1.12</mysql.version>
         <sesame.version>2.6.4</sesame.version>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
 
     <modules>
         <module>query.expander.api</module>
         <module>query.expander.implentation</module>
         <module>query.expander.ws.server</module>
+        <module>query.expander.ws.client</module>
     </modules>
 
         <build>
@@ -82,4 +87,10 @@
             <url>http://repo.aduna-software.org/maven2/releases/</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository> 
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
