@@ -8,14 +8,16 @@
     <name>IMS SPARQL query.expander bundle</name>
 
     <properties>
-        <sesame.version>2.6.4</sesame.version>
         <bridbgedb.version>2.0.0-SNAPSHOT</bridbgedb.version>
+        <cxf.version>2.4.3</cxf.version>
         <junit.version>4.4</junit.version>
+        <sesame.version>2.6.4</sesame.version>
     </properties>
 
     <modules>
         <module>query.expander.api</module>
         <module>query.expander.implentation</module>
+        <module>query.expander.ws.server</module>
     </modules>
 
         <build>
