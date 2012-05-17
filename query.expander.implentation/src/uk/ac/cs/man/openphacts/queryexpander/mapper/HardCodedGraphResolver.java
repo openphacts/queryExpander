@@ -32,6 +32,7 @@ public class HardCodedGraphResolver {
         nameSpaces = new ArrayList<String>();
         nameSpaces.add("http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/");
         nameSpaces.add("http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/");
+                        http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398
         getAllowedNamespaces().put("http://linkedlifedata.com/resource/drugbank", nameSpaces);
 
         nameSpaces = new ArrayList<String>();

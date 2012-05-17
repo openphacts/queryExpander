@@ -1,15 +1,11 @@
 package uk.ac.cs.man.openphacts.queryexpander.queryLoader;
 
-import uk.ac.cs.man.openphacts.queryexpander.BridgeDBFactory;
-import uk.ac.cs.man.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.cs.man.openphacts.queryexpander.mapper.HardCodedGraphResolver;
+import org.junit.Ignore;
+import uk.ac.cs.man.openphacts.queryexpander.QueryExpanderWSClient;
 import uk.ac.cs.man.openphacts.queryexpander.QueryUtils;
-import uk.ac.cs.man.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.cs.man.openphacts.queryexpander.QueryExpander;
 import java.util.Set;
 import org.junit.Test;
-import uk.ac.cs.man.openphacts.queryexpander.mapper.DummyIMSMapper;
-import uk.ac.cs.man.openphacts.queryexpander.mapper.IMSMapper;
 import static org.junit.Assert.*;
 
 /*
@@ -23,7 +19,7 @@ import static org.junit.Assert.*;
  */
 public class Ops1_1QueryTest {
     
-    @Test
+    @Test 
     public void testAllNoMapping() throws Exception{
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
@@ -41,8 +37,7 @@ public class Ops1_1QueryTest {
         
         HardCodedGraphResolver imsMapper = new HardCodedGraphResolver(dummyMapper);*/
         
-        BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpander queryExpander = new QueryExpanderWSClient("http://localhost:8080/QueryExpander");
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
