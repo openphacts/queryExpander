@@ -25,7 +25,7 @@ public class QueryCaseLoader {
        return queries.keySet();
     }
    
-    String getQueryName(String key) {
+    public String getQueryName(String key) {
        return queries.get(key).name;
     }
 
