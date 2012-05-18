@@ -4,10 +4,8 @@
  */
 package uk.ac.cs.man.openphacts.queryexpander;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Set;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,7 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.bridgedb.IDMapperException;
 import uk.ac.cs.man.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.cs.man.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import uk.ac.cs.man.openphacts.queryexpander.queryLoader.QueryCaseLoader;
@@ -25,7 +22,7 @@ import uk.ac.cs.man.openphacts.queryexpander.queryLoader.SparqlLoader;
  *
  * @author Christian
  */
-public class QueryExpanderWsServer implements QueryExpanderWsAPI{
+public class QueryExpanderWsServer {
     
     private QueryExpander queryExpander;
     
@@ -47,7 +44,7 @@ public class QueryExpanderWsServer implements QueryExpanderWsAPI{
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
         sb.append("<head>\n");
         sb.append("<title>Manchester OpenPhacts Query Expander</title></head>\n");
-        sb.append("<FRAMESET rows=\"120, 200\">\n");
+        sb.append("<FRAMESET rows=\"150, 200\">\n");
         sb.append("<FRAME src=\"QueryExpander/top\" name=\"topFrame\">\n");
         sb.append("<FRAME src=\"QueryExpander/examples\" name =\"bottomFrame\">\n");
         sb.append("</FRAMESET>\n");
@@ -72,14 +69,13 @@ public class QueryExpanderWsServer implements QueryExpanderWsAPI{
         sb.append("<body>\n");
         sb.append("<FORM METHOD=GET ACTION=\"expand\" Target=\"bottomFrame\" >\n");
         sb.append("<h2>Enter your query:</H2>\n");
-        sb.append("<TEXTAREA NAME=query ROWS=10 COLS=100>\n");
+        sb.append("<TEXTAREA NAME=query ROWS=15 COLS=100>\n");
         sb.append(query);
         sb.append("\n");
         sb.append("</TEXTAREA>\n");
         sb.append("<BR>\n");
         sb.append("<INPUT TYPE=submit VALUE=\"Expand this query\">\n");
         sb.append("</FORM>\n");
-        sb.append("<a href=\"examples\" target=\"bottomFrame\">Show example Index.</a>\n");
         sb.append("</body>\n");
         sb.append("</html>");
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
@@ -98,7 +94,7 @@ public class QueryExpanderWsServer implements QueryExpanderWsAPI{
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
         appendToggler(sb);
         sb.append("<body onload=\"hideDetails()\">\n");
-        sb.append("<h2>Groups of Examples:</H2> (click to hide details) \n");  
+        sb.append("<h2>Groups of Examples:</H2>\n");  
         sb.append("<H2 onclick=\"toggleItem('ops')\" style=\"color:blue;\"> <u>Queries used in Open Phacts</u></H2>\n");
         loaderExamples(sb, new Ops1_1QueryLoader(), "ops");
         sb.append("<H2 onclick=\"toggleItem('sparql')\" style=\"color:blue;\"> <u>Queries found in Sparql 1.1 specifications</u></H2>\n");
@@ -160,11 +156,10 @@ public class QueryExpanderWsServer implements QueryExpanderWsAPI{
     	sb.append("</ul>");
     }
 
-    @Override
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
-    public ExpanderBean expand(@QueryParam("query") String query) throws QueryExpansionException{
+    public ExpanderBean expandXML(@QueryParam("query") String query) throws QueryExpansionException{
         if (query == null){
             throw new QueryExpansionException ("query paramater is missing!");
         }
@@ -174,4 +169,42 @@ public class QueryExpanderWsServer implements QueryExpanderWsAPI{
         return result;
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/expandXML") 
+    public ExpanderBean expandAsXML(@QueryParam("query") String query) throws QueryExpansionException{
+        return expandXML(query);
+    }
+    
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/expand") 
+    public Response expandHtml(@QueryParam("query") String query) throws QueryExpansionException{
+        if (query == null){
+            throw new QueryExpansionException ("query paramater is missing!");
+        }
+        System.out.println(query);
+        String result = queryExpander.expand(query);
+        System.out.println(result);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\"?>");
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
+        sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
+        appendToggler(sb);
+        sb.append("<body>\n");
+        sb.append("<a href=\"examples\">Return to example Index.</a>\n");
+        sb.append("<a href=\"expandXML?query=");
+        sb.append(URLEncoder.encode(query));
+        sb.append("\">View Xml/Jason result</a>\n");
+        sb.append("<h2>Expanded Query</H2>\n"); 
+        sb.append("<textarea ROWS=15 COLS=100>");
+        sb.append(result);
+        sb.append("</textarea>");
+        sb.append("</body>");
+        sb.append("</html>");
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
 }
