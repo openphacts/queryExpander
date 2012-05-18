@@ -37,7 +37,7 @@ public class Ops1_1QueryTest {
         
         HardCodedGraphResolver imsMapper = new HardCodedGraphResolver(dummyMapper);*/
         
-        QueryExpander queryExpander = new QueryExpanderWSClient("http://localhost:8080/QueryExpander");
+        QueryExpander queryExpander = QueryExpanderClientFactory.createTestQueryExpanderWSClient();
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
