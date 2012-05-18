@@ -134,7 +134,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
-            
+    final boolean SHOW_DEBUG_IN_QUERY = false;
+    
     //private int nextAnon = 1;
     
     //private Map<String,String> anonMapper;
@@ -428,7 +429,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         dfrnc.getLeftArg().visit(this);
         queryString.append(" MINUS {");
         dfrnc.getRightArg().visit(this);
-        queryString.append(" } #Difference");
+        queryString.append(" } ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append(" #Difference");
         newLine();
     }
 
@@ -438,11 +440,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (tupleExpr instanceof Projection){
             if (this.whereOpen){
                 newLine();
-                queryString.append("{ #open subquery");
+                queryString.append("{ ");
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
                 newLine();
                 queryString.append(this.convertToQueryString(dstnct, originalDataSet));
                 newLine();
-                queryString.append("} #closesubquery");
+                queryString.append("} ");
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
                 newLine();
             } else {
                 meet ((Projection)tupleExpr, " DISTINCT");
@@ -461,7 +465,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Exists exists) throws QueryExpansionException {
         queryString.append(" EXISTS {");
         exists.getSubQuery().visit(this);
-        queryString.append(" } #EXITS");
+        queryString.append(" } ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#EXITS");
         newLine();
     }
 
@@ -744,7 +749,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             } else {
                 //No need to delay so write the OPTIONAL clause
                 newLine();
-                queryString.append("OPTIONAL { #left join ");
+                queryString.append("OPTIONAL { ");
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("#left join ");
             }
             //Write the Optional part
             lj.getRightArg().visit(this);
@@ -757,15 +763,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             }
             //Close the Optional
             newLine();
-            queryString.append("  } #OPTIONAL leftJoin");
+            queryString.append(" } ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTIONAL leftJoin");
             newLine();
         } else {
             //Already in a Context (GRAPH clause)
             //For example because there are non optional statements, or more than one optional clause.
             //So open the optional
             newLine();
-            queryString.append("OPTIONAL { #leftJoin");
-            //Record that we opened the optional in side the graph so graph closes it first
+            queryString.append("OPTIONAL { ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#leftJoin");
+           //Record that we opened the optional in side the graph so graph closes it first
             optionInGraph++;
             //Write the Optional part
             lj.getRightArg().visit(this);
@@ -780,7 +788,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         //If there is an optional open close it.
         if (optionInGraph > 0){
             newLine();
-            queryString.append(" } #OPTIONAL by optionInGraph"); 
+            queryString.append(" } "); 
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTIONAL by optionInGraph");
             //This may be an optional inside another optional so only close one.
             optionInGraph--;
             newLine();
@@ -933,11 +942,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Projection prjctn) throws QueryExpansionException {
         if (this.whereOpen){
             newLine();
-            queryString.append("{ #open subquery");
+            queryString.append("{ ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
             newLine();
             queryString.append(this.convertToQueryString(prjctn, originalDataSet));
             newLine();
-            queryString.append("} #closesubquery");
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
             newLine();
         } else {
             switch (workoutQueryType(prjctn.getProjectionElemList())){
@@ -957,7 +968,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("CONSTRUCT {");
         HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctn.getArg());
         meet (prjctn.getProjectionElemList(), mappedExstensionElements);
-        queryString.append("} #writeConstruct");
+        queryString.append("} ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#writeConstruct");
         newLine();
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         prjctn.getArg().visit(this);
@@ -1005,14 +1017,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (extnsn.getArg() instanceof Order) return;
         }
         newLine();
-        queryString.append(" } # WHERE");
+        queryString.append(" } ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("# WHERE");
         newLine();
     }
     
     private void closeWhereIfRequired(){
         if (whereOpen){
             newLine();
-            queryString.append(" } # WHERE");
+            queryString.append(" } ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("# WHERE");
             newLine();
             whereOpen = false;
         }
@@ -1159,9 +1173,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);   
             contexts = ContextListerVisitor.getContexts(mp);
             meet (mp.getProjections(), mappedExstensionElements);
-            queryString.append("} #Reduced MultiProjection1");
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection1");
             mp.getArg().visit(this);
-            queryString.append("} #Reduced MultiProjection2");
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection2");
             newLine();
         } else {
             throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
@@ -1199,7 +1215,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             //Do nothing as only statement patter is the automatically added -descr-subj -descr-pred -descr-obj
         } else {
             filter.getArg().visit(this);
-            queryString.append (" } #writeDescribe");
+            queryString.append (" } ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append ("#writeDescribe");
             newLine();
         }
     }
@@ -1327,7 +1344,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("{ ");        
         srvc.getArg().visit(this);
         newLine();
-        queryString.append("} #Service");
+        queryString.append("} ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#Service");
     }
 
     @Override
@@ -1357,7 +1375,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append("ASK ");
             contexts = ContextListerVisitor.getContexts(slice);
             slice.getArg().visit(this);
-            queryString.append("} #Slice ASK");
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Slice ASK");
             newLine();
         } else {
             slice.getArg().visit(this);
@@ -1419,7 +1438,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         //Add an optional pushed down if required.
         if (swapGraphAndOptional) {
             newLine();
-            queryString.append("OPTIONAL { #meet(StatementPattern sp)");
+            queryString.append("OPTIONAL { ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#meet(StatementPattern sp)");
             swapGraphAndOptional = false;
         }
         
@@ -1478,14 +1498,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             //Not strictly required here but keeps it similar to overwritten methods.
             while (optionInGraph > 0){
                 newLine();
-                queryString.append(" } #OPTIONAL from close context optionInGraph");   
+                queryString.append(" } ");   
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTIONAL from close context optionInGraph");;
                 //reduce the count so it is not closed again.
                 optionInGraph--;
                 newLine();
             }
             newLine();
-            queryString.append(" } # close Context");
-            newLine();
+            queryString.append(" } ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("# close Context");
+           newLine();
             //Set context to null so it is not closed again.
             context = null;
         }
@@ -1640,7 +1662,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("} UNION {");
         union.getRightArg().visit(this);
         newLine();
-        queryString.append("} #Union");
+        queryString.append("} ");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#Union");
         newLine();
     }
 

@@ -129,7 +129,8 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         //   So closing the optional first is cleaner.
         while (optionInGraph > 0){
             newLine();
-            queryString.append(" } #OPTION from close context");   
+            queryString.append(" } "); 
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTION from close context");
             //reduce the count so it is not closed again.
             optionInGraph--;
         }
