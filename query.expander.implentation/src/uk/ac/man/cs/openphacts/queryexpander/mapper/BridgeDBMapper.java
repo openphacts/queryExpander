@@ -3,6 +3,7 @@ package uk.ac.man.cs.openphacts.queryexpander.mapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.bridgedb.url.URLMapper;
@@ -16,11 +17,11 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
  */
 public class BridgeDBMapper implements IMSMapper{
 
-    private HashMap<String,List<String>> allowedNamespaces;
+    private HashMap<String,Set<String>> allowedNamespaces;
     private URLMapper bridgeDB;
     private final String[] EMPTY_STRING_ARRAY = new String[0];
     
-    public BridgeDBMapper (HashMap<String,List<String>> allowedNamespaces, URLMapper bridgeDB){
+    public BridgeDBMapper (HashMap<String,Set<String>> allowedNamespaces, URLMapper bridgeDB){
         this.allowedNamespaces = allowedNamespaces;
         this.bridgeDB = bridgeDB;
     }
@@ -44,7 +45,7 @@ public class BridgeDBMapper implements IMSMapper{
     @Override
     public List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpansionException {
         try {
-            List<String> specificNameSpaces =  allowedNamespaces.get(graph);
+            Set<String> specificNameSpaces =  allowedNamespaces.get(graph);
             Set<String> stringResults;
             if (specificNameSpaces == null){
                 stringResults = bridgeDB.mapURL(uri.stringValue());
@@ -64,6 +65,11 @@ public class BridgeDBMapper implements IMSMapper{
         } catch (Exception ex) {
             throw new QueryExpansionException("Unable to map " + uri , ex);
         }
+    }
+
+    @Override
+    public Map<String, Set<String>> getURISpacesPerGraph() {
+        return allowedNamespaces;
     }
     
 }

@@ -5,6 +5,8 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
@@ -49,4 +51,9 @@ public class QueryExpanderUnion implements QueryExpander{
         return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
     }
     
+    @Override
+    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException {
+        return imsMapper.getURISpacesPerGraph();
+    }
+
 }

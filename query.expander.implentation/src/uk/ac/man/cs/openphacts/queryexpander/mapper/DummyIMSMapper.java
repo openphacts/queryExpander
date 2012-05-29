@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
@@ -56,6 +57,12 @@ public class DummyIMSMapper implements IMSMapper{
     @Override
     public List<URI> getSpecificMatchesForURI(URI uri, String graph) {
         return getMatchesForURI(uri);
+    }
+
+    @Override
+    public Map<String, Set<String>> getURISpacesPerGraph() {
+        HashMap<String, Set<String>> URISpacesPerGraph = new HashMap<String, Set<String>>();
+        return URISpacesPerGraph;
     }
     
 }

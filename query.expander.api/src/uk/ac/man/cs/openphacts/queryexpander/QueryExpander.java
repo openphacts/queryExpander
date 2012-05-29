@@ -1,5 +1,8 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  *
  * @author Christian
@@ -27,4 +30,5 @@ public interface QueryExpander {
      */
     public String expand(String originalQuery, boolean verbose) throws QueryExpansionException;
 
+    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException;
 }

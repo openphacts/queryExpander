@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * This contains query that appeared broken at pone time.
+ * Hopefully they now work.
  */
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 

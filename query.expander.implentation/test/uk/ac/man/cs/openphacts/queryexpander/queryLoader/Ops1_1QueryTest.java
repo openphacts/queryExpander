@@ -1,8 +1,10 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.Map;
 import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
@@ -52,4 +54,14 @@ public class Ops1_1QueryTest {
         }
     }
 
+    @Test
+    public void testURISpacesInGraph() throws QueryExpansionException{
+        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
+        Map<String, Set<String>> result = imsMapper.getURISpacesPerGraph();
+        assertFalse(result.isEmpty());
+        for (String graph:result.keySet()){
+            Set<String> URISpaces = result.get(graph);
+            assertFalse(URISpaces.isEmpty());        
+        }
+    }
 }

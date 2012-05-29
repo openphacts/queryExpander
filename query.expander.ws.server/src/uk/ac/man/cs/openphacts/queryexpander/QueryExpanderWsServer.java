@@ -5,6 +5,9 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -203,6 +206,61 @@ public class QueryExpanderWsServer {
         sb.append("<textarea ROWS=15 COLS=100>");
         sb.append(result);
         sb.append("</textarea>");
+        sb.append("</body>");
+        sb.append("</html>");
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/URISpacesPerGraph") 
+    public List<URISpacesInGraphBean> URISpacesPerGraphAsXML() throws QueryExpansionException{
+        Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
+        ArrayList<URISpacesInGraphBean> results = new ArrayList<URISpacesInGraphBean>();
+        for (String graph:URISpacesPerGraph.keySet()){
+           results.add(new URISpacesInGraphBean(graph, URISpacesPerGraph.get(graph)));
+        }
+        return results;
+    }
+    
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/URISpacesPerGraph") 
+    public Response URISpacesPerGraphAsHtml() throws QueryExpansionException{
+        Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\"?>");
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
+        sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
+        appendToggler(sb);
+        sb.append("<head>");
+        sb.append("<title>Manchester OpenPhacts Query Expander</title></head>\n");
+        sb.append("<body>\n");
+        sb.append("<a href=\"/QueryExpander\">Return to Main Page.</a>\n");
+        sb.append("<h2>URISpaces Per Graph</H2>\n"); 
+        sb.append("<p>");
+        sb.append("<table border=\"1\">");
+        sb.append("<tr>");
+        sb.append("<th>Graph</th>");
+        sb.append("<th>NameSpace</th>");
+        sb.append("</tr>");
+        for (String graph:URISpacesPerGraph.keySet()){
+             for (String URISpace:URISpacesPerGraph.get(graph)){
+                sb.append("<tr>");
+                sb.append("<td>");
+                sb.append(graph);
+                sb.append("</td>");
+                sb.append("<td>");
+                sb.append(URISpace);
+                sb.append("</td>");
+                sb.append("</tr>");
+             }
+            sb.append("<tr>");
+            sb.append("</tr>");
+        }
         sb.append("</body>");
         sb.append("</html>");
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();

@@ -1,6 +1,8 @@
 package uk.ac.man.cs.openphacts.queryexpander.mapper;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.openrdf.model.URI;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 
@@ -37,4 +39,6 @@ public interface IMSMapper {
      *    only that it Maps and there is not enough available information to say it can not be in the GRAPH.
      */
     List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpansionException;
+
+    public Map<String, Set<String>> getURISpacesPerGraph();
 }

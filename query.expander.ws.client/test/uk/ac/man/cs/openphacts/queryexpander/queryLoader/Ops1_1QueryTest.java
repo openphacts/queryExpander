@@ -1,5 +1,8 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.bridgedb.IDMapperException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import java.util.Map;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClient;
@@ -47,6 +50,17 @@ public class Ops1_1QueryTest {
             String newQuery = queryExpander.expand(originalQuery, false);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+        }
+    }
+
+    @Test
+    public void testURISpacesInGraph() throws IDMapperException, QueryExpansionException{
+        QueryExpander queryExpander = QueryExpanderClientFactory.createTestQueryExpanderWSClient();
+        Map<String, Set<String>> result = queryExpander.getURISpacesPerGraph();
+        assertFalse(result.isEmpty());
+        for (String graph:result.keySet()){
+            Set<String> URISpaces = result.get(graph);
+            assertFalse(URISpaces.isEmpty());        
         }
     }
 
