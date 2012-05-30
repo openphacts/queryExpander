@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-@Ignore
 public class SparqlTest {
     
     @Test
@@ -32,10 +31,10 @@ public class SparqlTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
-            //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, false);
+            //System.out.println(originalQuery);
+            String newQuery = queryExpander.expand(originalQuery, true);
             //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }
 

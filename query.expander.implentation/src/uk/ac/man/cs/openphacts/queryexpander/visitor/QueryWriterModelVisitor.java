@@ -1036,6 +1036,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     private void printDataset(){
         if (originalDataSet == null) return;
+        System.out.println(originalDataSet);
         queryString.append(originalDataSet);
     }
     
