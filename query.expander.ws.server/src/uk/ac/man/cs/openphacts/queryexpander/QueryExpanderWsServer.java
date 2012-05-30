@@ -162,32 +162,47 @@ public class QueryExpanderWsServer {
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
-    public ExpanderBean expandXML(@QueryParam("query") String query) throws QueryExpansionException{
+    public ExpanderBean expandXML(@QueryParam("query") String query,
+            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
         if (query == null){
             throw new QueryExpansionException ("query paramater is missing!");
         }
+        if (parameters.isEmpty()){
+            if (inputURI!= null){
+                throw new QueryExpansionException ("parameter patameter is missing!");
+            }
+        } else {
+            if (inputURI!= null){
+                throw new QueryExpansionException ("inputURI is missing!");
+            }            
+        }
         ExpanderBean result = new ExpanderBean();
         result.setOrginalQuery(query);
-        result.setExpandedQuery(queryExpander.expand(query));
+        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI));
         return result;
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
-    public ExpanderBean expandAsXML(@QueryParam("query") String query) throws QueryExpansionException{
-        return expandXML(query);
+    public ExpanderBean expandAsXML(@QueryParam("query") String query,
+            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI);
     }
     
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/expand") 
-    public Response expandHtml(@QueryParam("query") String query) throws QueryExpansionException{
+    public Response expandHtml(@QueryParam("query") String query,
+            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI)throws QueryExpansionException{
         if (query == null){
             throw new QueryExpansionException ("query paramater is missing!");
         }
         System.out.println(query);
-        String result = queryExpander.expand(query);
+        String result = queryExpander.expand(query, parameters, inputURI);
         System.out.println(result);
         
         StringBuilder sb = new StringBuilder();

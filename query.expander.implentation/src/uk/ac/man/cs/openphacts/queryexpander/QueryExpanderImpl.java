@@ -15,6 +15,7 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryExpandAndWriteVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor;
 
 /**
@@ -54,7 +55,12 @@ public class QueryExpanderImpl implements QueryExpander{
         if (replacementVariable != null){
             replacementURI = new URIImpl(replacementVariable);
         }
-        return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, placeholders, replacementURI, imsMapper, ALL_ATTRIBUTES);
+        if (placeholders.isEmpty()){
+            return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
+        } else {
+            return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, placeholders, replacementURI, 
+                    imsMapper, ALL_ATTRIBUTES);
+        } 
     }
 
     @Override
