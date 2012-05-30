@@ -11,15 +11,11 @@ import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author Christian
  */
+@Ignore
 public class Ops1_1QueryTest {
     
     @Test
@@ -50,7 +46,7 @@ public class Ops1_1QueryTest {
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, false);
             System.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false));
         }
     }
 

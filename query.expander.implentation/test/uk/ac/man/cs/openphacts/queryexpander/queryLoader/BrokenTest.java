@@ -30,9 +30,11 @@ public class BrokenTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
-            //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, true);
-            System.out.println(newQuery);
+            System.out.println(originalQuery);
+            String newQuery = queryExpander.expand(originalQuery, false);
+            System.out.println(targetQuery);
+            //ystem.out.println("newQuery");
+            //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }

@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
+@Ignore
 public class OpsQueryTest {
     
     @Test

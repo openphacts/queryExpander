@@ -10,7 +10,11 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
        loadTargetPharma();
        loadTargetInfo();
        loadCompoundPharma();
+       loadCompoundPharmacology();
+       loadCompoundPharmacology_count();
        loadCoumpoundInfo();
+       loadProteinInfo();
+       loadProteinPharmacology_count();
        loadMarchCompound();
    } 
    
@@ -293,6 +297,122 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
     }
    
+   private void loadCompoundPharmacology() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsCompoundPharmacology";
+        queryCase.name = "Ops Compound Pharmacology Query";
+        queryCase.originalQuery = "SELECT ?compound_name ?target_name ?csid_uri ?smiles ?inchi ?inchiKey ?molweight \n"
+                + "  ?num_ro5_violations ?std_type ?relation ?std_value ?std_unit ?assay_organism \n"
+                + "WHERE {\n"
+                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "      <http://www.w3.org/2004/02/skos/core#prefLabel> ?compound_name.\n"
+                + "  }\n"
+                + "  GRAPH <http://www.chemspider.com> {\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "      <http://rdf.chemspider.com/#smiles> ?smiles.\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "      <http://rdf.chemspider.com/#inchi> ?inchi.\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "      <http://rdf.chemspider.com/#inchikey> ?inchiKey.\n"
+                + "    ?csid_uri <http://rdf.chemspider.com/#inchi> ?inchi.\n"
+                + "  }"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> \n"
+                + "         <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri . \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> ?target_uri . \n"
+                + "    ?target_uri <http://purl.org/dc/elements/1.1/title> ?target_name .\n"
+                + "    ?target_uri <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism . \n"
+                + "    OPTIONAL { "
+                + "      <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>\n"
+                + "          <http://semanticscience.org/resource/CHEMINF_000200> _:bNode1 . \n"
+                + "      _:bNode1 a <http://semanticscience.org/resource/CHEMINF_000314> ;\n"
+                + "               <http://semanticscience.org/resource/SIO_000300> ?num_ro5_violations.\n"
+                + "    }"
+                + "    OPTIONAL {"
+                + "       <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>\n"
+                + "           <http://semanticscience.org/resource/CHEMINF_000200> _:bNode2 . \n"
+                + "       _:bNode2 a <http://semanticscience.org/resource/CHEMINF_000198> ;\n"
+                + "                <http://semanticscience.org/resource/SIO_000300> ?molweight. \n"
+                + "    }"
+                + "  }"
+                + "  OPTIONAL {\n "
+                + "    GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "      <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/affectedOrganism> ?affectedOrganism. \n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/biotransformation> ?biotransformation. }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/description> ?description.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/indication> ?indication.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/proteinBinding> ?proteinBinding.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/toxicity> ?toxicity.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "          <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/meltingPoint> ?meltingPoint.}\n"
+                + "    }\n"
+                + "  }\n"
+                + "}";
+        queryCase.replaceQuery = "SELECT ?compound_name ?target_name ?csid_uri ?smiles ?inchi ?inchiKey ?molweight \n"
+                + "  ?num_ro5_violations ?std_type ?relation ?std_value ?std_unit ?assay_organism \n"
+                + "WHERE {\n"
+                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "      <http://www.w3.org/2004/02/skos/core#prefLabel> ?compound_name.\n"
+                + "  }\n"
+                + "  GRAPH <http://www.chemspider.com> {\n"
+                + "    <http://rdf.chemspider.com/187440> <http://rdf.chemspider.com/#smiles> ?smiles.\n"
+                + "    <http://rdf.chemspider.com/187440> <http://rdf.chemspider.com/#inchi> ?inchi.\n"
+                + "    <http://rdf.chemspider.com/187440> <http://rdf.chemspider.com/#inchikey> ?inchiKey.\n"
+                + "    ?csid_uri <http://rdf.chemspider.com/#inchi> ?inchi.\n"
+                + "  }"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> ?replacedURI1;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri . \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> ?target_uri . \n"
+                + "    ?target_uri <http://purl.org/dc/elements/1.1/title> ?target_name .\n"
+                + "    ?target_uri <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism . \n"
+                + "    OPTIONAL { "
+                + "      ?replacedURI1 <http://semanticscience.org/resource/CHEMINF_000200> _:bNode1 . \n"
+                + "      _:bNode1 a <http://semanticscience.org/resource/CHEMINF_000314> ;\n"
+                + "               <http://semanticscience.org/resource/SIO_000300> ?num_ro5_violations.\n"
+                + "    }"
+                + "    OPTIONAL {"
+                + "       ?replacedURI1 <http://semanticscience.org/resource/CHEMINF_000200> _:bNode2 . \n"
+                + "       _:bNode2 a <http://semanticscience.org/resource/CHEMINF_000198> ;\n"
+                + "                <http://semanticscience.org/resource/SIO_000300> ?molweight. \n"
+                + "    }"
+                + "    FILTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "         || ?replacedURI1 =  <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "  }"
+                + "  OPTIONAL {\n "
+                + "    GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "      ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/affectedOrganism> ?affectedOrganism. \n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/biotransformation> ?biotransformation. }\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/description> ?description.}\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/indication> ?indication.}\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/proteinBinding> ?proteinBinding.}\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/toxicity> ?toxicity.}\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/meltingPoint> ?meltingPoint.}\n"
+                + "      FILTER (?replacedURI2 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
+                + "           || ?replacedURI2 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "    }\n"
+                + "  }\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
    private void loadCoumpoundInfo() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "OpsCoumpoundInfo";
@@ -518,6 +638,205 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
        queries.put(queryCase.key, queryCase);
    }
 
+   private void loadProteinInfo() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsProteinInfo";
+        queryCase.name = "Ops Protein Info Query";
+        queryCase.originalQuery = "SELECT DISTINCT ?target_name ?target_type ?description ?organism \n"
+                + "(GROUP_CONCAT( DISTINCT ?keyword ; SEPARATOR=\" , \") as ?keywords ) \n"
+                + "(GROUP_CONCAT( DISTINCT ?synonym ; SEPARATOR=\" , \" ) as ?synonyms) \n"
+                + "(GROUP_CONCAT( DISTINCT ?cellularLocation ; SEPARATOR=\" , \" ) as ?cellularLocations ) \n"
+                + "?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi\n"
+                + "WHERE {\n"
+                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "      <http://www.w3.org/2004/02/skos/core#prefLabel> ?target_name."
+                + "  }\n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#hasKeyword> ?keyword.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#hasDescription> ?description.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?target_type.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?organism.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://www.w3.org/2000/01/rdf-schema#label> ?synonym.\n"
+                + "  }\n"
+                + "  OPTIONAL {\n"
+                + "    GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/cellularLocation> ?cellularLocation. }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/molecularWeight> ?molecularWeight.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/numberOfResidues> ?numberOfResidues . }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/pdbIdPage> ?pdbIdPage . }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/specificFunction> ?specificFunction .}  \n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/theoreticalPi> ?theoreticalPi .}\n"
+               + "    }"
+                + "  }\n"
+                + "}\n"
+                + "GROUP BY ?target_name ?target_type ?description ?organism ?molecularWeight ?numberOfResidues ?pdbIdPage \n"
+                + "         ?specificFunction ?theoreticalPi";
+        queryCase.replaceQuery = "SELECT DISTINCT ?target_name ?target_type ?description ?organism \n"
+                + "?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi\n"
+                + "(GROUP_CONCAT( DISTINCT ?keyword ; SEPARATOR=\" , \") as ?keywords ) \n"
+                + "(GROUP_CONCAT( DISTINCT ?synonym ; SEPARATOR=\" , \" ) as ?synonyms) \n"
+                + "(GROUP_CONCAT( DISTINCT ?cellularLocation ; SEPARATOR=\" , \" ) as ?cellularLocations ) \n"
+                + "WHERE {\n"
+                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "      <http://www.w3.org/2004/02/skos/core#prefLabel> ?target_name."
+                + "  }\n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#hasKeyword> ?keyword.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#hasDescription> ?description.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?target_type.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?organism.\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "       <http://www.w3.org/2000/01/rdf-schema#label> ?synonym.\n"
+                + "  }\n"
+                + "  OPTIONAL {\n"
+                + "    {}\n"
+                + "    GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/cellularLocation> ?cellularLocation. }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/molecularWeight> ?molecularWeight.}\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/numberOfResidues> ?numberOfResidues . }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/pdbIdPage> ?pdbIdPage . }\n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/specificFunction> ?specificFunction .}  \n"
+                + "      OPTIONAL { <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0>\n"
+                + "        <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/theoreticalPi> ?theoreticalPi .}\n"
+               + "    }"
+                + "  }\n"
+                + "}\n"
+                + "GROUP BY ?target_name ?target_type ?description ?organism ?molecularWeight ?numberOfResidues ?pdbIdPage \n"
+                + "         ?specificFunction ?theoreticalPi";
+        String replaceQuery = "SELECT DISTINCT ?target_name ?target_type ?description ?organism \n"
+                + "(GROUP_CONCAT( DISTINCT ?keyword ; SEPARATOR=\" , \") as ?keywords ) \n"
+                + "(GROUP_CONCAT( DISTINCT ?synonym ; SEPARATOR=\" , \" ) as ?synonyms) \n"
+                + "(GROUP_CONCAT( DISTINCT ?cellularLocation ; SEPARATOR=\" , \" ) as ?cellularLocations ) \n"
+                + "?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi\n"
+                + "WHERE {\n"
+                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "    <http://www.conceptwiki.org/concept/dba8725c-fda4-493c-b876-3392842e63a0> \n"
+                + "      <http://www.w3.org/2004/02/skos/core#prefLabel> ?target_name."
+                + "  }\n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?replacedURI1 <http://rdf.farmbio.uu.se/chembl/onto/#hasKeyword> ?keyword.\n"
+                + "    ?replacedURI1 <http://rdf.farmbio.uu.se/chembl/onto/#hasDescription> ?description.\n"
+                + "    ?replacedURI1 <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?target_type.\n"
+                + "    ?replacedURI1 <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?organism.\n"
+                + "    ?replacedURI1 <http://www.w3.org/2000/01/rdf-schema#label> ?synonym.\n"
+                + "    FILTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "         || ?replacedURI1 =  <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)"
+                + "  }\n"
+                + "  OPTIONAL {\n"
+                + "    GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/cellularLocation> ?cellularLocation. }\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/molecularWeight> ?molecularWeight.}\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/numberOfResidues> ?numberOfResidues . }\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/pdbIdPage> ?pdbIdPage . }\n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/specificFunction> ?specificFunction .}  \n"
+                + "      OPTIONAL { ?replacedURI2 <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/theoreticalPi> ?theoreticalPi .}\n"
+                + "      FILTER (?replacedURI2 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
+                + "           || ?replacedURI2 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)"
+                + "    }"
+                + "  }\n"
+                + "}\n"
+                + "GROUP BY ?target_name ?target_type ?description ?organism ?molecularWeight ?numberOfResidues ?pdbIdPage \n"
+                + "         ?specificFunction ?theoreticalPi";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadProteinPharmacology_count() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsProteinPharmacology_count";
+        queryCase.name = "Ops Protein Pharmacology Count Query";
+        queryCase.originalQuery = "SELECT ( COUNT(DISTINCT ?assay_uri) as ?count) \n"
+                + "WHERE {\n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
+                + "       <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism. \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> \n"
+                + "       <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>.\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri ;"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> ?compound_uri ;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "  }\n"
+                + "}";
+        queryCase.replaceQuery = "SELECT ( COUNT(DISTINCT ?assay_uri) as ?count) \n"
+                + "WHERE {\n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?replacedURI1 <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism. \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> ?replacedURI1.\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri ;"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> ?compound_uri ;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "    FILTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "         || ?replacedURI1 =  <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "  }\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+   private void loadCompoundPharmacology_count() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsCompoundPharmacology_count";
+        queryCase.name = "Ops Compound Pharmacology Count Query";
+        queryCase.originalQuery = "SELECT ( COUNT ( ?assay_uri ) AS ?count ) \n"
+                + "WHERE { \n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> \n"
+                + "         <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri . \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> ?target_uri . \n"
+                + "    ?target_uri <http://purl.org/dc/elements/1.1/title> ?target_name .\n"
+                + "    ?target_uri <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism . \n"
+                + "  }\n"
+                + "}";
+        queryCase.replaceQuery = "SELECT ( COUNT ( ?assay_uri ) AS ?count ) \n"
+                + "WHERE { \n"
+                + "  GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "    ?activity_uri <http://rdf.farmbio.uu.se/chembl/onto/#forMolecule> ?replacedURI1;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#type> ?std_type;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#relation> ?relation;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardValue> ?std_value;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#standardUnits> ?std_unit;\n"
+                + "                  <http://rdf.farmbio.uu.se/chembl/onto/#onAssay> ?assay_uri . \n"
+                + "    ?assay_uri <http://rdf.farmbio.uu.se/chembl/onto/#hasTarget> ?target_uri . \n"
+                + "    ?target_uri <http://purl.org/dc/elements/1.1/title> ?target_name .\n"
+                + "    ?target_uri <http://rdf.farmbio.uu.se/chembl/onto/#organism> ?assay_organism . \n"
+                + "    FILTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "         || ?replacedURI1 =  <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "  }\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
    private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Ops";
@@ -525,4 +844,5 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
         queryCase.originalQuery = "";
         queries.put(queryCase.key, queryCase);
     }
+
  }
