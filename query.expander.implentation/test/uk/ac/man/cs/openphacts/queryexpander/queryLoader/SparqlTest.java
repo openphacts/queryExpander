@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.List;
 import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
@@ -31,8 +32,10 @@ public class SparqlTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
-            //System.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, true);
+            List<String> placeholders = loader.getPlaceHolders(queryKey);
+            String replacementVariable = loader.getReplacementVariable(queryKey);
+            //ystem.out.println(originalQuery);
+            String newQuery = queryExpander.expand(originalQuery, placeholders, replacementVariable, true);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }

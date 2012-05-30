@@ -19,11 +19,11 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class BrokenTest {
+public class ReplacemeentTest {
     
     @Test
     public void testAllNoMapping() throws Exception{
-        BrokenLoader loader = new BrokenLoader();
+        QueryCaseLoader loader = new ReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
@@ -31,15 +31,12 @@ public class BrokenTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
-            System.out.println(originalQuery);
             List<String> placeholders = loader.getPlaceHolders(queryKey);
             String replacementVariable = loader.getReplacementVariable(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, placeholders, replacementVariable, true);
-            System.out.println(targetQuery);
-            //ystem.out.println("newQuery");
-            //ystem.out.println(newQuery);
-        //    assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            System.out.println(newQuery);
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }
 

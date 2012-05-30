@@ -7,13 +7,15 @@ package uk.ac.man.cs.openphacts.queryexpander;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryExpandAndWriteVisitor;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor;
 
 /**
  *
@@ -31,12 +33,12 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery) throws QueryExpansionException {
-        return expand(originalQuery, false);
+    public String expand(String originalQuery, List<String> placeholders, String replacementVariable) throws QueryExpansionException {
+        return expand(originalQuery, placeholders, replacementVariable, false);
     }
     
     @Override
-    public String expand(String originalQuery, boolean verbose) 
+    public String expand(String originalQuery, List<String> placeholders, String replacementVariable, boolean verbose) 
             throws QueryExpansionException {
         if (verbose) System.out.println(originalQuery);
         ParsedQuery parsedQuery; 
@@ -48,7 +50,11 @@ public class QueryExpanderImpl implements QueryExpander{
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
         if (verbose) System.out.println(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
-        return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
+        URI replacementURI = null;
+        if (replacementVariable != null){
+            replacementURI = new URIImpl(replacementVariable);
+        }
+        return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, placeholders, replacementURI, imsMapper, ALL_ATTRIBUTES);
     }
 
     @Override

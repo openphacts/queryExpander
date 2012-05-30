@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.List;
 import java.util.Map;
 import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
@@ -42,8 +43,10 @@ public class Ops1_1QueryTest {
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery;
             targetQuery = loader.getTextReplaceQuery(queryKey);
+            List<String> placeholders = loader.getPlaceHolders(queryKey);
+            String replacementVariable = loader.getReplacementVariable(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, false);
+            String newQuery = queryExpander.expand(originalQuery, placeholders, replacementVariable, true);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }

@@ -132,6 +132,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private boolean whereOpen = false;
     
+    private boolean inConnect = false;
+    
     private String propertyPath = null;
     
     final boolean SHOW_DEBUG_IN_QUERY = false;
@@ -701,11 +703,15 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     private void writeWhereIfRequired(TupleExpr tupleExpr) throws QueryExpansionException {
         if (!whereOpen){
             if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
-                newLine();
-                queryString.append("WHERE {");
-                whereOpen= true;
+                writeWhere();
             }
         }
+    }
+    
+    private void writeWhere() throws QueryExpansionException {
+        newLine();
+        queryString.append("WHERE {");
+        whereOpen= true;
     }
     
     @Override
@@ -943,6 +949,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Projection prjctn) throws QueryExpansionException {
+        if (this.inConnect){
+            writeWhere();
+            if (SHOW_DEBUG_IN_QUERY){
+                newLine();
+                queryString.append("#openWhere in Projection"); 
+                newLine();
+            }
+        }
         if (this.whereOpen){
             newLine();
             queryString.append("{ ");
@@ -1178,7 +1192,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             contexts = ContextListerVisitor.getContexts(mp);
             meet (mp.getProjections(), mappedExstensionElements);
             queryString.append("} ");
+            this.inConnect = true;
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection1");
+            newLine();
+            if (SHOW_DEBUG_IN_QUERY) {
+                queryString.append("#" + this.whereOpen);
+                newLine();
+            }
             mp.getArg().visit(this);
             queryString.append("} ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection2");

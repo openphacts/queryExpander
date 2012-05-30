@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public interface QueryExpander {
      * @return Expanded query
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery) throws QueryExpansionException;
+    public String expand(String originalQuery, List<String> placeholders, String replacementVariable) throws QueryExpansionException;
 
     /**
      * Expands the query using the loaed mappings.
@@ -28,7 +29,7 @@ public interface QueryExpander {
      * @return Expanded query
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery, boolean verbose) throws QueryExpansionException;
+    public String expand(String originalQuery, List<String> placeholders, String replacementVariable, boolean verbose) throws QueryExpansionException;
 
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException;
 }

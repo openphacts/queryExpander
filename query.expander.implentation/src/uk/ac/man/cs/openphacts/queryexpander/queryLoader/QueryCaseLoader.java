@@ -1,8 +1,10 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.openrdf.model.URI;
 
 /**
  *     //http://www.w3.org/TR/2012/WD-sparql11-query-20120105/
@@ -54,7 +56,16 @@ public class QueryCaseLoader {
        }
        return getNoReplaceQuery(key);
    }
-}
+
+   List<String> getPlaceHolders(String key) {
+       return queries.get(key).placeHolders;
+   }
+
+   String getReplacementVariable(String key) {
+       return queries.get(key).replacementVariable;
+   }
+
+ }
 
 
 

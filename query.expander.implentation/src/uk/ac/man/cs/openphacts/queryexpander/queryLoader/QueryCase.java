@@ -1,5 +1,7 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.ArrayList;
+
 /**
  *     //http://www.w3.org/TR/2012/WD-sparql11-query-20120105/
 
@@ -15,8 +17,11 @@ public class QueryCase {
     public String serverReplaceQuery;
     public String textReplaceQuery;
     public String note;
-        
+    public ArrayList<String> placeHolders;
+    public String replacementVariable;
+    
     public QueryCase() {
+        placeHolders = new ArrayList<String>();
     }
 }
     
