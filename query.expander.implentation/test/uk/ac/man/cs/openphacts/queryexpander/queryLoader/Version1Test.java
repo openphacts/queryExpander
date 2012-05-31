@@ -32,8 +32,8 @@ public class Version1Test {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
-            List<String> parameters = loader.getPlaceHolders(queryKey);
-            String inputURI = loader.getReplacementVariable(queryKey);
+            List<String> parameters = loader.getParameters(queryKey);
+            String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
             //ystem.out.println(newQuery);

@@ -17,11 +17,11 @@ public class QueryCase {
     public String serverReplaceQuery;
     public String textReplaceQuery;
     public String note;
-    public ArrayList<String> placeHolders;
-    public String replacementVariable;
+    public ArrayList<String> parameters;
+    public String insertURI;
     
     public QueryCase() {
-        placeHolders = new ArrayList<String>();
+        parameters = new ArrayList<String>();
     }
 }
     

@@ -57,12 +57,12 @@ public class QueryCaseLoader {
        return getNoReplaceQuery(key);
    }
 
-   List<String> getPlaceHolders(String key) {
-       return queries.get(key).placeHolders;
+   List<String> getParameters(String key) {
+       return queries.get(key).parameters;
    }
 
-   String getReplacementVariable(String key) {
-       return queries.get(key).replacementVariable;
+   String getInsertURI(String key) {
+       return queries.get(key).insertURI;
    }
 
  }

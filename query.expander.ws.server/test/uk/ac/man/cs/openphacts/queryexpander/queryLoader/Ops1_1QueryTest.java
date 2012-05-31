@@ -34,8 +34,8 @@ public class Ops1_1QueryTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getServerReplaceQuery(queryKey);
-            List<String> parameters = loader.getPlaceHolders(queryKey);
-            String inputURI = loader.getReplacementVariable(queryKey);
+            List<String> parameters = loader.getParameters(queryKey);
+            String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
             //ystem.out.println(newQuery);
@@ -57,8 +57,8 @@ public class Ops1_1QueryTest {
             //ystem.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getServerReplaceQuery(queryKey);
-            List<String> parameters = loader.getPlaceHolders(queryKey);
-            String inputURI = loader.getReplacementVariable(queryKey);
+            List<String> parameters = loader.getParameters(queryKey);
+            String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
             //ystem.out.println(newQuery);
