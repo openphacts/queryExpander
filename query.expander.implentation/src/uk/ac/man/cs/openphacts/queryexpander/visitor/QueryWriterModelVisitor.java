@@ -445,7 +445,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 queryString.append("{ ");
                 if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
                 newLine();
-                queryString.append(this.convertToQueryString(dstnct, originalDataSet));
+                queryString.append(writeSubQuery(dstnct));
                 newLine();
                 queryString.append("} ");
                 if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
@@ -962,7 +962,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append("{ ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
             newLine();
-            queryString.append(this.convertToQueryString(prjctn, originalDataSet));
+            queryString.append(writeSubQuery(prjctn));
             newLine();
             queryString.append("} ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
@@ -1752,9 +1752,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         return queryString.toString();
     }
 
-    public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet) 
+    protected String writeSubQuery(TupleExpr tupleExpr) 
             throws QueryExpansionException{
-        QueryWriterModelVisitor writer = new QueryWriterModelVisitor(dataSet);
+        QueryWriterModelVisitor writer = new QueryWriterModelVisitor(originalDataSet);
  
         tupleExpr.visit(writer);
         return writer.getQuery();

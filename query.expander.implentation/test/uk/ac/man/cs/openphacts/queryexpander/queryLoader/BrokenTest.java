@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.junit.Ignore;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
@@ -19,6 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
+@Ignore
 public class BrokenTest {
     
     @Test

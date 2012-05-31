@@ -229,6 +229,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * @throws QueryExpansionException 
      */
     void writeStatementPart(Var var) throws QueryExpansionException{
+        System.out.println("in expander");
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
@@ -390,6 +391,13 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      */
     private String getQuery() throws QueryExpansionException {
         return queryString.toString();
+    }
+
+    @Override
+    protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
+        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(originalDataSet, mapper);
+        tupleExpr.visit(writer);
+        return writer.getQuery();
     }
 
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper, 

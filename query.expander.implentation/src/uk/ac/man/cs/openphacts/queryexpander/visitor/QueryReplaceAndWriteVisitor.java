@@ -25,10 +25,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     
     //FULL_EXPAND currently untested with the Option nesting.
     //private static final boolean DO_FULL_EXPAND = false;
-    
-    //Maps the URIs found in the original query to the values used in the outputQuery 
-    private Map<URI,String> contextUriVariables = new HashMap<URI,String>();
-   
+       
     //Maps the Values used for a URI with the list of URIs that this value could represent.
     private Map<String,List<URI>> mappings = new  HashMap<String,List<URI>>(); 
     
@@ -84,14 +81,6 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         }
     }
     
-    /**
-     * Converts the Value Expr into an URI and calls getMappings(URI uri).
-     * 
-     * @param uriArg A ValueExpr that MUST contain a URI
-     * @return A List of replacement URIs or NULL is not replacement are returned by the mapper.
-     * @throws QueryExpansionException Thrown if the ValueExpr does not contain a URI or 
-     *   some expection thrown by the mapping service.
-     */
     private List<URI> getMappings(ValueExpr uriArg) throws QueryExpansionException {
         Value value;
         if (uriArg instanceof ValueConstant){
@@ -161,65 +150,24 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
             }
             //Clear the mappings so they are no closed again.
             mappings = new  HashMap<String,List<URI>>(); 
-            //Clear the URI Mappings so new variables are used if the same URI is sean again
-            contextUriVariables = new HashMap<URI,String>();
         }
         //Call super class to do the actual closing.
         super.closeContext();
     }
 
-    /**
-     * Gets the String that will be used for this URI in the expanded Query.
-     * <p>
-     * This could be:
-     * <ol>
-     * <li> The URI itself within the angle brackets &lt; &gt; </li>.
-     * <li> A Single replacement URI within the angle brackets &lt; &gt; </li>.
-     * <li> A temporary variable name including the ?. </li>
-     * </ol>
-     * <p>
-     * A tempororay variable is returned when the URI mapps to more than one other URI. 
-     * In this case the method.
-     * <ol>
-     * <li> Generates a new temporay variable </li>
-     * <li> Maps the URI to this temporary variable </li>
-     * <li> Maps the list of URIs to this temporary variable </li>
-     * <li> Returns the temporary variable</li>
-     * </ol>
-     * @param uri URI to map from.
-     * @return String that will be used for this URI in the expanded Query.
-     * @throws QueryExpansionException Thrown by the mapping service.
-     */
-    private String getURIVariable(URI uri) throws QueryExpansionException{
-        //if there is already a variable mapped to this URI return it
-        if (contextUriVariables.containsKey(uri)){
-            return contextUriVariables.get(uri);
+    private void mapParameter(String variableName) throws QueryExpansionException{
+        //If the name is not in the parameter list nothing needs to be done
+        if (!(placeholders.contains(variableName))) return;
+        //if there is already a paramter mapping nothing needs to be done
+        if (mappings.containsKey(variableName)) return;
+        List<URI> list = getMappings(replacementVariable);
+        if (list.isEmpty()){
+            list.add(replacementVariable);
         }
-        List<URI> list = getMappings(uri);
-        //If there are no mappings just use the original URI.
-        //This keeps the URI that had no mappings in the query for logging and bug testing purposes.
-        if (list == null || list.isEmpty()){
-            return "<" + uri.stringValue() + ">";
-        }
-        //Exactly one URI found so us it.
-        //This could be the orignal URI but may be a graph specific one to one mapping replacement.
-        if (list.size()== 1){
-            String variable = "<" + list.get(0).stringValue() + ">";
-            return variable;
-        }
-        
-        //Ok so there must be more than one Mappinhg
-        
-        //Get a new temporay variable
-        variableCounter++;
-        String variableName = "?replacedURI" + variableCounter;
-        //Store the variable for reuse
-        contextUriVariables.put(uri,variableName); 
-        //Store the list for adding the filter.
+       //Store the list for adding the filter.
         mappings.put(variableName, list);
-        return variableName;
-    }
-    
+   }
+
     @Override
     /**
      * Write the var, or for a URI the replacement.
@@ -234,17 +182,17 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * @throws QueryExpansionException 
      */
     void writeStatementPart(Var var) throws QueryExpansionException{
-        if (var.isAnonymous()){
-            Value value = var.getValue();
-            if (value instanceof URI){
-                String uriValue = getURIVariable((URI)value);
-                queryString.append(uriValue);
-             } else {
-                meet(var);
+        meet(var);         
+        System.out.println(var.getSignature());
+        System.out.println(var.isAnonymous());
+        if (!var.isAnonymous()){
+            String name = "?" + var.getName();
+            System.out.println(name);
+            System.out.println(placeholders);
+            if (placeholders.contains(name)){
+                mapParameter(name);
             }
-        } else {
-            meet(var);         
-        }
+       }
     }
 
     /**
@@ -397,6 +345,14 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         return queryString.toString();
     }
 
+    @Override
+    protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
+        QueryReplaceAndWriteVisitor writer = 
+                new QueryReplaceAndWriteVisitor(originalDataSet, placeholders, replacementVariable, mapper);
+        tupleExpr.visit(writer);
+        return writer.getQuery();
+    }
+    
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, List<String> placeholders, 
             URI replacementVariable, IMSMapper mapper, 
             List<String> requiredAttributes) throws QueryExpansionException{

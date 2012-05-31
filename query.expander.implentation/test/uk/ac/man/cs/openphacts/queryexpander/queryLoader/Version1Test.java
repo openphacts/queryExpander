@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
+@Ignore
 public class Version1Test {
     
     @Test

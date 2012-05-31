@@ -23,6 +23,10 @@ public class QueryCase {
     public QueryCase() {
         parameters = new ArrayList<String>();
     }
+    
+    public void addParameter(String parameter){
+        parameters.add(parameter);
+    }
 }
     
 
