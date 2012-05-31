@@ -43,10 +43,10 @@ public class Ops1_1QueryTest {
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery;
             targetQuery = loader.getTextReplaceQuery(queryKey);
-            List<String> placeholders = loader.getPlaceHolders(queryKey);
-            String replacementVariable = loader.getReplacementVariable(queryKey);
+            List<String> parameters = loader.getPlaceHolders(queryKey);
+            String inputURI = loader.getReplacementVariable(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, placeholders, replacementVariable, true);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }

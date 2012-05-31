@@ -4,6 +4,7 @@
  */
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.ArrayList;
 import org.bridgedb.IDMapperException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClient;
 
@@ -18,7 +19,7 @@ public class QueryExpanderClientFactory {
         QueryExpanderWSClient webService = new QueryExpanderWSClient("http://localhost:8080/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
-            webService.expand("select * { ?s ?o ?p}");
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
             System.out.println("QueryExpanderWSClient test successfull");
         } catch (Exception ex) {
             System.err.println(ex);

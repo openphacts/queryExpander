@@ -19,7 +19,7 @@ public interface QueryExpander {
      * @return Expanded query
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery, List<String> placeholders, String replacementVariable) throws QueryExpansionException;
+    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException;
 
     /**
      * Expands the query using the loaed mappings.
@@ -29,7 +29,8 @@ public interface QueryExpander {
      * @return Expanded query
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery, List<String> placeholders, String replacementVariable, boolean verbose) throws QueryExpansionException;
-
+    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
+            throws QueryExpansionException;
+            
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException;
 }

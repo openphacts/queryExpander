@@ -32,10 +32,10 @@ public class BrokenTest {
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             System.out.println(originalQuery);
-            List<String> placeholders = loader.getPlaceHolders(queryKey);
-            String replacementVariable = loader.getReplacementVariable(queryKey);
+            List<String> parameters = loader.getPlaceHolders(queryKey);
+            String inputURI = loader.getReplacementVariable(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, placeholders, replacementVariable, true);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
             System.out.println(targetQuery);
             //ystem.out.println("newQuery");
             //ystem.out.println(newQuery);

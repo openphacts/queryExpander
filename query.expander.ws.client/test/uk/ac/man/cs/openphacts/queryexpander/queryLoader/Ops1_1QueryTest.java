@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.List;
 import org.bridgedb.IDMapperException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import java.util.Map;
@@ -46,8 +47,10 @@ public class Ops1_1QueryTest {
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getServerReplaceQuery(queryKey);
+            List<String> parameters = loader.getPlaceHolders(queryKey);
+            String inputURI = loader.getReplacementVariable(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }

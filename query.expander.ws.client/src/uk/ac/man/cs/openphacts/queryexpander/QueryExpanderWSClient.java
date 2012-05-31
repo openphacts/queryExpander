@@ -35,12 +35,13 @@ public class QueryExpanderWSClient implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery) throws QueryExpansionException {
-        return expand(originalQuery, false);
+    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
+        return expand(originalQuery, parameters, inputURI, false);
     }
 
     @Override
-    public String expand(String originalQuery, boolean verbose) throws QueryExpansionException {
+    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose)
+            throws QueryExpansionException {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
         params.add("query", originalQuery);
         ExpanderBean bean = 

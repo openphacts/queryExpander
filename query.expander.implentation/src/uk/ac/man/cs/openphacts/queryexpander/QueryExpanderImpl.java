@@ -34,12 +34,12 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery, List<String> placeholders, String replacementVariable) throws QueryExpansionException {
-        return expand(originalQuery, placeholders, replacementVariable, false);
+    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
+        return expand(originalQuery, parameters, inputURI, false);
     }
     
     @Override
-    public String expand(String originalQuery, List<String> placeholders, String replacementVariable, boolean verbose) 
+    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
             throws QueryExpansionException {
         if (verbose) System.out.println(originalQuery);
         ParsedQuery parsedQuery; 
@@ -51,14 +51,14 @@ public class QueryExpanderImpl implements QueryExpander{
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
         if (verbose) System.out.println(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
-        URI replacementURI = null;
-        if (replacementVariable != null){
-            replacementURI = new URIImpl(replacementVariable);
+        URI InputAsURI = null;
+        if (inputURI != null){
+            InputAsURI = new URIImpl(inputURI);
         }
-        if (placeholders.isEmpty()){
+        if (parameters.isEmpty()){
             return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
         } else {
-            return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, placeholders, replacementURI, 
+            return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI, 
                     imsMapper, ALL_ATTRIBUTES);
         } 
     }
