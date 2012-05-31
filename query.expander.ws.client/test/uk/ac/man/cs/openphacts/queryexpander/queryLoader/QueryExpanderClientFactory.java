@@ -29,4 +29,20 @@ public class QueryExpanderClientFactory {
         }
         return webService;
     }
+   
+    public static QueryExpanderWSClient createOpenPhactsQueryExpanderWSClient() throws IDMapperException{
+        System.out.println("Trying to set up a QueryExpanderWSClient");
+        QueryExpanderWSClient webService = new QueryExpanderWSClient("http://openphacts.cs.man.ac.uk:9090/QueryExpander");
+        System.out.println("Set up a QueryExpanderWSClient");
+        try { 
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
+            System.out.println("QueryExpanderWSClient test successfull");
+        } catch (Exception ex) {
+            System.err.println(ex);
+            System.out.println ("***** SKIPPING QueryExpanderWSClient Test ******");
+            System.out.println ("Please make sure the server is running");
+            org.junit.Assume.assumeTrue(false);        
+        }
+        return webService;
+    }
 }

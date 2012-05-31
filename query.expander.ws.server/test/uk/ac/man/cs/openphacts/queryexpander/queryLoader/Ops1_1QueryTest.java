@@ -1,5 +1,7 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.junit.Ignore;
+import java.util.Date;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.BridgeDBFactory;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -22,23 +24,10 @@ import static org.junit.Assert.*;
 public class Ops1_1QueryTest {
     
     @Test
-    public void testAllNoMapping() throws Exception{
+    public void testAllWithMapping() throws Exception{
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
- /*       DummyIMSMapper dummyMapper = new DummyIMSMapper();       
-        dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
-                "http://data.kasabi.com/dataset/chembl-rdf/target/t197");
-        dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
-                "http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734");
-        dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
-                "http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228");
-        dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
-                "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398");
-        dummyMapper.addMapping("http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5", 
-                "http://rdf.chemspider.com/187440");
-        
-        HardCodedGraphResolver imsMapper = new HardCodedGraphResolver(dummyMapper);*/
-        
+         
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
         QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
@@ -54,4 +43,27 @@ public class Ops1_1QueryTest {
         }
     }
 
+    @Test
+    @Ignore
+    public void testSpeed() throws Exception{
+        Date start = new Date();
+        Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
+        Set<String> queryKeys = loader.keySet();
+         
+        BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
+        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        System.out.println("speed test");
+        for (String queryKey:queryKeys){
+            //ystem.out.println("Testing " + loader.getQueryName(queryKey));
+            String originalQuery = loader.getOriginalQuery(queryKey);
+            String targetQuery = loader.getServerReplaceQuery(queryKey);
+            List<String> parameters = loader.getPlaceHolders(queryKey);
+            String inputURI = loader.getReplacementVariable(queryKey);
+            //ystem.out.println(originalQuery);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            //ystem.out.println(newQuery);
+            //assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+        }
+        System.out.println(new Date().getTime() - start.getTime());
+    }
 }

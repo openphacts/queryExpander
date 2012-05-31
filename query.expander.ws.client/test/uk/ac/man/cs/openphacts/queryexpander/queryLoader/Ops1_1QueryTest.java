@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.Date;
 import java.util.List;
 import org.bridgedb.IDMapperException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
@@ -65,6 +66,29 @@ public class Ops1_1QueryTest {
             Set<String> URISpaces = result.get(graph);
             assertFalse(URISpaces.isEmpty());        
         }
+    }
+
+    @Test
+    @Ignore
+    public void testSpeed() throws Exception{
+        Date start = new Date();
+        Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
+        Set<String> queryKeys = loader.keySet();
+         
+        QueryExpander queryExpander = QueryExpanderClientFactory.createOpenPhactsQueryExpanderWSClient();
+        System.out.println("speed test");
+        for (String queryKey:queryKeys){
+            //ystem.out.println("Testing " + loader.getQueryName(queryKey));
+            String originalQuery = loader.getOriginalQuery(queryKey);
+            String targetQuery = loader.getServerReplaceQuery(queryKey);
+            List<String> parameters = loader.getPlaceHolders(queryKey);
+            String inputURI = loader.getReplacementVariable(queryKey);
+            //ystem.out.println(originalQuery);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            //ystem.out.println(newQuery);
+            //assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+        }
+        System.out.println(new Date().getTime() - start.getTime());
     }
 
 }
