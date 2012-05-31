@@ -35,8 +35,8 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     //Counter to ensure that all the temporary variables have unique names.
     private int variableCounter =  0;
     
-    private List<String> placeholders;
-    private URI replacementVariable;
+    private List<String> parameters;
+    private URI inputURI;
     
     /**
      * Sets up the visitor for writing the query.
@@ -45,16 +45,16 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> placeholders, URI replacementVariable, IMSMapper mapper){
+    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> parameters, URI inputURI, IMSMapper mapper){
         super(dataset);
         this.mapper = mapper;  
-        this.placeholders = placeholders;
-        this.replacementVariable = replacementVariable;
+        this.parameters = parameters;
+        this.inputURI = inputURI;
     }
     
     @Override
     public QueryWriterModelVisitor clone(){
-        return new QueryReplaceAndWriteVisitor(originalDataSet, placeholders, replacementVariable, mapper);
+        return new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper);
     }
     
     /**
@@ -157,12 +157,12 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
 
     private void mapParameter(String variableName) throws QueryExpansionException{
         //If the name is not in the parameter list nothing needs to be done
-        if (!(placeholders.contains(variableName))) return;
+        if (!(parameters.contains(variableName))) return;
         //if there is already a paramter mapping nothing needs to be done
         if (mappings.containsKey(variableName)) return;
-        List<URI> list = getMappings(replacementVariable);
+        List<URI> list = getMappings(inputURI);
         if (list.isEmpty()){
-            list.add(replacementVariable);
+            list.add(inputURI);
         }
        //Store the list for adding the filter.
         mappings.put(variableName, list);
@@ -183,13 +183,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      */
     void writeStatementPart(Var var) throws QueryExpansionException{
         meet(var);         
-        System.out.println(var.getSignature());
-        System.out.println(var.isAnonymous());
         if (!var.isAnonymous()){
             String name = "?" + var.getName();
-            System.out.println(name);
-            System.out.println(placeholders);
-            if (placeholders.contains(name)){
+            if (parameters.contains(name)){
                 mapParameter(name);
             }
        }
@@ -348,7 +344,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     @Override
     protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
         QueryReplaceAndWriteVisitor writer = 
-                new QueryReplaceAndWriteVisitor(originalDataSet, placeholders, replacementVariable, mapper);
+                new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }

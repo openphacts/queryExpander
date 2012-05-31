@@ -229,7 +229,6 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * @throws QueryExpansionException 
      */
     void writeStatementPart(Var var) throws QueryExpansionException{
-        System.out.println("in expander");
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
