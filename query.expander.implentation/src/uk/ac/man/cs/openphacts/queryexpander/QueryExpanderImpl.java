@@ -58,7 +58,7 @@ public class QueryExpanderImpl implements QueryExpander{
         if (verbose) System.out.println(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
         URI InputAsURI = null;
-        if (inputURI != null){
+        if (inputURI != null && !inputURI.isEmpty()){
             InputAsURI = new URIImpl(inputURI);
         }
         if (parameters.isEmpty()){

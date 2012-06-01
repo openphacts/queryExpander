@@ -178,21 +178,26 @@ public class QueryExpanderWsServer {
     }
 
     private String checkAndExpand(String query, List<String> parameters, String inputURI) throws QueryExpansionException{
-        if (query == null){
+       if (query == null){
             throw new QueryExpansionException ("query paramater is missing!");
         }
         URI check = null;
+        if (parameters.size() == 1) {
+            if (parameters.get(0).isEmpty()){
+                parameters = new ArrayList<String>();
+            }
+        }
         if (parameters.isEmpty()){
             if (inputURI != null && !inputURI.isEmpty()) {
                 throw new QueryExpansionException ("parameter \"parameter\" is missing! " + parameters);
             }
             
         } else {
-            if (inputURI != null && !inputURI.isEmpty()){
+            if (inputURI == null || inputURI.isEmpty()){
                 throw new QueryExpansionException ("inputURI is missing! With parameters of size " + parameters.size() );
             }
             check = new URIImpl(inputURI);
-        }       
+        }      
         return queryExpander.expand(query, parameters, inputURI);
     }
     
