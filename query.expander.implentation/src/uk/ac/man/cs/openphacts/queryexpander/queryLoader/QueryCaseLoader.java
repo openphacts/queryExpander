@@ -38,13 +38,14 @@ public class QueryCaseLoader {
    }
 
    public String getServerReplaceQuery(String key){
-       if (queries.get(key).serverReplaceQuery != null){
+   /*    if (queries.get(key).serverReplaceQuery != null){
            return queries.get(key).serverReplaceQuery;
        }
        if (queries.get(key).replaceQuery != null){
            return queries.get(key).replaceQuery;
        }
-       return getNoReplaceQuery(key);
+       return getNoReplaceQuery(key);*/
+       return getTextReplaceQuery(key);
    }
 
    public String getTextReplaceQuery(String key){

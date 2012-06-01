@@ -14,7 +14,7 @@ public class QueryCase {
     public String key;
     public String noReplaceQuery;
     public String replaceQuery;
-    public String serverReplaceQuery;
+//    public String serverReplaceQuery;
     public String textReplaceQuery;
     public String note;
     public ArrayList<String> parameters;

@@ -610,7 +610,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "    ?compound_cw skos:exactMatch ?csid_uri ; skos:prefLabel ?compound_name \n"
                 + "  }\n"
                 + "} LIMIT 100";
-        queryCase.serverReplaceQuery = "PREFIX c2b2r_chembl: <http://chem2bio2rdf.org/chembl/resource/>\n"
+ /*       queryCase.serverReplaceQuery = "PREFIX c2b2r_chembl: <http://chem2bio2rdf.org/chembl/resource/>\n"
                 + "PREFIX chemspider: <http://rdf.chemspider.com/#> \n"
                 + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
                 + "PREFIX farmbio: <http://rdf.farmbio.uu.se/chembl/onto/#> \n"
@@ -647,7 +647,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "    ?compound_cw skos:exactMatch ?csid_uri ; skos:prefLabel ?compound_name \n"
                 + "  }\n"
                 + "} LIMIT 100";
-       queries.put(queryCase.key, queryCase);
+ */      queries.put(queryCase.key, queryCase);
    }
 
    private void loadProteinInfo() {
