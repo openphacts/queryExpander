@@ -29,7 +29,7 @@ public class ReplacemeentTest {
         QueryCaseLoader loader = new ReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);

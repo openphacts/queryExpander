@@ -29,7 +29,7 @@ public class Ops1_1QueryTest {
         Set<String> queryKeys = loader.keySet();
          
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
@@ -51,7 +51,7 @@ public class Ops1_1QueryTest {
         Set<String> queryKeys = loader.keySet();
          
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         System.out.println("speed test");
         for (String queryKey:queryKeys){
             //ystem.out.println("Testing " + loader.getQueryName(queryKey));

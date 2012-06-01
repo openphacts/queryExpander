@@ -28,7 +28,7 @@ public class SparqlTest {
         SparqlLoader loader = new SparqlLoader();
         Set<String> queryKeys = loader.keySet();
         IMSMapper imsMapper = new DummyIMSMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);

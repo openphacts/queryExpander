@@ -18,8 +18,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
- *
+ * Implements QueryExpander where these methods are documented.
  * @author Christian
+ * @see QueryExpander
  */
 public class QueryExpanderWSClient implements QueryExpander{
 
@@ -36,12 +37,25 @@ public class QueryExpanderWSClient implements QueryExpander{
     
     @Override
     public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
-        return expand(originalQuery, parameters, inputURI, false);
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("query", originalQuery);
+        for (String parameter:parameters){
+            params.add("parameter", parameter);
+        }
+        if (inputURI == null) params.add("inputURI", inputURI);
+        ExpanderBean bean = 
+                webResource.path("expand")
+                .queryParams(params)
+                .accept(MediaType.APPLICATION_XML_TYPE)
+                .get(new GenericType<ExpanderBean>() {});
+        return bean.getExpandedQuery();
     }
 
+    /**
+     * @deprecated 
+     */
     @Override
-    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose)
-            throws QueryExpansionException {
+    public String expand(String originalQuery) throws QueryExpansionException {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
         params.add("query", originalQuery);
         ExpanderBean bean = 

@@ -4,6 +4,7 @@
  */
 package uk.ac.man.cs.openphacts.queryexpander;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,10 +38,15 @@ public class QueryExpanderImpl implements QueryExpander{
     public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
         return expand(originalQuery, parameters, inputURI, false);
     }
-    
+        
     @Override
+    public String expand(String originalQuery) throws QueryExpansionException {
+        return expand(originalQuery, new ArrayList<String>(), null, false);
+    }
+
     public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
             throws QueryExpansionException {
+
         if (verbose) System.out.println(originalQuery);
         ParsedQuery parsedQuery; 
         try {

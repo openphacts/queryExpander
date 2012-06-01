@@ -16,6 +16,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.QueryCaseLoader;
@@ -71,10 +73,14 @@ public class QueryExpanderWsServer {
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
         sb.append("<body>\n");
         sb.append("<FORM METHOD=GET ACTION=\"expand\" Target=\"bottomFrame\" >\n");
-        sb.append("<h2>Enter your query:</H2>\n");
+        sb.append("<h2>Enter your query here:</H2>\n");
         sb.append("<TEXTAREA NAME=query ROWS=15 COLS=100>\n");
         sb.append(query);
         sb.append("\n");
+        sb.append("</TEXTAREA>\n");
+        sb.append("<TEXTAREA NAME=parameter ROWS=10 COLS=20>\n");
+        sb.append("</TEXTAREA>\n");
+        sb.append("<TEXTAREA NAME=inputURI ROWS=5 COLS=20>\n");
         sb.append("</TEXTAREA>\n");
         sb.append("<BR>\n");
         sb.append("<INPUT TYPE=submit VALUE=\"Expand this query\">\n");
@@ -163,31 +169,36 @@ public class QueryExpanderWsServer {
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
-            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("parameter") List<String> parameters ,            
             @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+        ExpanderBean result = new ExpanderBean();
+        result.setOrginalQuery(query);
+        result.setExpandedQuery(checkAndExpand(query, parameters, inputURI));
+        return result;
+    }
+
+    private String checkAndExpand(String query, List<String> parameters, String inputURI) throws QueryExpansionException{
         if (query == null){
             throw new QueryExpansionException ("query paramater is missing!");
         }
         if (parameters.isEmpty()){
-            if (inputURI!= null){
-                throw new QueryExpansionException ("parameter patameter is missing!");
+            if (!inputURI.isEmpty()){
+                throw new QueryExpansionException ("parameter \"parameter\" is missing! " + parameters);
             }
         } else {
-            if (inputURI!= null){
+            if (inputURI.isEmpty()){
                 throw new QueryExpansionException ("inputURI is missing!");
             }            
         }
-        ExpanderBean result = new ExpanderBean();
-        result.setOrginalQuery(query);
-        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI));
-        return result;
+        URI check = new URIImpl(inputURI);
+        return queryExpander.expand(query, parameters, inputURI);
     }
-
+    
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
     public ExpanderBean expandAsXML(@QueryParam("query") String query,
-            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("parameter") List<String> parameters ,            
             @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
         return expandXML(query, parameters, inputURI);
     }
@@ -196,13 +207,9 @@ public class QueryExpanderWsServer {
     @Produces(MediaType.TEXT_HTML)
     @Path("/expand") 
     public Response expandHtml(@QueryParam("query") String query,
-            @QueryParam("parameter ") List<String> parameters ,            
+            @QueryParam("parameter") List<String> parameters,            
             @QueryParam("inputURI") String inputURI)throws QueryExpansionException{
-        if (query == null){
-            throw new QueryExpansionException ("query paramater is missing!");
-        }
-        System.out.println(query);
-        String result = queryExpander.expand(query, parameters, inputURI);
+        String result = checkAndExpand(query, parameters, inputURI);
         System.out.println(result);
         
         StringBuilder sb = new StringBuilder();

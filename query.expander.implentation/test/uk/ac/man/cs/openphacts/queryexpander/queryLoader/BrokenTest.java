@@ -28,7 +28,7 @@ public class BrokenTest {
         BrokenLoader loader = new BrokenLoader();
         Set<String> queryKeys = loader.keySet();
         IMSMapper imsMapper = new DummyIMSMapper();
-        QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
