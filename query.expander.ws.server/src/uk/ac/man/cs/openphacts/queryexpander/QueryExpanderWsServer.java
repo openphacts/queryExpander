@@ -4,12 +4,15 @@
  */
 package uk.ac.man.cs.openphacts.queryexpander;
 
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -180,22 +183,8 @@ public class QueryExpanderWsServer {
       
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response welcomeMessage() {       
-        StringBuilder sb = new StringBuilder(HEADER);
-        sb.append(BODY);
-        sb.append(TOP_LEFT);
-        sb.append("Query Expander Demo Page");
-        sb.append(TOP_RIGHT);
-        sb.append(MAIN_START);
-        sb.append(DEMO_EXPLAIN);
-        sb.append(FORM_START);
-        sb.append("Select * \nWHERE {\n\t?s ?p ?o\n}");
-        sb.append(FORM_PARAMETERS);
-        sb.append(FORM_INPUTURI);
-        sb.append(FORM_END);
-        sb.append(MAIN_END);
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    public Response welcomeMessage() {  
+        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", new ArrayList<String>(), "");
     }
    
     @GET
@@ -203,18 +192,17 @@ public class QueryExpanderWsServer {
     @Path("/expand") 
     public Response expandHtml(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI)throws QueryExpansionException{
+            @QueryParam("inputURI") String inputURI,
+            @QueryParam("format") String format)throws QueryExpansionException{
+        if ("xml".equals(format)){
+            return xmlRedirect(query, parameters, inputURI);
+        }
         String result = checkAndExpand(query, parameters, inputURI);
         int lines = 1;
         for (int i=0; i < result.length(); i++) {
             if (result.charAt(i) == '\n') lines++;
         }
-        StringBuilder sb = new StringBuilder(HEADER);
-        sb.append(BODY);
-        sb.append(TOP_LEFT);
-        sb.append("Query Expander Results");
-        sb.append(TOP_RIGHT);
-        sb.append(MAIN_START);
+        StringBuilder sb = topAndSide("Query Expander Results");
 		sb.append("<h2>Expanded Query.</h2>");
 		sb.append("<p><textarea readonly style=\"width:100%;\" rows=");
 		sb.append(lines);
@@ -222,6 +210,37 @@ public class QueryExpanderWsServer {
         sb.append(result);
 		sb.append("</textarea></p>");
 		sb.append("<h2>Input Parameters.</h2>");
+        addForm(sb, query, parameters, inputURI);
+        sb.append(MAIN_END);
+        sb.append(END);
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
+ 
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/demo") 
+    public Response demo(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters,            
+            @QueryParam("inputURI") String inputURI){
+        StringBuilder sb = topAndSide("Query Expander Demo Page");
+        sb.append(DEMO_EXPLAIN);
+        addForm(sb, query, parameters, inputURI);
+        sb.append(MAIN_END);
+        sb.append(END);
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
+
+    private StringBuilder topAndSide(String header){
+        StringBuilder sb = new StringBuilder(HEADER);
+        sb.append(BODY);
+        sb.append(TOP_LEFT);
+        sb.append(header);
+        sb.append(TOP_RIGHT);
+        sb.append(MAIN_START);
+        return sb;
+    }
+    
+    private void addForm(StringBuilder sb, String query, List<String> parameters, String inputURI){
         sb.append(FORM_START);
         sb.append(query);
         sb.append(FORM_PARAMETERS);
@@ -234,32 +253,32 @@ public class QueryExpanderWsServer {
         }
         sb.append(FORM_INPUTURI);
         sb.append(inputURI);
-        sb.append(FORM_END);
-        sb.append(MAIN_END);
-        sb.append(END);
-
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
-/*        StringBuilder sb = new StringBuilder();
-        sb.append("<?xml version=\"1.0\"?>");
-        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
-        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
-        sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>\n");
-        appendToggler(sb);
-        sb.append("<body>\n");
-        sb.append("<a href=\"examples\">Return to example Index.</a>\n");
-        sb.append("<a href=\"expandXML?query=");
+        sb.append(FORM_END);        
+    }
+    
+    private Response xmlRedirect(String query, List<String> parameters, String inputURI) throws QueryExpansionException{
+        StringBuilder sb = new StringBuilder("expandXML?query=");
+        if (query == null && query.isEmpty()){
+            query = "SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}";
+        }
         sb.append(URLEncoder.encode(query));
-        sb.append("\">View Xml/Jason result</a>\n");
-        sb.append("<h2>Expanded Query</H2>\n"); 
-        sb.append("<textarea ROWS=15 COLS=100>");
-        sb.append(result);
-        sb.append("</textarea>");
-        sb.append("</body>");
-        sb.append("</html>");
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
-*/    }
- 
+        for (String parameter:parameters){
+            sb.append("&parameter=");
+            sb.append(parameter);
+        }
+        if (inputURI != null && !inputURI.isEmpty()){
+            sb.append("&inputURI=");        
+            sb.append(inputURI);
+        }
+        java.net.URI uri;
+        try {
+            uri = new java.net.URI(sb.toString());
+        } catch (URISyntaxException ex) {
+            throw new QueryExpansionException("Unableto redirect", ex);
+        }
+        return Response.temporaryRedirect(uri).build();
+    }
+    
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/examples") 
