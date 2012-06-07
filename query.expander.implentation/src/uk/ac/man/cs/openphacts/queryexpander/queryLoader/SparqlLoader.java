@@ -444,7 +444,7 @@ public class SparqlLoader extends QueryCaseLoader{
    private void loadSparql5_2_3a() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql5_2_3a";
-        queryCase.name = "Sparql Specification section";
+        queryCase.name = "Sparql Specification section 5.2.3 Group Graph Pattern Examples 1st query";
         queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
                 + "SELECT ?x \n"
                 + "WHERE {\n"
@@ -457,7 +457,7 @@ public class SparqlLoader extends QueryCaseLoader{
    private void loadSparql5_2_3b() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql5_2_3b";
-        queryCase.name = "Sparql Specification section";
+        queryCase.name = "Sparql Specification section 5.2.3 Group Graph Pattern Examples 2nd query";
         queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
                 + "SELECT ?x \n"
                 + "WHERE {\n"
@@ -470,11 +470,16 @@ public class SparqlLoader extends QueryCaseLoader{
    private void loadSparql5_2_3c() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Sparql5_2_3c";
-        queryCase.name = "Sparql Specification section";
+        queryCase.name = "Sparql Specification section  5.2.3 Group Graph Pattern Examples 3rd query";
         queryCase.originalQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
                 + "SELECT ?x \n"
                 + "WHERE {    ?x foaf:name ?name .\n"
                 + "    {}\n"
+                + "    ?x foaf:mbox ?mbox .\n"
+                + "  }";                
+        queryCase.noReplaceQuery = "PREFIX foaf:    <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?x \n"
+                + "WHERE {    ?x foaf:name ?name .\n"
                 + "    ?x foaf:mbox ?mbox .\n"
                 + "  }";                
         queries.put(queryCase.key, queryCase);

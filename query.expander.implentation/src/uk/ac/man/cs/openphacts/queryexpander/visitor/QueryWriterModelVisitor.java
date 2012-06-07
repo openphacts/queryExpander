@@ -1377,7 +1377,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(SingletonSet ss) throws QueryExpansionException {
         writeWhereIfRequired(ss);
         newLine();
-        queryString.append("{} ");
+        //queryString.append("{} ");
         //Expected no children but just to be sure.
         ss.visitChildren(this);
     }
