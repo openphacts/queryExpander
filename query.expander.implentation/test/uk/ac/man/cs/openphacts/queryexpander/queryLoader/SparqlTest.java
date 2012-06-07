@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-@Ignore
 public class SparqlTest {
     
     @Test
@@ -36,7 +35,7 @@ public class SparqlTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }

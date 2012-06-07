@@ -565,6 +565,21 @@ public class Version1Loader extends QueryCaseLoader{
                 + "    }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
                 + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first \n\n"
+                + "WHERE {\n"
+                + "    <http://input.com#1> foaf:name ?name .\n"
+                + "    {}\n"
+                + "    GRAPH <http://foo.com> {\n"
+                + "        Optional {\n"
+                + "           <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "        }\n"
+                + "        Optional {\n"
+                + "            <http://input.com#1> foaf:email ?email . \n"
+                + "        }\n"
+                + "    }\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "}";
         queries.put(queryCase.key, queryCase);
     }
    
@@ -576,6 +591,19 @@ public class Version1Loader extends QueryCaseLoader{
                 + "SELECT ?name ?mbox ?email ?first \n\n"
                 + "WHERE {\n"
                 + "    <http://input.com#1> foaf:name ?name .\n"
+                + "    GRAPH <http://foo.com> {\n"
+                + "        Optional {\n"
+                + "           <http://input.com#1> foaf:mbox ?mbox . #test \n\n"
+                + "        }\n"
+                + "        <http://input.com#1> foaf:email ?email . \n"
+                + "    }\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first \n\n"
+                + "WHERE {\n"
+                + "    <http://input.com#1> foaf:name ?name .\n"
+                + "    {}"
                 + "    GRAPH <http://foo.com> {\n"
                 + "        Optional {\n"
                 + "           <http://input.com#1> foaf:mbox ?mbox . #test \n\n"

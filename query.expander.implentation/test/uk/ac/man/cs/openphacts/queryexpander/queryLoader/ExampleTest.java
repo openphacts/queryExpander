@@ -34,7 +34,7 @@ public class ExampleTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }

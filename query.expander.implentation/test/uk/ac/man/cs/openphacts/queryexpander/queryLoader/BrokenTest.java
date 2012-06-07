@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-@Ignore
 public class BrokenTest {
     
     @Test
@@ -41,7 +40,7 @@ public class BrokenTest {
             //ystem.out.println(targetQuery);
             //ystem.out.println("newQuery");
             //ystem.out.println(newQuery);
-        //    assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }
 

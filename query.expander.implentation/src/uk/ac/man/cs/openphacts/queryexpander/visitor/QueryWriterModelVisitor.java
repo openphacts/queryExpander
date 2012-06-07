@@ -132,11 +132,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private boolean whereOpen = false;
     
-    private boolean inConnect = false;
+    private boolean inConstruct = false;
     
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = false;
+    final boolean SHOW_DEBUG_IN_QUERY = true;
     
     //private int nextAnon = 1;
     
@@ -949,7 +949,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Projection prjctn) throws QueryExpansionException {
-        if (this.inConnect){
+        if (this.inConstruct){
             writeWhere();
             if (SHOW_DEBUG_IN_QUERY){
                 newLine();
@@ -1167,6 +1167,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             TupleExpr prjctnArg = prjctn.getArg();
             switch (workoutQueryType(prjctn.getProjectionElemList())){
                 case CONSTRUCT:
+                    this.inConstruct = true;
                     writeConstruct(prjctn);
                     break;
                 case DESCRIBE:
@@ -1192,7 +1193,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             contexts = ContextListerVisitor.getContexts(mp);
             meet (mp.getProjections(), mappedExstensionElements);
             queryString.append("} ");
-            this.inConnect = true;
+            this.inConstruct = true;
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection1");
             newLine();
             if (SHOW_DEBUG_IN_QUERY) {
