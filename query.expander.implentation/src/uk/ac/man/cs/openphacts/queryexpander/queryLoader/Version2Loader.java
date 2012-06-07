@@ -8,9 +8,9 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
  *
  * @author Christian
  */
-public class ReplacementLoader extends QueryCaseLoader{
+public class Version2Loader extends QueryCaseLoader{
     
-   public ReplacementLoader(){
+   public Version2Loader(){
        loadSparql2_6();
        loadJiraExample();
    } 

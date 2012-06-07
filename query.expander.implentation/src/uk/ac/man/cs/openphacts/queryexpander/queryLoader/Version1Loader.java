@@ -31,9 +31,11 @@ public class Version1Loader extends QueryCaseLoader{
        loadNoneOptionalGraphGraphNone();
        loadNone_OptionalGraphNone_None();
        loadNone_GraphNoneOptional_None();
-  //     loadNone_GraphNoneOptionalNone_None();
+       loadNone_GraphNoneOptionalNone_None();
        loadNone_GraphOptionalOptional_None();
        loadNone_GraphOptionalNone_None();
+       loadCountDistinct();
+       loadCountDistinct3();
    }
     
    private void loadPartCompoundLookup() {
@@ -611,6 +613,42 @@ public class Version1Loader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
     }
    
+    private void loadCountDistinct() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "BrokenCountDistinct";
+        queryCase.name = "Count Distinct Query";
+        queryCase.originalQuery = "SELECT (count(distinct ?s) as ?count) (count (?s) as ?count2)\n"
+                + "WHERE { \n"
+                + "  graph <http://www.chemspider.com> {\n"
+                + "    ?s ?p ?o . \n"
+                + "  }\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
+
+    private void loadCountDistinct3() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "BrokenCountDistinct2";
+        queryCase.name = "Count Distinct Query Complex";
+        queryCase.originalQuery = "SELECT (count(distinct ?s) as ?count) \n"
+                + "WHERE { \n"
+                + "  graph <http://www.chemspider.com> {\n"
+                + "    ?s ?p ?o . \n"
+                + "    FILTER(?p != <http://www.w3.org/2004/02/skos/core%23exactMatch>) \n"
+                + "    FILTER(REGEX(str(?s),\"http://rdf.chemspider.com/\"))\n"
+                + "  }\n"
+                + "}";
+        //Filters swap order
+        queryCase.noReplaceQuery = "SELECT (count(distinct ?s) as ?count) \n"
+                + "WHERE { \n"
+                + "  graph <http://www.chemspider.com> {\n"
+                + "    ?s ?p ?o . \n"
+                + "    FILTER(REGEX(str(?s),\"http://rdf.chemspider.com/\"))\n"
+                + "    FILTER(?p != <http://www.w3.org/2004/02/skos/core%23exactMatch>) \n"
+                + "  }\n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+    }
    private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Version1";

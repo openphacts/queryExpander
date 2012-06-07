@@ -6,8 +6,6 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
 import org.junit.Test;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 import static org.junit.Assert.*;
 
 /*
@@ -20,12 +18,12 @@ import static org.junit.Assert.*;
  * @author Christian
  */
 //@Ignore
-public class ReplacemeentTest {
+public class OpsReplacemeentTest {
     
     @Test
     public void testAllNoMapping() throws Exception{
         Ops1_1QueryLoader loaderX = new Ops1_1QueryLoader();
-        QueryCaseLoader loader = new ReplacementLoader();
+        QueryCaseLoader loader = new OpsReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
