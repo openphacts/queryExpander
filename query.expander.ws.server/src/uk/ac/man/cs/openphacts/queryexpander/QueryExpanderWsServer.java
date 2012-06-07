@@ -153,7 +153,7 @@ public class QueryExpanderWsServer {
             + "				<div id=\"menuQueryExpanderAPI_text\" class=\"texthotlink\" "
             + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderAPI_text'); return true; \" "
             + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderAPI_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander/API&quot;;\">API</div>"
+            + "                   onclick=\"document.location = &quot;/QueryExpander/api&quot;;\">API</div>"
             + "				<div id=\"menuQueryExpanderExamples_text\" class=\"texthotlink\" "
             + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderExamples_text'); return true; \" "
             + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderExamples_text'); return true; \" "
@@ -212,13 +212,141 @@ public class QueryExpanderWsServer {
     private final String BODY_END = "</body>"
             + "</html>";
     private final String END = MAIN_END + BODY_END;
-      
+    private final String API = "<h1>QueryExpander Java Interface</h1>\n"
+            + " <ul> "
+            + "     <li>Prefered method of calling the query expander.</li>"
+            + "     <li>Two Implementations exists</li>"
+            + "     <ul>"
+            + "         <li>Local Service for running on the same machine</li>"
+            + "         <li>Webservice Client for running remotely</li>"
+            + "     </ul>"
+            + "     <li>Larkc plugin calls Query Expander through this Interface.</li>"
+            + " </ul>\n"
+            + "<h2>\"expand\" Method</h2>"
+            + "     <p>Given a query, a list of parameters to replace and the starting inputURI, "
+            + "     extends the query so that when any of the parameters is used in a statement a Filter clause is added."
+            + "     The Filter will check that the parameters is equal to the inputURI or one of its mapped version.</p>\n "
+            + "     <p>If the query Expander knows which URIspace(s) are valid for a particular graph (context) only "
+            + "     URIs for those URISpaces will be used in the Filter clause.</p>\n"
+            + "     <ul>"
+            + "         <li>Required arguements:</li>"
+            + "         <ul>"
+            + "             <li><a href=\"#query\">query</a></li>"
+            + "             <li><a href=\"#parameter\">parameter(s)</a></li>"
+            + "             <li><a href=\"#inputURI\">inputURI</a></li>"
+            + "         </ul>"
+            + "     </ul>\n"
+            + "<h2> \"getURISpacesPerGraph\" method.</h2>"
+            + " <p> Returns a Map of Graph/Context values and the allowed URISpace(s) for each.</p>"
+            + " <p> When available this set of URISpace(s) "
+            + "   will limit which mapped URIs are included in the filter statements for each graph.</P>"
+            + "<h1>QueryExpander WebService</h1>"
+            + "<h2>\"expand\" Method</h2>"
+            + " <ul>"
+            + "     <li>Same functionality as Java Interface. </li>"
+            + "     <li>Available as xml/Jason output. </li>"
+            + "     <ul>"
+            + "         <li>Format returned for WS Client calls.</li>"
+            + "         <li>Result is a bean with both the original and expanded query.</li>"
+            + "         <li>Select Output Format \"XML/JASON\" from the demo/home page.</li>"
+            + "     </ul>"
+            + "     <li>Available as a html page. </li>"
+            + "     <ul>"
+            + "         <li>Default for API call from a browser.</li>"
+            + "         <li>Result is expanded query inside a service page.</li>"
+            + "     </ul>"
+            + "     <li>Required arguements:</li>"
+            + "     <ul>"
+            + "         <li><a href=\"#query\">query</a></li>"
+            + "         <li><a href=\"#parameter\">parameter(s)</a></li>"
+            + "         <li><a href=\"#inputURI\">inputURI</a></li>"
+            + "     </ul>"
+            + "     <li>Optional Arguement:</li>"
+            + "     <ul>"
+            + "         <li><a href=\"#format\">format</a></li>"
+            + "     </ul>"
+            + "     <li>For an example API expand a query on the Home or Examples pages.</li>"
+            + " </ul>"
+            + "<h2>\"expandXML\" Method</h2>"
+            + " <ul>"
+            + "     <li>Same as \"expand\" method but result is always XML. </li>"
+            + "     <li>Actual api used for browser calls that request XML/JASON output. </li>"
+            + " </ul>"
+            + "<h2> \"getURISpacesPerGraph\" method.</h2>"
+            + " <ul>"
+            + "     <li>Same functionality as Java Interface. </li>"
+            + "     <li>Available as xml/Jason output. </li>"
+            + "     <ul>"
+            + "         <li>Result for  API call from WS Client.</li>"
+            + "         <li>Returns a bean from which the Mappings can be extracted.</li>"
+            + "     </ul>"
+            + "     <li>Available as a html page. </li>"
+            + "     <ul>"
+            + "         <li>Result for  API call from a browser.</li>"
+            + "         <li>Result is expanded query inside a service page.</li>"
+            + "     </ul>"
+            + " </ul>"
+            + "<h2> \"api\" method.</h2>"
+            + " <ul>"
+            + "     <li>Returns this page. </li>"
+            + " </ul>"
+            + "<h2> \"examples\" method.</h2>"
+            + " <ul>"
+            + "     <li>Returns a page with many links to many query examples. </li>"
+            + " </ul>"
+             + "<h2>\"demo\" Method</h2>"
+            + " <ul>"
+            + "     <li>Support function to build a demo page. </li>"
+            + "     <li>Required arguements:</li>"
+            + "     <ul>"
+            + "         <li><a href=\"#query\">query</a></li>"
+            + "         <li><a href=\"#parameter\">parameter(s)</a></li>"
+            + "         <li><a href=\"#inputURI\">inputURI</a></li>"
+            + "     </ul>"
+            + " </ul>"
+            + "<h1>Parameters</h1>\n"
+            + " <ul>"
+            + "     <dt><a name=\"query\">query</a></dt>"
+            + "     <ul>"
+            + "         <li>The original query to be expanded.</li>"
+            + "         <li>Must be in a format that OpenRDF can parse.</li>"
+            + "     </ul>"
+            + "     <dt><a name=\"parameter\">parameter</a></dt>"
+            + "     <ul>"
+            + "         <li>A Parameter for which a filter will be added.</li>"
+            + "         <li>Must start with a question mark.</li>"
+            + "         <li>May be more than one.</li>"
+            + "         <li>If no paramter and no inputURI is supplied Every URI is looked up.</li>"
+            + "         <li>WS API call only: May be a single value of whitespace seperated parameters.</li>"
+            + "     </ul>"
+            + "     <dt><a name=\"inputURI\">inputURI</a></dt>"
+            + "     <ul>"
+            + "         <li>The original URI to be looked up in the mapping Service.</li>"
+            + "         <li>A String that OpenRDF can convert to a URI</li>"
+            + "         <ul>"
+            + "             <li>Must included the scheme name. (ex: http://)</li>"
+            + "             <li>Must included the absolute path. (ex: www.example.com)</li>"
+            + "             <li>May not make use of a sparql prefix.</li>"
+            + "             <li>Needs not be resolvable. (Even though that is bad practice).<li>"
+            + "             <li>If not know to the IMS mapper, just the original URI will be used."
+            + "         </ul>"
+            + "     </ul>"
+            + "     <dt><a name=\"format\">format</a></dt>"
+            + "     <ul>"
+            + "         <li>Allows the output to be forced into \"xml\".</li>"
+            + "         <li>Any \"format\" value other than \"xml\" will result in html output.</li>"
+            + "     </ul>"
+            + " </ul>"
+            + "<h1>IMS Information</h1>\n"
+            + "<p> Try the links on the left for IMS methods and the IMS API.</p>"
+            ;
+  
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response welcomeMessage() {
         List<String> parameters = new ArrayList<String>();
-        parameters.add("?");
-        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", new ArrayList<String>(), "http://www.example.com");
+        parameters.add("?s");
+        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com");
     }
    
     @GET
@@ -389,6 +517,16 @@ public class QueryExpanderWsServer {
         loaderExamples(sb, new Ops1_1QueryLoader(), "ops");
         sb.append("<H2 onclick=\"toggleItem('sparql')\" style=\"color:blue;\"> <u>Queries found in Sparql 1.1 specifications</u></H2>\n");
         loaderExamples(sb, new SparqlLoader(), "sparql");
+        sb.append(END);
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/api") 
+    public Response api() {
+        StringBuilder sb = topAndSide("Query Expander API");
+        sb.append(API);  
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
