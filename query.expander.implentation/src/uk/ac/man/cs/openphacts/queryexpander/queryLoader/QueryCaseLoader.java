@@ -58,11 +58,11 @@ public class QueryCaseLoader {
        return getNoReplaceQuery(key);
    }
 
-   List<String> getParameters(String key) {
+   public List<String> getParameters(String key) {
        return queries.get(key).parameters;
    }
 
-   String getInsertURI(String key) {
+   public String getInsertURI(String key) {
        return queries.get(key).insertURI;
    }
 

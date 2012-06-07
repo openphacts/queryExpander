@@ -25,6 +25,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
+import uk.ac.man.cs.openphacts.queryexpander.queryLoader.OpsReplacementLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.QueryCaseLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
 
@@ -382,6 +383,8 @@ public class QueryExpanderWsServer {
         sb.append(MAIN_START);
         sb.append("<p>Click on any Group to expand or contract it.</p>\n");  
         sb.append("<p>Click on any Query Title to load it into the demo page</p>\n");  
+        sb.append("<H2 onclick=\"toggleItem('ops')\" style=\"color:blue;\"> <u>LinkdedData Queries used in Open Phacts</u></H2>\n");
+        loaderExamples(sb, new OpsReplacementLoader(), "ops");
         sb.append("<H2 onclick=\"toggleItem('ops')\" style=\"color:blue;\"> <u>Queries used in Open Phacts</u></H2>\n");
         loaderExamples(sb, new Ops1_1QueryLoader(), "ops");
         sb.append("<H2 onclick=\"toggleItem('sparql')\" style=\"color:blue;\"> <u>Queries found in Sparql 1.1 specifications</u></H2>\n");
@@ -398,8 +401,20 @@ public class QueryExpanderWsServer {
         for (String queryKey:queryKeys){
             sb.append("<li><a href=\"demo?query=");
             sb.append(URLEncoder.encode(loader.getOriginalQuery(queryKey)));
+            List<String> parameters = loader.getParameters(queryKey);
+            if (parameters != null){
+                for (String parameter:parameters){
+                    sb.append("&parameter=");
+                    sb.append(parameter);
+                }
+            }
+            String inputURI = loader.getInsertURI(queryKey);
+            if (inputURI != null){
+                sb.append("&inputURI=");
+                sb.append(URLEncoder.encode(inputURI));
+            }
             sb.append("\">");
-            sb.append(loader.getQueryName(queryKey));
+            sb.append(loader.getQueryName(queryKey));            
             sb.append("</a></li>\n");
         }
     	sb.append("</ul>");

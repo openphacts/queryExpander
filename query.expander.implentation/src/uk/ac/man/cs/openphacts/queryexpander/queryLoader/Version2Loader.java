@@ -79,53 +79,6 @@ public class Version2Loader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
     }
 
-  private void loadcompoundPharma_count() {
-        QueryCase queryCase = new QueryCase();
-        queryCase.key = "ReplacementcompoundPharma_count";
-        queryCase.name = "Compound Pharma Count Query";
-        queryCase.originalQuery = "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
-                + "PREFIX ops: <http://www.openphacts.org/api#>\n"
-                + "CONSTRUCT { 		\n"
-                + "  ?kasabiId ops:compoundPharmacologyTotalResults ?count .   \n"
-                + "} WHERE {\n"
-                + "  {\n "
-                + "    SELECT (COUNT(?activity_uri) AS ?count) {\n"
-                + "      GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
-                + "        ?activity_uri chembl:forMolecule ?kasabiId;\n"
-                + "                      chembl:type ?std_type;\n"
-                + "                      chembl:relation ?relation;\n"
-                + "                      chembl:standardValue ?std_value;\n"
-                + "                      chembl:standardUnits ?std_unit;\n"
-                + "                      chembl:onAssay ?assay_uri . \n"
-                + "      }\n"
-                + "    }\n"
-                + "  } \n"
-                + "}";
-        queryCase.replaceQuery = "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
-                + "PREFIX ops: <http://www.openphacts.org/api#>\n"
-                + "CONSTRUCT { 		\n"
-                + "  ?kasabiId ops:compoundPharmacologyTotalResults ?count .   \n"
-                + "} WHERE {\n"
-                + "  {\n "
-                + "    SELECT (COUNT(?activity_uri) AS ?count) {\n"
-                + "      GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
-                + "        ?activity_uri chembl:forMolecule ?kasabiId;\n"
-                + "                      chembl:type ?std_type;\n"
-                + "                      chembl:relation ?relation;\n"
-                + "                      chembl:standardValue ?std_value;\n"
-                + "                      chembl:standardUnits ?std_unit;\n"
-                + "                      chembl:onAssay ?assay_uri . \n"
-                + "      FILTER (?kasabiID = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "           || ?kasabiID = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
-                + "      }\n"
-                + "    }\n"
-                + "  } \n"
-                + "}";
-        queryCase.addParameter("?kasabiID");
-        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
-        queries.put(queryCase.key, queryCase);
-    }
-   
   private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Replacement";

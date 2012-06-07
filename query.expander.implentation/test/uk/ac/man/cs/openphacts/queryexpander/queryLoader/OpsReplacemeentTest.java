@@ -33,10 +33,10 @@ public class OpsReplacemeentTest {
             String targetQuery = loader.getTextReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
-            //ystem.out.println(originalQuery);
-            //ystem.out.println(parameters);
+            System.out.println(originalQuery);
+            System.out.println(parameters);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
-            //ystem.out.println(newQuery);
+            System.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }

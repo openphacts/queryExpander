@@ -132,10 +132,38 @@ public class QueryUtils {
             if (verbose){
                 System.out.println("*** Queries do not match ***");
                 System.out.println(query1);
-                System.out.println(QueryModelTreePrinter.printTree(tupleExpr1));
+                String tree1 = QueryModelTreePrinter.printTree(tupleExpr1);
+                System.out.println(tree1);
                 System.out.println("*");
                 System.out.println(query2);
-                System.out.println(QueryModelTreePrinter.printTree(tupleExpr2));
+                String tree2 = QueryModelTreePrinter.printTree(tupleExpr2);
+                System.out.println(tree2);
+                int len = tree1.length();
+                if (tree2.length() < len) len = tree2.length();
+                int line = 0;
+                for (int pos = 0; pos < len; pos ++){
+                    //ystem.out.println (pos + " " + tree1.charAt(pos) + tree2.charAt(pos));
+                    if (tree1.charAt(pos) != tree2.charAt(pos)) {
+                        System.out.println (pos + " in line " + line);
+                        int start = pos -20;
+                        if (pos < 0) pos = 0;
+                        int end = pos + 20;
+                        if (pos > len) pos = len;
+                        System.out.println (tree1.subSequence(start, end));
+                        System.out.println (tree2.subSequence(start, end));
+                        return false;
+                    }
+                    if (tree1.charAt(pos) == '\n') {
+                        line++;
+                    }
+                }
+                if (tree1.length() != tree2.length()){
+                    System.out.println ("Length difference");
+                } else {
+                    System.out.println("No printable diff found");
+                    //How am I ever going to find that.
+                    return true;
+                }
             }
             return false;
         }
