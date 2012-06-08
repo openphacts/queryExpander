@@ -64,7 +64,6 @@ public class QueryExpanderImpl implements QueryExpander{
         if (parameters.isEmpty()){
             return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
         } else {
-            System.out.println("replace");
             return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI, 
                     imsMapper, ALL_ATTRIBUTES);
         } 
