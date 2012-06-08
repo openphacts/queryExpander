@@ -80,5 +80,11 @@ public class QueryExpanderWSClient implements QueryExpander{
         }
         return results;
     }
+
+    @Override
+    /** Currently not implemented but can be if required */
+    public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 }

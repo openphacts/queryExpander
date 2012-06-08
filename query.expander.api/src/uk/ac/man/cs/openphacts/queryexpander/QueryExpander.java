@@ -65,4 +65,22 @@ public interface QueryExpander {
      * @throws QueryExpansionException 
      */
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException;
+    
+    /**
+     * Support function to show how a URI would map.
+     * 
+     * It is not required that all implementations implement this method.
+     * 
+     * @param URI A String that OpenRDF can convert to a URI
+     *            Must included the scheme name. (ex: http://)
+     *            Must included the absolute path. (ex: www.example.com)
+     *            May not make use of a sparql prefix.
+     *            Needs not be resolvable. (Even though that is bad practice).
+     * @param graph A String that represents the Graph or context the URI will be used in.
+     *            While Sparql insists this is a URI this requirement is not imposed by this method.
+     * @return A List of the URIs this URI would map to if found in this graph.
+     *            Includes the original URI unless that is not valid in the graph.
+     * @throws QueryExpansionException 
+     */
+    public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException;
 }

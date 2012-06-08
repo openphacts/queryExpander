@@ -73,5 +73,21 @@ public class QueryExpanderImpl implements QueryExpander{
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException {
         return imsMapper.getURISpacesPerGraph();
     }
+
+    @Override
+    public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException {
+        URI uri = new URIImpl(inputURI);
+        List<URI> mappings;
+        if (graph != null && !graph.isEmpty()){
+            mappings =  imsMapper.getSpecificMatchesForURI(uri, graph);
+        } else {
+           mappings =  imsMapper.getMatchesForURI(uri);
+        }
+        ArrayList<String> results = new ArrayList<String>();
+        for (URI mapping: mappings){
+            results.add(mapping.stringValue());
+        }
+        return results;
+    }
     
 }

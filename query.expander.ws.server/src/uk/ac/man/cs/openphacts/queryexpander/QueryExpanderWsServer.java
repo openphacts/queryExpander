@@ -159,6 +159,11 @@ public class QueryExpanderWsServer {
             + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderURISpacesPerGraph_text'); return true; \" "
             + "                   onclick=\"document.location = &quot;/QueryExpander/URISpacesPerGraph&quot;;\">"
             + "                   URISpaces per Graph</div>"
+            + "				<div id=\"menuQueryExpanderMapURI_text\" class=\"texthotlink\" "
+            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderMapURI_text'); return true; \" "
+            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderMapURI_text'); return true; \" "
+            + "                   onclick=\"document.location = &quot;/QueryExpander/mapURI&quot;;\">"
+            + "                   Check Mapping for an URI</div>"            
             + "				<div class=\"menugroup\">OPS Identity Mapping Service</div>"
             + "				<div id=\"menuOpsHome_text\" class=\"texthotlink\" "
             + "                   onmouseout=\"DHTML_TextRestore('menuOpsHome_text'); return true; \" "
@@ -195,12 +200,24 @@ public class QueryExpanderWsServer {
             + " </p>"
             + " <p><textarea rows=\"15\" name=\"query\" style=\"width:100%; background-color: #EEEEFF;\">";
     private final String FORM_PARAMETERS = "</textarea></p>"
-            + " <p>Parameters to Expand. White space seperated. </p>"
+            + " <p>Parameters to Expand. White space seperated. "
+            + "    (see <a href=\"/QueryExpander/api#parameter\">API</a>)</p>"
             + " <p><input type=\"text\" name=\"parameter\" style=\"width:100%\" value=\"";
     private final String FORM_INPUTURI = "\"/></p>"
-            + " <p>Input URI (URI to be looked up in Identity Mapping Service, Mapping results to be used in Expanded Query)</p>"
+            + " <p>Input URI (URI to be looked up in Identity Mapping Service, Mapping results to be used in Expanded Query)"
+            + "    (see <a href=\"/QueryExpander/api#inputURI\">API</a>)</p>"
             + " <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"  value=\"";
     private final String FORM_END = "\"/></p>"
+            + " <p><input type=\"submit\" value=\"Expand!\"></input> "
+            + "    Note: If the new page does not open click on the address and press enter</p>"
+            + "</form>";
+    private final String URI_MAPPING_FORM = "<form method=\"get\" action=\"/QueryExpander/mapURI\">"
+            + " <p>Input URI (URI to be looked up in Identity Mapping Service.)"
+            + "     (see <a href=\"/QueryExpander/api#inputURI\">API</a>)</p>"
+            + " <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"/></p>"
+            + " <p>Graph/Context (Graph value to limit the returned URIs)"
+            + "     (see <a href=\"/QueryExpander/api#graph\">API</a>)</p>"
+            + " <p><input type=\"text\" name=\"graph\" style=\"width:100%\"/></p>"
             + " <p><input type=\"submit\" value=\"Expand!\"></input> "
             + "    Note: If the new page does not open click on the address and press enter</p>"
             + "</form>";
@@ -237,7 +254,7 @@ public class QueryExpanderWsServer {
             + "             <li><a href=\"#inputURI\">inputURI</a></li>"
             + "         </ul>"
             + "     </ul>\n"
-            + "<h2> \"getURISpacesPerGraph\" method.</h2>"
+            + "<h2><a name=\"getURISpacesPerGraph\">\"getURISpacesPerGraph\"</a> method.</h2>"
             + " <p> Returns a Map of Graph/Context values and the allowed URISpace(s) for each.</p>"
             + " <p> When available this set of URISpace(s) "
             + "   will limit which mapped URIs are included in the filter statements for each graph.</P>"
@@ -295,7 +312,20 @@ public class QueryExpanderWsServer {
             + " <ul>"
             + "     <li>Returns a page with many links to many query examples. </li>"
             + " </ul>"
-             + "<h2>\"demo\" Method</h2>"
+            + "<h2>\"mapURI\" Method</h2>"
+            + "     <p>Given a URI and optionally a graph will list the Mapped URI known to the underlying IMS. "
+            + "     <p>If the query Expander knows which URIspace(s) are valid for a particular graph (context) only "
+            + "     URIs for those URISpaces will be returned.</p>\n"
+            + "     <ul>"
+            + "         <li>Optional  arguements:</li>"
+            + "         <ul>"
+            + "             <li><a href=\"#inputURI\">inputURI</a></li>"
+            + "             <ul><li>If no inputURI is provided this just brings up an input form.</li></ul>"
+            + "             <li><a href=\"#graph\">graph</a></li>"
+            + "         </ul>"
+            + "         <li> Currently not supported bu WSClient. (ask if required)</li>"
+            + "     </ul>\n"
+              + "<h2>\"demo\" Method</h2>"
             + " <ul>"
             + "     <li>Support function to build a demo page. </li>"
             + "     <li>Required arguements:</li>"
@@ -328,9 +358,17 @@ public class QueryExpanderWsServer {
             + "             <li>Must included the scheme name. (ex: http://)</li>"
             + "             <li>Must included the absolute path. (ex: www.example.com)</li>"
             + "             <li>May not make use of a sparql prefix.</li>"
+            + "             <li>Do not include the angle brackets</li>"
             + "             <li>Needs not be resolvable. (Even though that is bad practice).<li>"
             + "             <li>If not know to the IMS mapper, just the original URI will be used."
             + "         </ul>"
+            + "     </ul>"
+            + "     <dt><a name=\"graph\">graph</a></dt>"
+            + "     <ul>"
+            + "         <li>Limits the resulting mapped URIs to ones known to be in this Graph/Context.</li>"
+            + "         <li>String format like <a href=\"#inputURI\">inputURI</a> (not enforced).</li>"
+            + "         <li>If null or nor a known graph (see <a href=\"#getURISpacesPerGraph\">getURISpacesPerGraph</a>)"
+            + "              All mapped URIs are returned.</li>"
             + "     </ul>"
             + "     <dt><a name=\"format\">format</a></dt>"
             + "     <ul>"
@@ -621,8 +659,39 @@ public class QueryExpanderWsServer {
             sb.append("<tr>");
             sb.append("</tr>");
         }
-        sb.append("</body>");
-        sb.append("</html>");
+        sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
+    
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/mapURI") 
+    public Response mapURIasHtml(@QueryParam("inputURI") String inputURI,
+        @QueryParam("graph") String graph) throws QueryExpansionException{
+        StringBuilder sb = topAndSide("URI Mappings available per Graph (Query Context)");
+        if (inputURI != null && !inputURI.isEmpty()) {
+            List<String> mappings = queryExpander.mapURI(inputURI, graph);
+            sb.append("<h2>URI Mappings for ");
+            sb.append(inputURI);
+            sb.append("</h2>\n"); 
+            if (graph != null && !graph.isEmpty()){
+                sb.append("<h3>Limited to ones fro graph ");
+                sb.append(graph);
+                sb.append("</h3>\n");     
+            }
+            sb.append("<p>");
+            sb.append("<ul>");
+            for (String mapping:mappings){
+                sb.append("<li>");
+                sb.append(mapping);
+                sb.append("</li>");
+            }
+            sb.append("</ul>");
+        }
+        sb.append(URI_MAPPING_FORM);
+        sb.append(END);
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
+    
+    
 }
