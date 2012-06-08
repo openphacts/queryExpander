@@ -11,16 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.cxf.common.util.StringUtils;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -173,6 +169,11 @@ public class QueryExpanderWsServer {
             + "                   onmouseover=\"DHTML_TextHilight('menuOpsInfo_text'); return true; \" "
             + "                   onclick=\"document.location = &quot;/OPS-IMS/getMappingInfo&quot;;\">"
             + "                   Mappings Summary</div>"
+            + "				<div id=\"menuGraphviz_text\" class=\"texthotlink\" "
+            + "                   onmouseout=\"DHTML_TextRestore('menuGraphviz_text'); return true; \" "
+            + "                   onmouseover=\"DHTML_TextHilight('menuGraphviz_text'); return true; \" "
+            + "                   onclick=\"document.location = &quot;/OPS-IMS/graphviz&quot;;\">"
+            + "                   Mappings Summary in Graphviz format</div>"
             + "				<div id=\"menuOpsApi_text\" class=\"texthotlink\" "
             + "                   onmouseout=\"DHTML_TextRestore('menuOpsApi_text'); return true; \" "
             + "                   onmouseover=\"DHTML_TextHilight('menuOpsApi_text'); return true; \" "
