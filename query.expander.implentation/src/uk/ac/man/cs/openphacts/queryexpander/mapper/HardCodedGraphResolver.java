@@ -24,6 +24,8 @@ public class HardCodedGraphResolver {
         nameSpaces.add("http://www.conceptwiki.org/concept/");
         getAllowedNamespaces().put("http://larkc.eu#Fixedcontext", nameSpaces);
 
+        getAllowedNamespaces().put("http://www.conceptwiki.org", nameSpaces);
+
         nameSpaces = new HashSet<String>();
         nameSpaces.add("http://data.kasabi.com/dataset/chembl-rdf/target/");
         nameSpaces.add("http://data.kasabi.com/dataset/chembl-rdf/molecule/");
