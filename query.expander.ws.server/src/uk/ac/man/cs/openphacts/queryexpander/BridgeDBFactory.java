@@ -12,7 +12,7 @@ import org.bridgedb.IDMapperException;
 import org.bridgedb.file.IDMapperText;
 import org.bridgedb.sql.SQLAccess;
 import org.bridgedb.sql.SqlFactory;
-import org.bridgedb.sql.URLMapperSQL;
+import org.bridgedb.mysql.MysqlMapper;
 import org.bridgedb.url.WrapperURLMapper;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -28,7 +28,7 @@ public class BridgeDBFactory {
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             SQLAccess sqlAccess = SqlFactory.createSQLAccess();
-            URLMapperSQL urlMapper = new URLMapperSQL(sqlAccess);
+            MysqlMapper urlMapper = new MysqlMapper(sqlAccess);
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpansionException("Error setting up File mapper ", ex);
