@@ -47,8 +47,8 @@ public class Ops1_1QueryTest {
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
-            //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            System.out.println(newQuery);
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false));
         }
     }
 

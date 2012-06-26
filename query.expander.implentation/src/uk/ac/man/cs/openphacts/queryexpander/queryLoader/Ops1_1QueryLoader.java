@@ -607,44 +607,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "    ?compound_cw skos:exactMatch ?csid_uri ; skos:prefLabel ?compound_name \n"
                 + "  }\n"
                 + "} LIMIT 100";
- /*       queryCase.serverReplaceQuery = "PREFIX c2b2r_chembl: <http://chem2bio2rdf.org/chembl/resource/>\n"
-                + "PREFIX chemspider: <http://rdf.chemspider.com/#> \n"
-                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
-                + "PREFIX farmbio: <http://rdf.farmbio.uu.se/chembl/onto/#> \n"
-                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n"
-                + "SELECT DISTINCT ?target_name ?compound_name ?csid_uri ?smiles ?inchi ?inchiKey ?molweight \n"
-                + "                ?num_ro5_violations ?std_type ?relation ?std_value ?std_unites ?assay_organism \n"
-                + "WHERE { \n"
-                + "  GRAPH <http://www.chem2bio2rdf.org/ChEMBL> { \n"
-                + "    ?assay2target_uri c2b2r_chembl:tid ?replacedURI1 ; \n"
-                + "                      c2b2r_chembl:assay_id ?assay_uri ; \n"
-                + "                      c2b2r_chembl:assay_organism ?assay_organism . \n"
-                + "    ?activity_uri farmbio:onAssay ?assay_uri ;  \n"
-                + "                  c2b2r_chembl:c2b2r_chembl_02_activities_molregno ?compound_uri ; \n"
-                + "                  c2b2r_chembl:std_type ?std_type ; \n"
-                + "                  c2b2r_chembl:relation ?relation ; \n"
-                + "                  c2b2r_chembl:std_value ?std_value ; \n"
-                + "                  c2b2r_chembl:std_unites ?std_unites . \n"
-                + "    ?csid_uri skos:exactMatch ?compound_uri \n"
-                + "    OPTIONAL { ?compound_uri c2b2r_chembl:molweight ?molweight } \n"
-                + "    OPTIONAL { ?compound_uri c2b2r_chembl:num_ro5_violations ?num_ro5_violations } \n"
-                + "    OPTIONAL { ?compound_uri c2b2r_chembl:canonical_smiles ?smiles } \n"
-                + "    OPTIONAL { ?compound_uri c2b2r_chembl:inchi ?inchi } \n "
-                + "    OPTIONAL { ?compound_uri c2b2r_chembl:inchi_key ?inchiKey }\n"
-                + "    FILTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "         || ?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/target/t197> \n"
-                + "         || ?replacedURI1 = <http://rdf.chemspider.com/187440> \n"
-//TODO                + "         || ?replacedURI1 = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
-                + "         || ?replacedURI1 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
-                + "         || ?replacedURI1 = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>) \n"
-                + "  } \n"
-                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
-                + "    <http://www.conceptwiki.org/concept/458eaa59-79a5-448f-9085-9664f6f643af> skos:prefLabel ?target_name . \n"
-                + "    ?compound_cw skos:exactMatch ?csid_uri ; skos:prefLabel ?compound_name \n"
-                + "  }\n"
-                + "} LIMIT 100";
- */      queries.put(queryCase.key, queryCase);
+       queries.put(queryCase.key, queryCase);
    }
 
    private void loadProteinInfo() {
@@ -803,6 +766,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "}";
         queries.put(queryCase.key, queryCase);
    }
+   
 
    private void load() {
         QueryCase queryCase = new QueryCase();

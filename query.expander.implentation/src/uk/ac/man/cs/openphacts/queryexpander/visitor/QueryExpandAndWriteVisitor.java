@@ -234,6 +234,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             if (value instanceof URI){
                 String uriValue = getURIVariable((URI)value);
                 queryString.append(uriValue);
+                queryString.append(" ");
              } else {
                 meet(var);
             }

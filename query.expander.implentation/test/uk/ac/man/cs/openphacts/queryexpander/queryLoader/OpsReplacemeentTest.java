@@ -22,7 +22,6 @@ public class OpsReplacemeentTest {
     
     @Test
     public void testAllNoMapping() throws Exception{
-        Ops1_1QueryLoader loaderX = new Ops1_1QueryLoader();
         QueryCaseLoader loader = new OpsReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
@@ -36,7 +35,7 @@ public class OpsReplacemeentTest {
             //ystem.out.println(originalQuery);
             //ystem.out.println(parameters);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
-            //ystem.out.println(newQuery);
+            System.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
     }

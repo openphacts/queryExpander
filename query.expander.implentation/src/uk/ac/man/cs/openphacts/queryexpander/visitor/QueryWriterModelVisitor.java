@@ -136,7 +136,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = false;
+    final boolean SHOW_DEBUG_IN_QUERY = true;
     
     //private int nextAnon = 1;
     
@@ -294,6 +294,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (tail.matches("\\-\\w+\\-\\w+\\-\\w+\\-\\w+\\-\\w+")){
             queryString.append(" ?");
             queryString.append(actualName);
+            queryString.append(" ");
             return true;
         }
         return false;
@@ -448,8 +449,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 queryString.append(writeSubQuery(dstnct));
                 newLine();
                 queryString.append("} ");
-                if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
-                newLine();
+                if (SHOW_DEBUG_IN_QUERY) {
+                    queryString.append("#closesubquery");
+                    newLine();
+                }
             } else {
                 meet ((Projection)tupleExpr, " DISTINCT");
             }
@@ -600,6 +603,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                    queryString.append(grouping);
                 }
             }
+            queryString.append(" ");
         }
     }
 
@@ -929,6 +933,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Order order) throws QueryExpansionException {
         order.getArg().visit(this);
         closeWhereIfRequired();
+        newLine();
         queryString.append("ORDER BY ");
         List<OrderElem> orderElems = order.getElements();
         for (OrderElem orderElem: orderElems){
@@ -1404,16 +1409,30 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Slice ASK");
             newLine();
         } else {
-            slice.getArg().visit(this);
-            if (slice.hasLimit()){
+            if (this.whereOpen){
                 newLine();
-                queryString.append("LIMIT ");
-                queryString.append(slice.getLimit());     
-            }
-            if (slice.hasOffset()){
+                queryString.append("{ ");
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
                 newLine();
-                queryString.append("OFFSET ");
-                queryString.append(slice.getOffset());     
+                queryString.append(writeSubQuery(slice));
+                newLine();
+                queryString.append("} ");
+                if (SHOW_DEBUG_IN_QUERY) {
+                    queryString.append("#closesubquery");
+                    newLine();
+                }
+            } else {
+                slice.getArg().visit(this);
+                if (slice.hasLimit()){
+                    newLine();
+                    queryString.append("LIMIT ");
+                    queryString.append(slice.getLimit());     
+                }
+                if (slice.hasOffset()){
+                    newLine();
+                    queryString.append("OFFSET ");
+                    queryString.append(slice.getOffset());     
+                }
             }
         }
     }
@@ -1708,6 +1727,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         } else {
             queryString.append(" ?");
             queryString.append(var.getName());
+            queryString.append(" ");
         }
     }
 
