@@ -140,7 +140,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             for (String variableName:mappings.keySet()){
                 List<URI> uriList = mappings.get(variableName);
                 newLine();
-                queryString.append("FILTER (");
+                queryString.append("FiLTER (");
                 queryString.append(variableName);
                 queryString.append(" = <");
                 queryString.append(uriList.get(0));

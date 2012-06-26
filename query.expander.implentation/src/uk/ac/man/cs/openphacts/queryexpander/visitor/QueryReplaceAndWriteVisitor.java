@@ -133,8 +133,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         if (!(mappings.isEmpty())){
             for (String variableName:mappings.keySet()){
                 List<URI> uriList = mappings.get(variableName);
+                if (SHOW_DEBUG_IN_QUERY) queryString.append(" # IN closeContext");
                 newLine();
-                queryString.append("FILTER (");
+                queryString.append("FILTeR (");
                 queryString.append(variableName);
                 queryString.append(" = <");
                 queryString.append(uriList.get(0));

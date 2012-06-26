@@ -1010,6 +1010,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     public void meet(Projection prjctn, String modifier) throws QueryExpansionException {
+        boolean extraCurly = false;
+        if (this.inConstruct){
+            queryString.append("{ ");
+            newLine();
+        }
         queryString.append("SELECT ");
         queryString.append(modifier);
         addExpanded(prjctn);
@@ -1023,6 +1028,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         printDataset();
         prjctn.getArg().visit(this);
         closeWhereIfRequired();
+        if (extraCurly){
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#project inContruct");
+            newLine();
+        }
     }
 
     /**
