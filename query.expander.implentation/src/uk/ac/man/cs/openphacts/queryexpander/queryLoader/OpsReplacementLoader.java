@@ -16,6 +16,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
        loadCompoundPharmaPages();
        loadCompoundPharma();
        loadInnerLimit();
+       loadManyWhere();
    } 
    
   private void loadcompoundPharma_count() {
@@ -527,8 +528,8 @@ public class OpsReplacementLoader extends QueryCaseLoader{
 
    private void loadInnerLimit() {
         QueryCase queryCase = new QueryCase();
-        queryCase.key = "Ops_Inner_Limit";
-        queryCase.name = "Ops Query With Inner Limit";
+        queryCase.key = "OpsReplacement_Inner_Limit";
+        queryCase.name = "Query With Inner Limit";
         queryCase.originalQuery = "PREFIX ops: <http://www.openphacts.org/api#>\n"
                 + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
                 + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
@@ -735,6 +736,137 @@ public class OpsReplacementLoader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
     }
    
+    private void loadManyWhere() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsReplacementManyWhere";
+        queryCase.name = "Query which caused the many where bug";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "CONSTRUCT { \n"
+                + "     <http://www.conceptwiki.org/concept/00059958-a045-4581-9dc5-e5a08bb0c291> skos:exactMatch ?cw_uri ;\n"
+                + "         skos:exactMatch ?chembl_uri ;\n"
+                + "         skos:exactMatch ?db_uri .\n"
+                + "         ?cw_uri skos:prefLabel ?compound_name ;\n"
+                + "         void:inDataset <http://www.conceptwiki.org> .\n"
+                + "     ?chembl_uri chembl:hasKeyword ?keywords ;\n"
+                + "         chembl:hasDescription ?description ;\n"
+                + "         rdfs:subClassOf ?target_type ;\n"
+                + "         chembl:organism ?organism ;\n"
+                + "         rdfs:label ?synonyms ;	\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf>.\n"
+                + "     ?db_uri drugbank:cellularLocation ?cellularLocation ;\n"
+                + "         drugbank:molecularWeight ?molecularWeight ;\n"
+                + "         drugbank:numberOfResidues ?numberOfResidues ;\n"
+                + "         drugbank:pdbIdPage ?pdbIdPage ;\n"
+                + "         drugbank:specificFunction ?specificFunction ;\n"
+                + "         drugbank:theoreticalPi ?theoreticalPi .\n"
+                + "}\n"
+                + "WHERE { \n"
+                + "     GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "         ?cw_uri skos:prefLabel ?target_name.\n"
+                + "     }\n"
+                + "     {\n"
+                + "         SELECT ?target_type ?description ?organism \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?keyword ; SEPARATOR=' , ') as ?keywords ) \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?synonym ; SEPARATOR=' , ' ) as ?synonyms) {\n"
+                + "             GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "                 ?chembl_uri chembl:hasKeyword ?keyword ;\n"
+                + "                     chembl:hasDescription ?description ;\n"
+                + "                     rdfs:subClassOf ?target_type ;\n"
+                + "                     chembl:organism ?organism ;\n"
+                + "                 rdfs:label ?synonym\n"
+                + "             }\n"
+                + "         } \n"
+                + "         GROUP BY ?target_type ?description ?organism ?molecularWeight ?numberOfResidues  \n"
+                + "     }\n"
+                + "     {\n"
+                + "         SELECT ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?cellularLocation ; SEPARATOR=' , ' ) as ?cellularLocations ) {\n"
+                + "             GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "                 OPTIONAL { ?db_uri drugbank:cellularLocation ?cellularLocation }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:molecularWeight ?molecularWeight }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:numberOfResidues ?numberOfResidues }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:pdbIdPage ?pdbIdPage }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:specificFunction ?specificFunction }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:theoreticalPi ?theoreticalPi }\n"
+                + "             }\n"
+                + "         }\n"
+                + "         GROUP BY ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi \n"
+                + "     }\n"
+                + "} LIMIT 100";
+        queryCase.replaceQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "CONSTRUCT { \n"
+                + "     <http://www.conceptwiki.org/concept/00059958-a045-4581-9dc5-e5a08bb0c291> skos:exactMatch ?cw_uri ;\n"
+                + "         skos:exactMatch ?chembl_uri ;\n"
+                + "         skos:exactMatch ?db_uri .\n"
+                + "         ?cw_uri skos:prefLabel ?compound_name ;\n"
+                + "         void:inDataset <http://www.conceptwiki.org> .\n"
+                + "     ?chembl_uri chembl:hasKeyword ?keywords ;\n"
+                + "         chembl:hasDescription ?description ;\n"
+                + "         rdfs:subClassOf ?target_type ;\n"
+                + "         chembl:organism ?organism ;\n"
+                + "         rdfs:label ?synonyms ;	\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf>.\n"
+                + "     ?db_uri drugbank:cellularLocation ?cellularLocation ;\n"
+                + "         drugbank:molecularWeight ?molecularWeight ;\n"
+                + "         drugbank:numberOfResidues ?numberOfResidues ;\n"
+                + "         drugbank:pdbIdPage ?pdbIdPage ;\n"
+                + "         drugbank:specificFunction ?specificFunction ;\n"
+                + "         drugbank:theoreticalPi ?theoreticalPi .\n"
+                + "}\n"
+                + "WHERE { \n"
+                + "     GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "         ?cw_uri skos:prefLabel ?target_name.\n"
+                + "     FILTER (?cw_uri = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "     }\n"
+                + "     {\n"
+                + "         SELECT ?target_type ?description ?organism \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?keyword ; SEPARATOR=' , ') as ?keywords ) \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?synonym ; SEPARATOR=' , ' ) as ?synonyms) {\n"
+                + "             GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "                 ?chembl_uri chembl:hasKeyword ?keyword ;\n"
+                + "                     chembl:hasDescription ?description ;\n"
+                + "                     rdfs:subClassOf ?target_type ;\n"
+                + "                     chembl:organism ?organism ;\n"
+                + "                 rdfs:label ?synonym\n"
+                + "                 FILTER (?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "                      || ?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "             }\n"
+                + "         } \n"
+                + "         GROUP BY ?target_type ?description ?organism ?molecularWeight ?numberOfResidues  \n"
+                + "     }\n"
+                + "     {\n"
+                + "         SELECT ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi \n"
+                + "                 (GROUP_CONCAT( DISTINCT ?cellularLocation ; SEPARATOR=' , ' ) as ?cellularLocations ) {\n"
+                + "             GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "                 OPTIONAL { ?db_uri drugbank:cellularLocation ?cellularLocation }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:molecularWeight ?molecularWeight }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:numberOfResidues ?numberOfResidues }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:pdbIdPage ?pdbIdPage }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:specificFunction ?specificFunction }\n"
+                + "                 OPTIONAL { ?db_uri drugbank:theoreticalPi ?theoreticalPi }\n"
+                + "                 FILTER (?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
+                + "                      || ?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "             }\n"
+                + "         }\n"
+                + "         GROUP BY ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi \n"
+                + "     }\n"
+                + "} LIMIT 100";
+        queryCase.addParameter("?cw_uri");
+        queryCase.addParameter("?cs_uri");
+        queryCase.addParameter("?chembl_uri");
+        queryCase.addParameter("?db_uri");
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
+        queries.put(queryCase.key, queryCase);
+    }
+
     private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "OpsReplacement";

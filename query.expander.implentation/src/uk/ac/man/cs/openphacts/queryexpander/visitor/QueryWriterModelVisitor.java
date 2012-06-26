@@ -508,7 +508,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Filter filter) throws QueryExpansionException {
-        writeWhereIfRequired(filter);
+        writeWhereIfRequired(filter, "filter");
         newLine();
         if (writeNotPredicate(filter)) return;
         if (writeHaving(filter)) return;
@@ -693,7 +693,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Join join) throws QueryExpansionException {
-        writeWhereIfRequired(join);
+        writeWhereIfRequired(join, "join");
         if (join.getLeftArg() instanceof BindingSetAssignment){
             join.getRightArg().visit(this);
             closeWhereIfRequired();
@@ -704,18 +704,23 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void writeWhereIfRequired(TupleExpr tupleExpr) throws QueryExpansionException {
+    private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
             if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
-                writeWhere();
+                writeWhere(caller);
             }
         }
     }
     
-    private void writeWhere() throws QueryExpansionException {
+    private void writeWhere(String caller) throws QueryExpansionException {
         newLine();
         queryString.append("WHERE {");
         whereOpen= true;
+        if (SHOW_DEBUG_IN_QUERY){
+            newLine();
+            queryString.append("#openWhere in " + caller); 
+            newLine();
+        }
     }
     
     @Override
@@ -747,7 +752,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      */
     public void meet(LeftJoin lj) throws QueryExpansionException {
         
-        writeWhereIfRequired(lj);
+        writeWhereIfRequired(lj, "left join");
         //The leftArg is the stuff outside of the optional.
         //May be a SingletonSet in which case nothing is written
         lj.getLeftArg().visit(this);
@@ -954,13 +959,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Projection prjctn) throws QueryExpansionException {
-        if (this.inConstruct){
-            writeWhere();
-            if (SHOW_DEBUG_IN_QUERY){
-                newLine();
-                queryString.append("#openWhere in Projection"); 
-                newLine();
-            }
+        if (this.inConstruct && !this.whereOpen) {
+            writeWhere("prjctn");
         }
         if (this.whereOpen){
             newLine();
@@ -1359,7 +1359,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     @Override
     public void meet(Service srvc) throws QueryExpansionException {
-        writeWhereIfRequired(srvc);
+        writeWhereIfRequired(srvc, "service");
         //ystem.out.println(srvc);
         //ystem.out.println("BaseURI:" +srvc.getBaseURI());
         //ystem.out.println("prefix:" + srvc.getPrefixDeclarations());
@@ -1380,7 +1380,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(SingletonSet ss) throws QueryExpansionException {
-        writeWhereIfRequired(ss);
+        writeWhereIfRequired(ss,"SingkletonSet");
         newLine();
         //queryString.append("{} ");
         //Expected no children but just to be sure.
@@ -1463,7 +1463,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     private void beforeStatmentPattern(StatementPattern sp) throws QueryExpansionException{
-        writeWhereIfRequired(sp);
+        writeWhereIfRequired(sp,"StatementPattern");
         //Double check that then statement has the expected context 
         if (contexts.get(0) == null){
             if (sp.getContextVar() != null) {
@@ -1699,7 +1699,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Union union) throws QueryExpansionException {
-        writeWhereIfRequired(union);
+        writeWhereIfRequired(union, "union");
         queryString.append("{");
         union.getLeftArg().visit(this);
         newLine();
