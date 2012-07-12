@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-//@Ignore
+@Ignore
 public class OpsReplacemeentTest {
     
     @Test
