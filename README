@@ -1,3 +1,58 @@
 This project holds the Stand alone Query Expander.
 
 It may be moved into BridgeDB in which case this repository will be closed.
+
+This project depend on the BridgeDb project.
+
+To run it needs 
+  	org.bridgedb
+  	org.bridgedb.sql
+  	org.bridgedb.ops.sql
+
+To load in data you need
+ 	org.bridgedb.linksets
+
+For the Links to the BridgeDB info sites you need
+  	org.bridgedb.ws.core
+  	org.bridgedb.ops.ws.core
+  	org.bridgedb.ws.server
+  	org.bridgedb.ops.ws.server
+  	     (bridgeDb.war is not required except to run the none ops client tests with are repeated in ops anyway)
+  	org.bridgedb.ws.service
+  	org.bridgedb.ops.ws.service
+And the OPS-IMS.war in tomcat
+
+To create transative mappings you also nee:
+	org.bridgedb.transitive
+	
+
+To run the query expander the easiest way is via the webservice:
+	Drop QueryExpander.war into Tomcat
+	yourtomcatAddres/QueryExpander
+	
+To run QueryExpander without a WS
+	HardCodedGraphResolver resolver = new HardCodedGraphResolver();
+	SQLAccess sqlAccess = SqlFactory.createSQLAccess();
+	URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
+	IMSMapper imsMapper = new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
+	QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+	 
+To run using the WS and a client see:
+    QueryExpanderClientFactory
+    returned QueryExpanderWSClient implements the same QueryExpander interface
+    
+=== UGLY hard code stuff that needs to be removed in the future ====
+
+HardCodedGraphResolver 
+    Provides a mapping between Larkc graphs/Contexts and the UriSpaces of the id that are found with it.
+    If an unkown graph is use the query will be valid but with extra urls in it.
+    
+UriSpaceMapper (in package org.bridgedb.ops.sql)
+    Maps between UriSpaces and the DataSources.
+    Only taken into consideration when the database is reset by loading using the "new" parameter.
+    After that the current fix is to hack the SQL database.
+    Urgently needs replacing with indentifiers.org methods.
+
+    
+    
+    
