@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.junit.Ignore;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
@@ -33,7 +34,7 @@ public class Version2Test {
             //ystem.out.println(parameters);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
             //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
  

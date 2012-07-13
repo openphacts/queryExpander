@@ -37,7 +37,7 @@ public class Version1Test {
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
             //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
 

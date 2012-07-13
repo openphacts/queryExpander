@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-@Ignore
 public class OpsReplacemeentTest {
     
     @Test
@@ -36,8 +35,8 @@ public class OpsReplacemeentTest {
             //ystem.out.println(originalQuery);
             //ystem.out.println(parameters);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
-            System.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            //System.out.println(newQuery);
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
 

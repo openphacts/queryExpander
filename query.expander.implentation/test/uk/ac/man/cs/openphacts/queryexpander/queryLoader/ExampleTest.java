@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.junit.Ignore;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
@@ -19,6 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
+@Ignore
 public class ExampleTest {
     
     @Test
@@ -35,7 +37,7 @@ public class ExampleTest {
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
 

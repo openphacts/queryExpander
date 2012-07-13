@@ -111,7 +111,7 @@ public class QueryUtils {
      * @return True if and only if the two queries generate equals TupleExpr. 
      * @throws MalformedQueryException 
      */
-    public static boolean sameTupleExpr(String query1, String query2, boolean verbose) throws MalformedQueryException{
+    public static boolean sameTupleExpr(String query1, String query2, boolean verbose, String text) throws MalformedQueryException{
         ParsedQuery parsedQuery1 = parser.parseQuery(query1, null); 
         TupleExpr tupleExpr1 =  parsedQuery1.getTupleExpr();
         ParsedQuery parsedQuery2 = parser.parseQuery(query2, null); 
@@ -151,6 +151,7 @@ public class QueryUtils {
                         if (pos > len) pos = len;
                         System.out.println (tree1.subSequence(start, end));
                         System.out.println (tree2.subSequence(start, end));
+                        System.out.println (text);
                         return false;
                     }
                     if (tree1.charAt(pos) == '\n') {
@@ -165,6 +166,7 @@ public class QueryUtils {
                     return true;
                 }
             }
+            System.out.println (text);
             return false;
         }
     }
@@ -240,8 +242,8 @@ public class QueryUtils {
      * @return True if and only if the two queries generate equals TupleExpr. 
      * @throws MalformedQueryException 
      */
-    public static boolean sameTupleExpr(String query1, String query2) throws MalformedQueryException{
-        return sameTupleExpr(query1, query2, true);
+    public static boolean sameTupleExpr(String query1, String query2, String text) throws MalformedQueryException{
+        return sameTupleExpr(query1, query2, true, text);
     }
     
  

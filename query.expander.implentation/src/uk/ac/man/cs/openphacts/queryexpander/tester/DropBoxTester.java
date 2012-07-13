@@ -55,7 +55,7 @@ public class DropBoxTester {
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         String newQuery = queryExpander.expand(query);
-        if (QueryUtils.sameTupleExpr(query, newQuery, true)){
+        if (QueryUtils.sameTupleExpr(query, newQuery, true, test.getAbsolutePath())){
             System.out.println("ok");
         } else {
             System.out.println("error");

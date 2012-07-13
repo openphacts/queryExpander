@@ -17,7 +17,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
        loadCompoundPharma();
        loadInnerLimit();
        loadManyWhere();
-       loadCurlyBrackBug();
+ //      loadCurlyBrackBug();
    } 
    
   private void loadcompoundPharma_count() {
@@ -56,8 +56,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "                      chembl:standardValue ?std_value;\n"
                 + "                      chembl:standardUnits ?std_unit;\n"
                 + "                      chembl:onAssay ?assay_uri . \n"
-                + "      FILTER (?kasabiId = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "           || ?kasabiId = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "      FILTER (?kasabiId = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734>)\n"
                 + "      }\n"
                 + "    }\n"
                 + "  } \n"
@@ -143,7 +142,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "WHERE {\n"
                 + " GRAPH <http://larkc.eu#Fixedcontext> {\n"
                 + "		?concepWikiURI skos:prefLabel ?target_name.\n"
-                + "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/516c9a26-885c-4920-9a13-d0a68cf99084>)\n"
                 + "	}\n"
                 + "	{ \n"
                 + "     SELECT DISTINCT ?kasabiURI ?target_type ?description ?organism "
@@ -155,8 +154,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "				rdfs:subClassOf ?target_type ;\n"
                 + "				chembl:organism ?organism ;\n"
                 + "				rdfs:label ?synonym .\n"
-                + "         FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> "
-                + "              || ?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "         FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/target/t11063>)\n"
                 + "		}\n"
                 + "	} GROUP BY ?target_type ?description ?organism ?kasabiURI}\n"
                 + "	{ \n"
@@ -169,15 +167,14 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "			OPTIONAL { ?drugbankURI drugbank:pdbIdPage ?pdbIdPage }\n"
                 + "			OPTIONAL { ?drugbankURI drugbank:specificFunction ?specificFunction }\n"
                 + "			OPTIONAL { ?drugbankURI drugbank:theoreticalPi ?theoreticalPi }\n"
-                + "         FILTER (?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> "
-                + "              || ?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "         FILTER (?drugbankURI =<http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/6131>)\n"
                 + "		}\n"
                 + "	} GROUP BY ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi ?drugbankURI }\n"
                 + "}";
         queryCase.addParameter("?concepWikiURI");
         queryCase.addParameter("?kasabiURI");
         queryCase.addParameter("?drugbankURI");
-        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/516c9a26-885c-4920-9a13-d0a68cf99084";
         queries.put(queryCase.key, queryCase);
     }
 
@@ -328,8 +325,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "					?drugbankURI drugbank:genericName ?drug_name ;\n"
                 + "						drugbank:drugType ?drugType_uri .\n"
                 + "					?drugType_uri rdfs:label ?drugType.\n"
-                + "                 FILTER (?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> "
-                + "                      || ?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "                 FILTER (?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398>)\n"
                 + "				}\n"
                 + "			} GROUP BY ?drug_name ?drugbankURI\n"
                 + "		}\n"
@@ -357,8 +353,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "				OPTIONAL { ?kasabiURI sio:CHEMINF_000200 ?bNode2 .\n"
                 + "					?bNode2 a sio:CHEMINF_000314 ;\n"
                 + "						sio:SIO_000300 ?num_ro5_violations. }\n"
-                + "             FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> "
-                + "                  || ?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "             FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> )\n"
                 + "			}\n"
                 + "		} GROUP BY ?item ?std_type ?relation ?std_value ?std_unit ?assay_uri ?bNode1 ?molweight ?bNode2 ?num_ro5_violations  \n"
                 + "	} \n"
@@ -508,15 +503,13 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "		OPTIONAL { ?kasabiURI sio:CHEMINF_000200 ?node2 .\n"
                 + "			?node2 a sio:CHEMINF_000314 ;\n"
                 + "				sio:SIO_000300 ?num_ro5_violations.}\n"
-                + "     FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> "
-                + "          || ?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "     FILTER (?kasabiURI = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734>)\n"
                 + "	}\n"
                 + "	GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
                 + "		?drugbankURI drugbank:genericName ?drug_name ;\n"
                 + "			drugbank:drugType ?drugType_uri .\n"
                 + "		?drugType_uri rdfs:label ?drugType. \n"
-                + "     FILTER (?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> "
-                + "          || ?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "     FILTER (?drugbankURI = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398>)\n"
                 + "	} \n"
                 + "}";
         queryCase.addParameter("?concepWikiURI");
@@ -687,8 +680,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "                 ?db_uri drugbank:genericName ?drug_name ;\n"
                 + "                     drugbank:drugType ?drugType_uri .\n"
                 + "                 ?drugType_uri rdfs:label ?drugType.\n"
-                + "                 FILTER (?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
-                + "                      || ?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "                 FILTER (?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> )\n"
                 + "             }\n"
                 + "          } GROUP BY ?drug_name ?db_uri\n"
                 + "     }\n"
@@ -719,8 +711,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "                     ?bNode2 a sio:CHEMINF_000314 ;\n"
                 + "                         sio:SIO_000300 ?num_ro5_violations. \n"
                 + "                 }\n"
-                + "                 FILTER (?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "                      || ?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "                 FILTER (?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> )\n"
                 + "             }\n"
                 + "         }\n"
                 + "         GROUP BY ?chembl_uri ?item ?std_type ?relation ?std_value ?std_unit ?assay_uri ?bNode1 \n"
@@ -739,7 +730,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
    
     private void loadManyWhere() {
         QueryCase queryCase = new QueryCase();
-        queryCase.key = "OpsReplacementManyWhere";
+        queryCase.key = "OpsManyWhere";
         queryCase.name = "Query which caused the many where bug";
         queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
                 + "PREFIX void: <http://rdfs.org/ns/void#>\n"
@@ -825,7 +816,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "WHERE { \n"
                 + "     GRAPH <http://larkc.eu#Fixedcontext> {\n"
                 + "         ?cw_uri skos:prefLabel ?target_name.\n"
-                + "     FILTER (?cw_uri = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "     FILTER (?cw_uri = <http://www.conceptwiki.org/concept/516c9a26-885c-4920-9a13-d0a68cf99084>)\n"
                 + "     }\n"
                 + "     {\n"
                 + "         SELECT ?target_type ?description ?organism \n"
@@ -837,8 +828,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "                     rdfs:subClassOf ?target_type ;\n"
                 + "                     chembl:organism ?organism ;\n"
                 + "                 rdfs:label ?synonym\n"
-                + "                 FILTER (?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "                      || ?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "                 FILTER (?chembl_uri = <http://data.kasabi.com/dataset/chembl-rdf/target/t11063>)\n"
                 + "             }\n"
                 + "         } \n"
                 + "         GROUP BY ?target_type ?description ?organism ?molecularWeight ?numberOfResidues  \n"
@@ -853,8 +843,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
                 + "                 OPTIONAL { ?db_uri drugbank:pdbIdPage ?pdbIdPage }\n"
                 + "                 OPTIONAL { ?db_uri drugbank:specificFunction ?specificFunction }\n"
                 + "                 OPTIONAL { ?db_uri drugbank:theoreticalPi ?theoreticalPi }\n"
-                + "                 FILTER (?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
-                + "                      || ?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "                 FILTER (?db_uri = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/6131>)\n"
                 + "             }\n"
                 + "         }\n"
                 + "         GROUP BY ?molecularWeight ?numberOfResidues ?pdbIdPage ?specificFunction ?theoreticalPi \n"
@@ -864,7 +853,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
         queryCase.addParameter("?cs_uri");
         queryCase.addParameter("?chembl_uri");
         queryCase.addParameter("?db_uri");
-        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/516c9a26-885c-4920-9a13-d0a68cf99084";
         queries.put(queryCase.key, queryCase);
     }
 
