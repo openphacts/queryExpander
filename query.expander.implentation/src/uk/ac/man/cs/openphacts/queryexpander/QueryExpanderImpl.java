@@ -46,7 +46,7 @@ public class QueryExpanderImpl implements QueryExpander{
 
     public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
             throws QueryExpansionException {
-
+        inputURI = checkURI(inputURI);
         if (verbose) System.out.println(originalQuery);
         ParsedQuery parsedQuery; 
         try {
@@ -61,12 +61,19 @@ public class QueryExpanderImpl implements QueryExpander{
         if (inputURI != null && !inputURI.isEmpty()){
             InputAsURI = new URIImpl(inputURI);
         }
+        String newQuery;
         if (parameters.isEmpty()){
-            return QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
+            newQuery = QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
         } else {
-            return QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI, 
+            newQuery = QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI,
                     imsMapper, ALL_ATTRIBUTES);
-        } 
+        }
+        try {
+            parsedQuery = parser.parseQuery(newQuery, null);
+        } catch (MalformedQueryException ex) {
+            throw new QueryExpansionException("OOPS! Unable to parse the result query " + parsedQuery, ex);
+        }
+        return newQuery;
     }
 
     @Override
@@ -88,6 +95,13 @@ public class QueryExpanderImpl implements QueryExpander{
             results.add(mapping.stringValue());
         }
         return results;
+    }
+
+    private String checkURI(String inputURI) {
+        if (inputURI == null || inputURI.isEmpty()) return inputURI;
+        String checked = inputURI.trim();
+        URI test = new URIImpl(inputURI);
+        return inputURI;
     }
     
 }
