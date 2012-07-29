@@ -59,8 +59,16 @@
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.sql</artifactId>
 			<version>${bridbgedb.version}</version>
+            <type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bridgedb</groupId>
+			<artifactId>org.bridgedb.linksets</artifactId>
+			<version>${bridbgedb.version}</version>
 			<scope>test</scope>
 		</dependency>
       </dependencies>
 
 </project>
+

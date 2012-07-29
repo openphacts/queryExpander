@@ -1,23 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
-import uk.ac.man.cs.openphacts.queryexpander.queryLoader.*;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bridgedb.DataSource;
-import org.bridgedb.IDMapper;
-import org.bridgedb.IDMapperException;
-import org.bridgedb.file.IDMapperText;
 import org.bridgedb.mysql.MySQLSpecific;
 import org.bridgedb.sql.BridgeDbSqlException;
 import org.bridgedb.sql.SQLAccess;
 import org.bridgedb.sql.SQLUrlMapper;
 import org.bridgedb.sql.SqlFactory;
 import org.bridgedb.url.URLMapper;
+import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
@@ -71,12 +62,10 @@ public class TestBridgeDBFactory {
             org.junit.Assume.assumeTrue(false);        
             return null;
          }
-    } 
-	//@Test 
-    //public void testFileExists()
-	//{
-    //    report("FileExists");
-	//	Assert.assertTrue (INTERFACE_TEST_FILE.exists());
-	//}	
+    }
+
+    @Test
+    public void doNothing(){
+    }
 
 }

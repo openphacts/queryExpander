@@ -29,11 +29,10 @@ public class Version2Loader extends QueryCaseLoader{
                 + "WHERE  { \n"
                 + "  ?x org:employeeName ?name . \n"
                 + "  FILTER (?x = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "       || ?x = <http://data.kasabi.com/dataset/chembl-rdf/target/t197> \n"
                 + "       || ?x = <http://rdf.chemspider.com/187440> \n"
+                + "       || ?x = <http://www.chemspider.com/187440> \n"
                 + "       || ?x = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
-                + "       || ?x = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398> \n"
-                + "       || ?x = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/228>)\n"
+                + "       || ?x = <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/DB00398>)\n"
                 + "}\n";  
         queryCase.addParameter("?x");
         queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
@@ -69,8 +68,7 @@ public class Version2Loader extends QueryCaseLoader{
                 + "    GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
                 + "      ?activity_uri chembl:forMolecule ?kasabiID;\n"
                 + "      chembl:onAssay ?assay_uri .\n"
-                + "    FILTER (?kasabiID = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
-                + "         || ?kasabiID = <http://data.kasabi.com/dataset/chembl-rdf/target/t197>)\n"
+                + "    FILTER (?kasabiID = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734>)\n"
                 + "    }\n"
                 + "  }\n"
                 + "} ";

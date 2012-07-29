@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class OpsReplacemeentTest {
+public class OpsReplacemeentTest  extends LoaderBase {
     
     @Test
     public void testAllNoMapping() throws Exception{
