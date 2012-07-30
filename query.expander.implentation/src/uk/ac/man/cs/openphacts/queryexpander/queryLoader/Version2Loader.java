@@ -77,7 +77,60 @@ public class Version2Loader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
     }
 
-  private void load() {
+   private void loadBoundExample() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsReplacementProteinInfo";
+        queryCase.name = "Protein Info Query";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "CONSTRUCT {\n"
+                + " ?concepWikiURI skos:prefLabel ?target_name ;\n"
+                + "		skos:exactMatch ?drugbankURI .\n"
+                + "	?drugbankURI drugbank:molecularWeight ?molecularWeight .\n"
+                + "}\n"
+                + "WHERE {\n"
+                + " GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "		?concepWikiURI skos:prefLabel ?target_name.\n"
+                + "	}\n"
+                + "	{ \n"
+                + "     SELECT DISTINCT ?drugbankURI ?molecularWeight {"
+                + "		GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "			OPTIONAL { ?drugbankURI drugbank:molecularWeight ?molecularWeight }\n"
+                + "		}\n"
+                + "	}\n"
+                + "}";
+        queryCase.replaceQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "CONSTRUCT {\n"
+                + " ?concepWikiURI skos:prefLabel ?target_name ;\n"
+                + "		skos:exactMatch ?drugbankURI .\n"
+                + "	?drugbankURI drugbank:molecularWeight ?molecularWeight .\n"
+                + "}\n"
+                + "WHERE {\n"
+                + " GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "		?concepWikiURI skos:prefLabel ?target_name.\n"
+                + "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/notThere>)\n"
+                + "	}\n"
+                + "	{ \n"
+                + "     SELECT DISTINCT ?drugbankURI ?molecularWeight {"
+                + "		GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "			OPTIONAL { ?drugbankURI drugbank:molecularWeight ?molecularWeight }\n"
+                + "         FILTER (!BOUND(?drugbankURI))\n"
+                + "		}\n"
+                + "	}\n"
+                + "}";
+        queryCase.addParameter("?concepWikiURI");
+        queryCase.addParameter("?kasabiURI");
+        queryCase.addParameter("?drugbankURI");
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/notThere";
+        queries.put(queryCase.key, queryCase);
+    }
+
+   private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Replacement";
         queryCase.name = " Query";

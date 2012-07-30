@@ -130,24 +130,15 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         }
         //Add any required URI filters
         //if there are non no filters need to be added.
+        if (SHOW_DEBUG_IN_QUERY) queryString.append(" # IN closeContext");
         if (!(mappings.isEmpty())){
             for (String variableName:mappings.keySet()){
                 List<URI> uriList = mappings.get(variableName);
-                if (SHOW_DEBUG_IN_QUERY) queryString.append(" # IN closeContext");
-                newLine();
-                queryString.append("FILTeR (");
-                queryString.append(variableName);
-                queryString.append(" = <");
-                queryString.append(uriList.get(0));
-                queryString.append(">");
-                for (int i = 1; i < uriList.size(); i++){
-                    queryString.append(" || ");
-                    queryString.append(variableName);
-                    queryString.append(" = <");
-                    queryString.append(uriList.get(i));
-                    queryString.append(">");            
+                if (uriList.isEmpty()){
+                    addUnbound(variableName);
+                } else {
+                    addFilter(variableName, uriList);
                 }
-                queryString.append(")");
             }
             //Clear the mappings so they are no closed again.
             mappings = new  HashMap<String,List<URI>>(); 
@@ -156,15 +147,39 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         super.closeContext();
     }
 
+    private void addUnbound(String variableName){
+        newLine();
+        queryString.append("FILtER (!bound(");
+        queryString.append(variableName);
+        queryString.append("))");
+    }
+
+    private void addFilter(String variableName, List<URI> uriList){
+        newLine();
+        queryString.append("FILTeR (");
+        queryString.append(variableName);
+        queryString.append(" = <");
+        queryString.append(uriList.get(0));
+        queryString.append(">");
+        for (int i = 1; i < uriList.size(); i++){
+            queryString.append(" || ");
+            queryString.append(variableName);
+            queryString.append(" = <");
+            queryString.append(uriList.get(i));
+            queryString.append(">");
+        }
+        queryString.append(")");
+    }
+
     private void mapParameter(String variableName) throws QueryExpansionException{
         //If the name is not in the parameter list nothing needs to be done
         if (!(parameters.contains(variableName))) return;
         //if there is already a paramter mapping nothing needs to be done
         if (mappings.containsKey(variableName)) return;
         List<URI> list = getMappings(inputURI);
-        if (list.isEmpty()){
-            list.add(inputURI);
-        }
+//        if (list.isEmpty()){
+//            list.add(inputURI);
+//        }
        //Store the list for adding the filter.
         mappings.put(variableName, list);
    }
