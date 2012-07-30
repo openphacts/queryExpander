@@ -7,6 +7,7 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import static org.junit.Assert.*;
 
 /**
@@ -29,7 +30,8 @@ public class Version2Test extends LoaderBase {
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             //ystem.out.println(parameters);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false,
+                    ExpansionStategy.FILTER_GRAPH);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }

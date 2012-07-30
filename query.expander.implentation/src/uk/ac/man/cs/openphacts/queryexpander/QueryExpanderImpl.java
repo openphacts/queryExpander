@@ -16,6 +16,7 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryExpandAndWriteVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor;
 
@@ -36,15 +37,16 @@ public class QueryExpanderImpl implements QueryExpander{
     
     @Override
     public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
-        return expand(originalQuery, parameters, inputURI, false);
+        return expand(originalQuery, parameters, inputURI, false, null);
     }
         
     @Override
     public String expand(String originalQuery) throws QueryExpansionException {
-        return expand(originalQuery, new ArrayList<String>(), null, false);
+        return expand(originalQuery, new ArrayList<String>(), null, false, null);
     }
 
-    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
+    public String expand(String originalQuery, List<String> parameters, String inputURI, 
+            boolean verbose, ExpansionStategy expansionStategy)
             throws QueryExpansionException {
         inputURI = checkURI(inputURI);
         if (verbose) System.out.println(originalQuery);
@@ -63,7 +65,7 @@ public class QueryExpanderImpl implements QueryExpander{
         }
         String newQuery;
         if (parameters.isEmpty()){
-            newQuery = QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
+            newQuery = QueryExpandAndWriteVisitor.expandQuery(tupleExpr, dataset, imsMapper, expansionStategy);
         } else {
             newQuery = QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI,
                     imsMapper, ALL_ATTRIBUTES);

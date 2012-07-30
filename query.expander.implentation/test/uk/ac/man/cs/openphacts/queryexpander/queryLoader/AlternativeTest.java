@@ -1,12 +1,14 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
 import org.junit.Ignore;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
 import java.util.Set;
 import org.junit.Test;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import static org.junit.Assert.*;
 
@@ -19,13 +21,15 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class OpsReplacemeentTest  extends LoaderBase {
+public class AlternativeTest {
     
     @Test
-    public void testAllNoMapping() throws Exception{
-        QueryCaseLoader loader = new OpsReplacementLoader();
+    public void testAll() throws Exception{
+        AlternativeLoader loader = new AlternativeLoader();
         Set<String> queryKeys = loader.keySet();
-        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
+        DummyIMSMapper imsMapper = new DummyIMSMapper();
+        imsMapper.addMapping("http://www.foo.com/subj1", "http://www.bar.com/1");
+        imsMapper.addMapping("http://www.foo.com/subj1", "http://www.bar.com/2");
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
@@ -34,10 +38,7 @@ public class OpsReplacemeentTest  extends LoaderBase {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            //ystem.out.println(parameters);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false,
-                    ExpansionStategy.FILTER_GRAPH);
-            //System.out.println(newQuery);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false, ExpansionStategy.FILTER_GRAPH);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }

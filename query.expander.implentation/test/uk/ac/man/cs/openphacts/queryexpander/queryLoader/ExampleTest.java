@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import static org.junit.Assert.*;
 
 /*
@@ -36,7 +37,8 @@ public class ExampleTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false,
+                    ExpansionStategy.FILTER_GRAPH);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }

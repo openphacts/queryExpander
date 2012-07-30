@@ -19,7 +19,9 @@ public class QueryCase {
     public String note;
     public ArrayList<String> parameters;
     public String insertURI;
-    
+    public String filterStatement;
+    public String filterAll;
+
     public QueryCase() {
         parameters = new ArrayList<String>();
     }

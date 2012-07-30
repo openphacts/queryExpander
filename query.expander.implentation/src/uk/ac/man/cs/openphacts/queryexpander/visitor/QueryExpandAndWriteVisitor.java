@@ -37,7 +37,26 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
     
     //Counter to ensure that all the temporary variables have unique names.
     private int variableCounter =  0;
-    
+
+    private final ExpansionStategy expansionStategy;
+
+   /**
+     * Sets up the visitor for writing the query.
+     *
+     * @param dataSet dataSets listed in the original Queries FROM clause.
+     * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
+     * @param contexts List of Contexts retrieved using the ContextListerVisitor.
+     */
+    QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper, ExpansionStategy expansionStategy){
+        super(dataset);
+        this.mapper = mapper;
+        if (expansionStategy == null) {
+            this.expansionStategy = ExpansionStategy.FILTER_GRAPH;
+        } else {
+            this.expansionStategy = expansionStategy;
+        }
+    }
+
     /**
      * Sets up the visitor for writing the query.
      * 
@@ -46,8 +65,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
     QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper){
-        super(dataset);
-        this.mapper = mapper;    
+        this(dataset, mapper, ExpansionStategy.FILTER_GRAPH);
     }
     
     @Override
@@ -109,6 +127,48 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         }
     }
 
+    private void addFilterNow(){
+        //Add any required URI filters
+        //if there are non no filters need to be added.
+        if (!(mappings.isEmpty())){
+            for (String variableName:mappings.keySet()){
+                List<URI> uriList = mappings.get(variableName);
+                newLine();
+                queryString.append("FiLTER (");
+                queryString.append(variableName);
+                queryString.append(" = <");
+                queryString.append(uriList.get(0));
+                queryString.append(">");
+                for (int i = 1; i < uriList.size(); i++){
+                    queryString.append(" || ");
+                    queryString.append(variableName);
+                    queryString.append(" = <");
+                    queryString.append(uriList.get(i));
+                    queryString.append(">");
+                }
+                queryString.append(")");
+            }
+            //Clear the mappings so they are no closed again.
+            mappings = new  HashMap<String,List<URI>>();
+            //Clear the URI Mappings so new variables are used if the same URI is sean again
+            contextUriVariables = new HashMap<URI,String>();
+        }
+    }
+
+    private void addFilter(Situation situation){
+        switch (situation){
+            case GRAPH:
+                if (expansionStategy == ExpansionStategy.FILTER_GRAPH) addFilterNow();
+                break;
+            case STATEMENT:
+                if (expansionStategy == ExpansionStategy.FILTER_STATEMENT) addFilterNow();
+                break;
+            case ALL:
+                if (expansionStategy == ExpansionStategy.FILTER_ALL) addFilterNow();
+                break;
+        }
+    }
+
     @Override                 
      /**
      * Close the context (GRAPH clause) and any optional clauses opened inside the graph anding a filter if required.
@@ -134,31 +194,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             //reduce the count so it is not closed again.
             optionInGraph--;
         }
-        //Add any required URI filters
-        //if there are non no filters need to be added.
-        if (!(mappings.isEmpty())){
-            for (String variableName:mappings.keySet()){
-                List<URI> uriList = mappings.get(variableName);
-                newLine();
-                queryString.append("FiLTER (");
-                queryString.append(variableName);
-                queryString.append(" = <");
-                queryString.append(uriList.get(0));
-                queryString.append(">");
-                for (int i = 1; i < uriList.size(); i++){
-                    queryString.append(" || ");
-                    queryString.append(variableName);
-                    queryString.append(" = <");
-                    queryString.append(uriList.get(i));
-                    queryString.append(">");            
-                }
-                queryString.append(")");
-            }
-            //Clear the mappings so they are no closed again.
-            mappings = new  HashMap<String,List<URI>>(); 
-            //Clear the URI Mappings so new variables are used if the same URI is sean again
-            contextUriVariables = new HashMap<URI,String>();
-        }
+        addFilter(Situation.GRAPH);
         //Call super class to do the actual closing.
         super.closeContext();
     }
@@ -400,9 +436,16 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         return writer.getQuery();
     }
 
-    public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper, 
-            List<String> requiredAttributes) throws QueryExpansionException{
+    public static String expandQuery(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper) throws QueryExpansionException{
         QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(dataSet, mapper);
+        tupleExpr.visit(writer);
+        return writer.getQuery();
+    }
+
+    public static String expandQuery(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper,
+            ExpansionStategy expansionStategy) throws QueryExpansionException{
+        QueryExpandAndWriteVisitor writer =
+                new QueryExpandAndWriteVisitor(dataSet, mapper, expansionStategy);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
