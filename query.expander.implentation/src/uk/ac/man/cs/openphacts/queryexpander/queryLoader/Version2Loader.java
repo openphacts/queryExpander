@@ -122,8 +122,9 @@ public class Version2Loader extends QueryCaseLoader{
                 "        OPTIONAL { " +
                 "		      GRAPH <http://linkedlifedata.com/resource/drugbank> {\n" +
                 "                ?drugbankURI drugbank:molecularWeight ?molecularWeight \n" +
-                "              FILTER (!BOUND(?drugbankURI) \n" +
-                "                     || ?drugbankURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
+//                "              FILTER (!BOUND(?drugbankURI) \n" +
+//                "                     || ?drugbankURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
+                "              FILTER (?drugbankURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
                 "		      }\n" +
                 "		   }\n" +
                 "		}\n" +

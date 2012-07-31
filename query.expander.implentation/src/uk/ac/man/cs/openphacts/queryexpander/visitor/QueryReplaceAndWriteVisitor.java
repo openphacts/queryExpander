@@ -149,9 +149,10 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
 
     private void addUnbound(String variableName){
         newLine();
-        queryString.append("FILtER (!(bound(");
-        queryString.append(variableName);
-        queryString.append(")) || ");
+        queryString.append("FILtER (");
+        //queryString.append("!(bound(");
+        //queryString.append(variableName);
+        //queryString.append(")) || ");
         queryString.append(variableName);
         queryString.append(" = <");
         queryString.append(inputURI.stringValue());
