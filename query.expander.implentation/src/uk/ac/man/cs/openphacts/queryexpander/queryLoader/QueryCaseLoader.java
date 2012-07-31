@@ -66,6 +66,9 @@ public class QueryCaseLoader {
        return queries.get(key).insertURI;
    }
 
+   public String getFilterStatement(String key){
+       return queries.get(key).filterStatement;
+   }
  }
 
 

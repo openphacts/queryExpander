@@ -9,6 +9,7 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.algebra.Compare;
 import org.openrdf.query.algebra.Compare.CompareOp;
+import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
@@ -169,6 +170,12 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         }
     }
 
+    @Override
+    void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
+        addFilter(Situation.STATEMENT);
+        super.afterStatmentPattern(sp);
+    }
+    
     @Override                 
      /**
      * Close the context (GRAPH clause) and any optional clauses opened inside the graph anding a filter if required.

@@ -1523,7 +1523,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
+    void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
         //Now use the look ahead provided by the context list. 
         if (contexts.isEmpty()){
             //Last Statement so close and flush filters
