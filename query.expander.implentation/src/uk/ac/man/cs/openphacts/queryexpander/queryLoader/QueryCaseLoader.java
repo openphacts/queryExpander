@@ -69,7 +69,11 @@ public class QueryCaseLoader {
    public String getFilterStatement(String key){
        return queries.get(key).filterStatement;
    }
- }
+
+   public String getFilterAll(String key){
+       return queries.get(key).filterAll;
+   }
+}
 
 
 

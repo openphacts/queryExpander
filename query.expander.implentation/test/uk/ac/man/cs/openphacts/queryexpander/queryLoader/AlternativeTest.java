@@ -13,8 +13,8 @@ import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import static org.junit.Assert.*;
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * See also
+ * http://code.google.com/p/fbench/wiki/Queries#Life_Science_%28LS%29
  */
 
 /**
@@ -45,6 +45,9 @@ public class AlternativeTest {
             targetQuery = loader.getFilterStatement(queryKey);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " FILTER_STATEMENT"));
 
+            newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false, ExpansionStategy.FILTER_ALL);
+            targetQuery = loader.getFilterAll(queryKey);
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " FILTER_ALL"));
         }
     }
 

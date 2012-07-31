@@ -100,9 +100,9 @@ public class AlternativeLoader extends QueryCaseLoader{
                 "		OPTIONAL { ?replacedURI1 example:pred3 ?obj3 }\n" +
                 "		?replacedURI1 example:pred4 ?obj4.\n" +
                 "       ?replacedURI1 example:pred5 ?obj5.\n" +
-                "       FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
-                "               ?replacedURI1 = foo:subj1) \n" +
                 "	}\n" +
+                "   FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
+                "           ?replacedURI1 = foo:subj1) \n" +
                 "}\n";
         queries.put(queryCase.key, queryCase);
    }

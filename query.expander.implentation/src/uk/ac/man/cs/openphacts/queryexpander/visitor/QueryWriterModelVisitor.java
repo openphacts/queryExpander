@@ -1054,7 +1054,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         newLine();
     }
     
-    private void closeWhereIfRequired(){
+    void closeWhereIfRequired(){
         if (whereOpen){
             newLine();
             queryString.append(" } ");

@@ -206,6 +206,12 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         super.closeContext();
     }
 
+    @Override
+    void closeWhereIfRequired(){
+        addFilter(Situation.ALL);
+        super.closeWhereIfRequired();
+    }
+
     /**
      * Gets the String that will be used for this URI in the expanded Query.
      * <p>
