@@ -13,6 +13,7 @@ public class AlternativeLoader extends QueryCaseLoader{
     public AlternativeLoader(){
         loadSmall();
         loadLifeScience2();
+        loadLifeScience2WithGraph();
     }
 
    private void loadSmall() {
@@ -154,6 +155,80 @@ public class AlternativeLoader extends QueryCaseLoader{
                 "   FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
                 "           ?replacedURI1 = foo:subj1) \n" +
                 "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadLifeScience2WithGraph() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "AltLS2Graph";
+        queryCase.name = "Alternative Query Life Science 2 with graph";
+        queryCase.originalQuery = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "   { foo:subj1 ?predicate ?object . }\n" +
+                "  UNION\n" +
+                "   { \n" +
+                "     GRAPH ?g1 {" +
+                "        foo:subj1 owl:sameAs ?caff .\n" +
+                "        foo:subj1 foo:pred2s ?object2 .\n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                "   }\n" +
+                " }";
+        queryCase.filterStatement = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "   { ?replacedURI1 ?predicate ?object . \n" +
+                "      FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
+                "           ?replacedURI1 = foo:subj1) }\n" +
+                "  UNION\n" +
+                "   { \n" +
+                "     GRAPH ?g1 {" +
+                "        ?replacedURI2 owl:sameAs ?caff .\n" +
+                "        FiLTER (?replacedURI2 = bar:1 || ?replacedURI2 = bar:2 ||\n" +
+                "              ?replacedURI2 = foo:subj1) \n" +
+                "        ?replacedURI3 foo:pred2s ?object2 .\n" +
+                "        FiLTER (?replacedURI3 = bar:1 || ?replacedURI3 = bar:2 ||\n" +
+                "              ?replacedURI3 = foo:subj1) \n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                "   }\n" +
+                " }";
+        queryCase.replaceQuery = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "   { ?replacedURI1 ?predicate ?object . \n" +
+                "      FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
+                "           ?replacedURI1 = foo:subj1) }\n" +
+                "  UNION\n" +
+                "   { \n" +
+                "     GRAPH ?g1 {" +
+                "        ?replacedURI2 owl:sameAs ?caff .\n" +
+                "        ?replacedURI2 foo:pred2s ?object2 .\n" +
+                "        FiLTER (?replacedURI2 = bar:1 || ?replacedURI2 = bar:2 ||\n" +
+                "              ?replacedURI2 = foo:subj1) \n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                "   }\n" +
+                " }";
+        queryCase.filterAll = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "   { ?replacedURI1 ?predicate ?object . }\n" +
+                "  UNION\n" +
+                "   { \n" +
+                "     GRAPH ?g1 {" +
+                "        ?replacedURI1 owl:sameAs ?caff .\n" +
+                "        ?replacedURI1 foo:pred2s ?object2 .\n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                "   }\n" +
+                "   FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = bar:2 ||\n" +
+                "           ?replacedURI1 = foo:subj1) \n" +
+                " }";
         queries.put(queryCase.key, queryCase);
    }
 
