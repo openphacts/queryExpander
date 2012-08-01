@@ -88,6 +88,12 @@ public class AlternativeTest {
             //ystem.out.println(newQuery);
             targetQuery = loader.getUnionStatement(queryKey);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " UNION_STATEMENT"));
+
+    //        newQuery = expand(originalQuery, ExpansionStategy.UNION_GRAPH);
+            //ystem.out.println(newQuery);
+    //        targetQuery = loader.getUnionGraph(queryKey);
+    //        assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " UNION_Graph"));
+
             System.out.println("All ok");
         }
     }

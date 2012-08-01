@@ -13,6 +13,7 @@ import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.Dataset;
+import org.openrdf.query.algebra.Join;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
@@ -41,14 +42,41 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     void meetProjectionArg(TupleExpr arg) throws QueryExpansionException {
         if (expansionStategy == ExpansionStategy.UNION_ALL){
             insertUnion(arg);
+        } else if (expansionStategy == ExpansionStategy.UNION_GRAPH){
+            if (singleGraph(arg)){
+                insertUnion(arg);
+            } else {
+                arg.visit(this);
+            }
         } else {
             arg.visit(this);
         }
     }
 
     @Override
+    public void meet(Join join) throws QueryExpansionException {
+        if (expansionStategy == ExpansionStategy.UNION_GRAPH && !inUnion) {
+            writeWhereIfRequired(join, "join");
+            unionOrMeet(join.getLeftArg());
+            unionOrMeet(join.getRightArg());
+        } else {
+            super.meet(join);
+        }
+    }
+
+    private void unionOrMeet(TupleExpr expr) throws QueryExpansionException{
+        if (singleGraph(expr)){
+            insertUnion(expr);
+        } else {
+            expr.visit(this);
+        }
+    }
+
+    @Override
     void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
         if (expansionStategy == ExpansionStategy.UNION_STATEMENT){
+             unionStatementPattern(sp);
+        } else if (expansionStategy == ExpansionStategy.UNION_GRAPH && !inUnion ) {
              unionStatementPattern(sp);
         } else {
             super.writeStatementPattern(sp);
@@ -105,6 +133,25 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
                 super.writeStatementPattern(sp);
             }
         }
+    }
+
+    private boolean singleGraph (TupleExpr expr) throws QueryExpansionException{
+        ArrayList<Var> list = ContextListerVisitor.getContexts(expr);
+        //Let the statement code handle this
+        if (list.size() < 2 ){
+            return false;
+        }
+        //Not in a graph so let the statement code handle this.
+        if (list.get(0) == null) {
+            return false;
+        }
+        Var first = list.get(0);
+        for (int i = 1; i< list.size(); i++){
+            if (!(first.equals(list.get(i)))){
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<URI> getMappings (Var var) throws QueryExpansionException{
