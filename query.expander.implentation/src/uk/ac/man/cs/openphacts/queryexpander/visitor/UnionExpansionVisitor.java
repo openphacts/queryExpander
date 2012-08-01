@@ -13,6 +13,7 @@ import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.Dataset;
+import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
@@ -45,6 +46,80 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         }
     }
 
+    @Override
+    void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
+        if (expansionStategy == ExpansionStategy.UNION_STATEMENT){
+             unionStatementPattern(sp);
+        } else {
+            super.writeStatementPattern(sp);
+        }
+    }
+
+    private void unionStatementPattern(StatementPattern sp) throws QueryExpansionException {
+        Var subject = sp.getSubjectVar();
+        Var object = sp.getObjectVar();
+        List<URI> subjectMaps = getMappings(subject);
+        if (subjectMaps != null){
+            URI subjectURI = subjectMaps.get(0);
+            newLine();
+            queryString.append("{ ");
+            newLine();
+            queryString.append("<" + subjectURI.stringValue() + "> ");
+            sp.getPredicateVar().visit(this);
+            sp.getObjectVar().visit(this);
+            for (int i = 1; i < subjectMaps.size(); i++){
+                subjectURI = subjectMaps.get(i);
+                newLine();
+                queryString.append("} UNION { ");
+                newLine();
+                queryString.append("<" + subjectURI.stringValue() + "> ");
+                sp.getPredicateVar().visit(this);
+                object.visit(this);
+            }
+            newLine();
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("# writeStatementPattern ");
+        } else {
+            List<URI> objectMaps = getMappings(object);
+            if (objectMaps != null){
+                URI objectURI = objectMaps.get(0);
+                newLine();
+                queryString.append("{ ");
+                newLine();
+                subject.visit(this);
+                queryString.append("<" + objectURI.stringValue() + "> ");
+                sp.getPredicateVar().visit(this);
+                for (int i = 1; i < subjectMaps.size(); i++){
+                    objectURI = objectMaps.get(i);
+                    newLine();
+                    queryString.append("} UNION { ");
+                    newLine();
+                    queryString.append("<" + objectURI.stringValue() + "> ");
+                    sp.getPredicateVar().visit(this);
+                    sp.getObjectVar().visit(this);
+                }
+                newLine();
+                queryString.append("} ");
+                if (SHOW_DEBUG_IN_QUERY) queryString.append("# writeStatementPattern ");
+            } else {
+                super.writeStatementPattern(sp);
+            }
+        }
+    }
+
+    private List<URI> getMappings (Var var) throws QueryExpansionException{
+        if (var.isAnonymous()){
+            Value value = var.getValue();
+            if (value instanceof URI){
+                List<URI> maps = mapper.getMatchesForURI((URI)value);
+                if (maps.size() > 1) {
+                    return maps;
+                }
+            }
+        }
+        return null;
+    }
+
     private void insertUnion(TupleExpr expr) throws QueryExpansionException{
         Set<URI> uris = URIExtractorVisitor.extactURI(expr);
         HashMap<URI,List<URI>> mappings = new HashMap<URI,List<URI>>();
@@ -55,12 +130,17 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
             } else {
             }
         }
-        ArrayList<Var> holderContexts = new ArrayList<Var>(contexts);
-        System.out.println(holderContexts);
-        writeWhereIfRequired(expr, "insertUnion");
-        doUnionAlternatives(expr, mappings.keySet(), mappings, holderContexts);
-        queryString.append("}");
-        if (SHOW_DEBUG_IN_QUERY) queryString.append("# insertUnion");
+        if (mappings.isEmpty()){
+            expr.visit(this);   
+        } else {
+            ArrayList<Var> holderContexts = new ArrayList<Var>(contexts);
+            writeWhereIfRequired(expr, "insertUnion!");
+            doUnionAlternatives(expr, mappings.keySet(), mappings, holderContexts);
+            newLine();
+            inUnion = false;
+            queryString.append("} ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("# insertUnion");
+        }
     }
 
     private void doUnionAlternatives(TupleExpr expr, Set<URI> keys, HashMap<URI,List<URI>> mappings,
@@ -77,14 +157,12 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
             } else {
                 newLine();
                 if (inUnion) {
-                    System.out.println("hc: " + holderContexts);
                     contexts = new ArrayList<Var>(holderContexts);
                     queryString.append("} UNION {");
                 } else {
                     queryString.append("{");
                     inUnion = true;
                 }
-                System.out.println(contexts.size());
                 expr.visit(this);
             }
         }

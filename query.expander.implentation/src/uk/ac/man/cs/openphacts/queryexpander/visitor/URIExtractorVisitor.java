@@ -42,7 +42,6 @@ public class URIExtractorVisitor extends QueryModelVisitorBase<QueryExpansionExc
         if (var.hasValue()){
             Value value = var.getValue();
             if (value instanceof URI){
-                System.out.println((URI)value);
                 uris.add((URI)value);
             }
         }

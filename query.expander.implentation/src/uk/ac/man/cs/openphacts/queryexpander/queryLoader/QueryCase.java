@@ -22,6 +22,8 @@ public class QueryCase {
     public String filterStatement;
     public String filterAll;
     public String unionAll;
+    public String unionGraph;
+    public String unionStatement;
 
     public QueryCase() {
         parameters = new ArrayList<String>();

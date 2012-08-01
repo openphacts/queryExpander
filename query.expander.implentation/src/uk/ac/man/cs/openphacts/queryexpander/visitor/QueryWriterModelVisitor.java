@@ -1507,7 +1507,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         
     }
     
-    private void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
+    void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
         //No need to write the describe pattern the parser will do that
         if (isDescribePattern(sp)) return;
         //    //No need to write a pattern for eliminated elements.

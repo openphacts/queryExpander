@@ -77,6 +77,14 @@ public class QueryCaseLoader {
    public String getUnionAll(String key){
        return queries.get(key).unionAll;
    }
+
+   public String getUnionGraph(String key){
+       return queries.get(key).unionGraph;
+   }
+
+   public String getUnionStatement(String key){
+       return queries.get(key).unionStatement;
+   }
 }
 
 
