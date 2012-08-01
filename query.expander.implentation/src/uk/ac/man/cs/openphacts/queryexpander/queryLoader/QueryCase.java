@@ -21,6 +21,7 @@ public class QueryCase {
     public String insertURI;
     public String filterStatement;
     public String filterAll;
+    public String unionAll;
 
     public QueryCase() {
         parameters = new ArrayList<String>();

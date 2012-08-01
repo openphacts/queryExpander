@@ -704,7 +704,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
+    void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
             if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 writeWhere(caller);
@@ -1026,13 +1026,21 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
-        prjctn.getArg().visit(this);
+        meetProjectionArg(prjctn.getArg());
         closeWhereIfRequired();
         if (extraCurly){
             queryString.append("} ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#project inContruct");
             newLine();
         }
+    }
+
+    /**
+     * Used by UnionExpansionVisitor to repeat visits.
+     * @param arg
+     */
+    void meetProjectionArg(TupleExpr arg) throws QueryExpansionException {
+        arg.visit(this);
     }
 
     /**

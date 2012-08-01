@@ -73,6 +73,10 @@ public class QueryCaseLoader {
    public String getFilterAll(String key){
        return queries.get(key).filterAll;
    }
+
+   public String getUnionAll(String key){
+       return queries.get(key).unionAll;
+   }
 }
 
 

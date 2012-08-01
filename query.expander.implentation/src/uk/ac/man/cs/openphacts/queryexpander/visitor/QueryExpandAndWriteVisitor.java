@@ -156,23 +156,9 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
         }
     }
 
-    private void addFilter(Situation situation){
-        switch (situation){
-            case GRAPH:
-                if (expansionStategy == ExpansionStategy.FILTER_GRAPH) addFilterNow();
-                break;
-            case STATEMENT:
-                if (expansionStategy == ExpansionStategy.FILTER_STATEMENT) addFilterNow();
-                break;
-            case ALL:
-                if (expansionStategy == ExpansionStategy.FILTER_ALL) addFilterNow();
-                break;
-        }
-    }
-
     @Override
     void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
-        addFilter(Situation.STATEMENT);
+        if (expansionStategy == ExpansionStategy.FILTER_STATEMENT) addFilterNow();
         super.afterStatmentPattern(sp);
     }
     
@@ -201,14 +187,14 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             //reduce the count so it is not closed again.
             optionInGraph--;
         }
-        addFilter(Situation.GRAPH);
+        if (expansionStategy == ExpansionStategy.FILTER_GRAPH) addFilterNow();
         //Call super class to do the actual closing.
         super.closeContext();
     }
 
     @Override
     void closeWhereIfRequired(){
-        addFilter(Situation.ALL);
+        if (expansionStategy == ExpansionStategy.FILTER_ALL) addFilterNow();
         super.closeWhereIfRequired();
     }
 
