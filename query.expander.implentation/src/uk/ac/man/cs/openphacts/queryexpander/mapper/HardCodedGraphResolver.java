@@ -38,6 +38,10 @@ public class HardCodedGraphResolver {
         getAllowedNamespaces().put("http://linkedlifedata.com/resource/drugbank", nameSpaces);
 
         nameSpaces = new HashSet<String>();
+        nameSpaces.add(" http://purl.uniprot.org/uniprot/");
+        getAllowedNamespaces().put("http://purl.uniprot.org", nameSpaces);
+
+        nameSpaces = new HashSet<String>();
         nameSpaces.add("http://rdf.chemspider.com/");
         getAllowedNamespaces().put("http://www.chemspider.com", nameSpaces);
     }

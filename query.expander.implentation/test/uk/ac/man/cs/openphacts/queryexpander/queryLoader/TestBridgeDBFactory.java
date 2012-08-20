@@ -32,12 +32,8 @@ public class TestBridgeDBFactory {
     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
-            for (int i = 0; i < targetNameSpaces.length; i++){
-                DataSource.getByURISpace(targetNameSpaces[i]);
-            }
             SQLAccess sqlAccess = createTestSQLAccess();
             URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
-
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpansionException("Error setting up File mapper ", ex);
