@@ -82,7 +82,7 @@ public class AlternativeTest {
 
             newQuery = expand(originalQuery, ExpansionStategy.UNION_ALL);
             targetQuery = loader.getUnionAll(queryKey);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)+ " UNION_ALL"));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " UNION_ALL"));
 
             newQuery = expand(originalQuery, ExpansionStategy.UNION_STATEMENT);
             //ystem.out.println(newQuery);
