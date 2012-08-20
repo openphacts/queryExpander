@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import org.junit.Ignore;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Ops1_1QueryTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true, ExpansionStategy.FILTER_GRAPH);
             //ystem.out.println(newQuery);
 //            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
@@ -60,7 +61,7 @@ public class Ops1_1QueryTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false, ExpansionStategy.FILTER_GRAPH);
             //ystem.out.println(newQuery);
             //assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
