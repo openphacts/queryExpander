@@ -136,7 +136,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = false;
+    final boolean SHOW_DEBUG_IN_QUERY = true;
     
     //private int nextAnon = 1;
     

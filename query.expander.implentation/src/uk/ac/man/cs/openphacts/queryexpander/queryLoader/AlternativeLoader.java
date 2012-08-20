@@ -13,6 +13,7 @@ public class AlternativeLoader extends QueryCaseLoader{
     public AlternativeLoader(){
         loadSmall();
         loadLifeScience2();
+        loadWithGraph();
         loadLifeScience2WithGraph();
     }
 
@@ -168,6 +169,37 @@ public class AlternativeLoader extends QueryCaseLoader{
                 "	    }\n" +
                 "	}\n" +
                 "}\n";
+        queryCase.unionGraph = "PREFIX example: <http://www.example.com/#>\n" +
+                "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT DISTINCT \n" +
+                "   ?obj1 ?obj2 ?obj3 ?obj4 ?obj5 \n" +
+                "WHERE {\n" +
+                "    {\n" +
+                "	    GRAPH <http://www.example.org/graph1> {\n" +
+                "		    OPTIONAL { bar:1 example:pred1 ?obj1 }\n" +
+                "		    OPTIONAL { bar:1 example:pred2 ?obj2 }\n" +
+                "	    }\n" +
+                "    } UNION {\n" +
+                "	    GRAPH <http://www.example.org/graph1> {\n" +
+                "		    OPTIONAL { foo:subj1 example:pred1 ?obj1 }\n" +
+                "		    OPTIONAL { foo:subj1 example:pred2 ?obj2 }\n" +
+                "	    }\n" +
+                "    }\n" +
+                "    {\n" +
+                "	    GRAPH <http://www.example.org/graph2> {\n" +
+                "		    OPTIONAL { bar:1 example:pred3 ?obj3 }\n" +
+                "		    bar:1 example:pred4 ?obj4;\n" +
+                "                     example:pred5 ?obj5.\n" +
+                "	    }\n" +
+                "    } UNION {\n" +
+                "	    GRAPH <http://www.example.org/graph2> {\n" +
+                "		    OPTIONAL { foo:subj1 example:pred3 ?obj3 }\n" +
+                "		    foo:subj1 example:pred4 ?obj4;\n" +
+                "                     example:pred5 ?obj5.\n" +
+                "	    }\n" +
+                "    }\n" +
+                "}\n";
         queries.put(queryCase.key, queryCase);
    }
 
@@ -254,6 +286,129 @@ public class AlternativeLoader extends QueryCaseLoader{
                 "        ?caff ?predicate ?object . \n" +
                 "    } \n" +
                 "}";
+        queryCase.unionGraph = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "    { \n" +
+                "        { \n" +
+                "            bar:1 ?predicate ?object . \n" +
+                "        } UNION { \n" +
+                "            foo:subj1 ?predicate ?object . \n" +
+                "        } \n" +
+                "    } UNION { \n" +
+                "        { \n" +
+                "            bar:1 owl:sameAs ?caff .\n" +
+                "        } UNION { \n" +
+                "            foo:subj1 owl:sameAs ?caff .\n" +
+                "        } \n" +
+                "        ?caff ?predicate ?object . \n" +
+                "    } \n" +
+                "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadWithGraph() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "AltGraph";
+        queryCase.name = "Alternative Query  with graph";
+        queryCase.originalQuery = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "    GRAPH ?g1 {" +
+                "        foo:subj1 owl:sameAs ?caff .\n" +
+                "        foo:subj1 foo:pred2s ?object2 .\n" +
+                "        ?caff ?predicate ?object . \n" +
+                "    }\n" +
+                " }";
+        queryCase.filterStatement = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "   GRAPH ?g1 {" +
+                "       ?replacedURI1 owl:sameAs ?caff .\n" +
+                "       FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = foo:subj1) \n" +
+                "       ?replacedURI2 foo:pred2s ?object2 .\n" +
+                "       FiLTER (?replacedURI2 = bar:1 || ?replacedURI2 = foo:subj1) \n" +
+                "       ?caff ?predicate ?object . \n" +
+                "    }\n" +
+                " }";
+        queryCase.replaceQuery = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "     GRAPH ?g1 {" +
+                "        ?replacedURI1 owl:sameAs ?caff .\n" +
+                "        ?replacedURI1 foo:pred2s ?object2 .\n" +
+                "        FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = foo:subj1) \n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                " }";
+        queryCase.filterAll = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "     GRAPH ?g1 {" +
+                "        ?replacedURI1 owl:sameAs ?caff .\n" +
+                "        ?replacedURI1 foo:pred2s ?object2 .\n" +
+                "        ?caff ?predicate ?object . \n" +
+                "     }\n" +
+                "   FiLTER (?replacedURI1 = bar:1 || ?replacedURI1 = foo:subj1) \n" +
+                " }";
+        queryCase.unionAll = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "    { \n" +
+                "            GRAPH ?g1 {" +
+                "                bar:1 owl:sameAs ?caff .\n" +
+                "                bar:1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            }\n" +
+                "    } UNION {\n" +
+                "            GRAPH ?g1 {" +
+                "                foo:subj1 owl:sameAs ?caff .\n" +
+                "                foo:subj1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            }\n" +
+                "    }\n" +
+                " }";
+        queryCase.unionStatement = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "        GRAPH ?g1 {" +
+                "            { \n" +
+                "                bar:1 owl:sameAs ?caff .\n" +
+                "            } UNION {\n" +
+                "                foo:subj1 owl:sameAs ?caff .\n" +
+                "            }\n" +
+                "            { \n" +
+                "                bar:1 foo:pred2s ?object2 .\n" +
+                "            } UNION {\n" +
+                "                foo:subj1 foo:pred2s ?object2 .\n" +
+                "            }\n" +
+                "            ?caff ?predicate ?object . \n" +
+                "        }\n" +
+                " }";
+        queryCase.unionGraph = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "    { \n" +
+                "            GRAPH ?g1 {" +
+                "                bar:1 owl:sameAs ?caff .\n" +
+                "                bar:1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            }\n" +
+                "    } UNION {\n" +
+                "            GRAPH ?g1 {" +
+                "                foo:subj1 owl:sameAs ?caff .\n" +
+                "                foo:subj1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            }\n" +
+                "    }\n" +
+                " }";
         queries.put(queryCase.key, queryCase);
    }
 
@@ -371,6 +526,30 @@ public class AlternativeLoader extends QueryCaseLoader{
                 "                foo:subj1 foo:pred2s ?object2 .\n" +
                 "            }\n" +
                 "            ?caff ?predicate ?object . \n" +
+                "        }\n" +
+                "    }\n" +
+                " }";
+        queryCase.unionGraph = "PREFIX foo: <http://www.foo.com/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX bar: <http://www.bar.com/>\n" +
+                "SELECT ?predicate ?object WHERE {\n" +
+                "    { \n" +
+                "        { \n" +
+                "            bar:1 ?predicate ?object . \n" +
+                "        } UNION {\n" +
+                "            foo:subj1 ?predicate ?object . \n" +
+                "        }\n" +
+                "    } UNION {\n" +
+                "        GRAPH ?g1 {" +
+                "            { \n" +
+                "                bar:1 owl:sameAs ?caff .\n" +
+                "                bar:1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            } UNION {\n" +
+                "                foo:subj1 owl:sameAs ?caff .\n" +
+                "                foo:subj1 foo:pred2s ?object2 .\n" +
+                "                ?caff ?predicate ?object . \n" +
+                "            }\n" +
                 "        }\n" +
                 "    }\n" +
                 " }";
