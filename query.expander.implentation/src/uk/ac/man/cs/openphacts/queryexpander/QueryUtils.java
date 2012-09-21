@@ -3,6 +3,7 @@ package uk.ac.man.cs.openphacts.queryexpander;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.bridgedb.utils.Reporter;
 import org.openrdf.model.URI;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.MalformedQueryException;
@@ -129,46 +130,54 @@ public class QueryUtils {
             Dataset  dataset2 = parsedQuery2.getDataset();
             return compare(dataset1, dataset2, verbose);
         } else {
+            String tree1 = QueryModelTreePrinter.printTree(tupleExpr1);
+            String tree2 = QueryModelTreePrinter.printTree(tupleExpr2);
             if (verbose){
-                System.out.println("*** Queries do not match ***");
-                System.out.println(query1);
-                String tree1 = QueryModelTreePrinter.printTree(tupleExpr1);
-                System.out.println(tree1);
-                System.out.println("*");
-                System.out.println(query2);
-                String tree2 = QueryModelTreePrinter.printTree(tupleExpr2);
-                System.out.println(tree2);
-                int len = tree1.length();
-                if (tree2.length() < len) len = tree2.length();
-                int line = 0;
-                for (int pos = 0; pos < len; pos ++){
-                    //ystem.out.println (pos + " " + tree1.charAt(pos) + tree2.charAt(pos));
-                    if (tree1.charAt(pos) != tree2.charAt(pos)) {
-                        System.out.println (pos + " in line " + line);
-                        int start = pos -20;
-                        if (pos < 0) pos = 0;
-                        int end = pos + 20;
-                        if (pos > len) pos = len;
-                        System.out.println (tree1.subSequence(start, end));
-                        System.out.println (tree2.subSequence(start, end));
-                        System.out.println (text);
-                        return false;
+                Reporter.report("*** Queries do not match ***");
+                Reporter.report(query1);
+                Reporter.report(tree1);
+                Reporter.report("*");
+                Reporter.report(query2);
+                Reporter.report(tree2);
+            }
+            int len = tree1.length();
+            if (tree2.length() < len) len = tree2.length();
+            int line = 0;
+            for (int pos = 0; pos < len; pos ++){
+                //ystem.out.println (pos + " " + tree1.charAt(pos) + tree2.charAt(pos));
+                if (tree1.charAt(pos) != tree2.charAt(pos)) {
+                    if (verbose){
+                        Reporter.report(pos + " in line " + line);
                     }
-                    if (tree1.charAt(pos) == '\n') {
-                        line++;
+                    int start = pos -20;
+                    if (pos < 0) pos = 0;
+                    int end = pos + 20;
+                    if (pos > len) pos = len;
+                    if (verbose){
+                        Reporter.report(tree1.subSequence(start, end).toString());
+                        Reporter.report(tree2.subSequence(start, end).toString());
+                        Reporter.report (text);
                     }
+                    return false;
                 }
-                if (tree1.length() != tree2.length()){
-                    System.out.println ("Length difference");
-                } else {
-                    System.out.println("No printable diff found");
-                    //How am I ever going to find that.
-                    return true;
+                if (tree1.charAt(pos) == '\n') {
+                    line++;
                 }
             }
-            System.out.println (text);
-            return false;
+            if (tree1.length() != tree2.length()){
+                if (verbose){
+                    Reporter.report ("Length difference");
+                }
+            } else {
+                if (verbose){
+                    Reporter.report("No printable diff found");
+                }
+                //How am I ever going to find that.
+                return true;
+            }
         }
+        Reporter.report (text);
+        return false;
     }
     
     /**
