@@ -11,6 +11,7 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 public class OpsReplacementLoader extends QueryCaseLoader{
     
    public OpsReplacementLoader(){
+       loadNoMapping();
        loadcompoundPharma_count();
        loadProteinInfo();
        loadCompoundPharmaPages();
@@ -19,6 +20,52 @@ public class OpsReplacementLoader extends QueryCaseLoader{
        loadManyWhere();
  //      loadCurlyBrackBug();
    } 
+   
+  private void loadNoMapping() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "OpsReplacementNoMapping";
+        queryCase.name = "Query which will provide no mapping";
+        queryCase.originalQuery = "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "CONSTRUCT { 		\n"
+                + "  ?kasabiId ops:compoundPharmacologyTotalResults ?count .   \n"
+                + "} WHERE {\n"
+                + "  {\n "
+                + "    SELECT (COUNT(?activity_uri) AS ?count) {\n"
+                + "      GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "        ?activity_uri chembl:forMolecule ?kasabiId;\n"
+                + "                      chembl:type ?std_type;\n"
+                + "                      chembl:relation ?relation;\n"
+                + "                      chembl:standardValue ?std_value;\n"
+                + "                      chembl:standardUnits ?std_unit;\n"
+                + "                      chembl:onAssay ?assay_uri . \n"
+                + "      }\n"
+                + "    }\n"
+                + "  } \n"
+                + "}";
+        queryCase.replaceQuery = "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "CONSTRUCT { 		\n"
+                + "  ?kasabiId ops:compoundPharmacologyTotalResults ?count .   \n"
+                + "} WHERE {\n"
+                + "  {\n "
+                + "    SELECT (COUNT(?activity_uri) AS ?count) {\n"
+                + "      GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "        ?activity_uri chembl:forMolecule ?kasabiId;\n"
+                + "                      chembl:type ?std_type;\n"
+                + "                      chembl:relation ?relation;\n"
+                + "                      chembl:standardValue ?std_value;\n"
+                + "                      chembl:standardUnits ?std_unit;\n"
+                + "                      chembl:onAssay ?assay_uri . \n"
+                + "      FILTER (?kasabiId = \"No Mappings Found\")\n"
+                + "      }\n"
+                + "    }\n"
+                + "  } \n"
+                + "}";
+        queryCase.addParameter("?kasabiId");
+        queryCase.insertURI = "http://www.example.com/notindata";
+        queries.put(queryCase.key, queryCase);
+    }
    
   private void loadcompoundPharma_count() {
         QueryCase queryCase = new QueryCase();
@@ -65,7 +112,7 @@ public class OpsReplacementLoader extends QueryCaseLoader{
         queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
         queries.put(queryCase.key, queryCase);
     }
-   
+
   private void loadProteinInfo() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "OpsReplacementProteinInfo";

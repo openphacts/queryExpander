@@ -157,9 +157,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         //queryString.append(variableName);
         //queryString.append(")) || ");
         queryString.append(variableName);
-        queryString.append(" = <");
-        queryString.append(inputURI.stringValue());
-        queryString.append("> )");
+        queryString.append(" = \"No Mappings Found\")");
     }
 
     private void addFilter(String variableName, List<URI> uriList){

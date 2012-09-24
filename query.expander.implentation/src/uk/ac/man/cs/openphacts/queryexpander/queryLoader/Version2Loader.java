@@ -124,7 +124,7 @@ public class Version2Loader extends QueryCaseLoader{
                 "                ?drugbankURI drugbank:molecularWeight ?molecularWeight \n" +
 //                "              FILTER (!BOUND(?drugbankURI) \n" +
 //                "                     || ?drugbankURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
-                "              FILTER (?drugbankURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
+                "              FILTER (?drugbankURI = \"No Mappings Found\")\n" +
                 "		      }\n" +
                 "		   }\n" +
                 "		}\n" +
