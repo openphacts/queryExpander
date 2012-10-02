@@ -1772,12 +1772,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (!this.whereOpen){
                 queryString.append("WHERE ");
             }
-            queryString.append("{ ");
+            //Second brackets is because antonis says Virtuso wants that.
+            queryString.append("{ { ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
             newLine();
             queryString.append(writeSubQuery(tupleExpr));
             newLine();
-            queryString.append("} ");
+            queryString.append("} }");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
             newLine(); 
             return true;
