@@ -49,7 +49,7 @@ public class DropBoxTester {
     
     public static void main(String[] args) throws Exception {
         System.out.println ("ready");
-        File test = new File ("C:/Dropbox/OPS-queries/02July/LDA_Expanded/compoundInfo1.rtf");
+        File test = new File ("C:/temp/Expander_error1.txt");
         //File test = new File ("C:/Dropbox/OPS-queries/15May/Production/compoundInfo.txt");
         String query = fileToString (test);
         IMSMapper imsMapper = new DummyIMSMapper();

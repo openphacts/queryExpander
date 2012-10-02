@@ -11,7 +11,7 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 public class BugLoader extends QueryCaseLoader{
     
    public BugLoader(){
-       loadBug1();
+       loadBug2();
    }
    
    private void loadBug1() {
@@ -24,6 +24,24 @@ public class BugLoader extends QueryCaseLoader{
                 + "	}\n"
                 + "}";
         queries.put(queryCase.key, queryCase);
-    }
+   }
 
+   private void loadBug2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug2";
+        queryCase.name = "Bug Query 2";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "SELECT DISTINCT ?item   WHERE \n"
+                + "{\n \n"
+                + "    {        \n"
+                + "        SELECT DISTINCT ?item ?doi \n"
+                + "                 (GROUP_CONCAT(DISTINCT ?equiv_target ; SEPARATOR=' , ') AS ?target_uris) \n"
+                + "                 (GROUP_CONCAT(DISTINCT ?target_name ; SEPARATOR=' , ') AS ?target_names)  {\n"
+                + "             GRAPH <http://www.conceptwiki.org> {\n"
+                + "                  ?cw_uri skos:prefLabel ?compound_name.\n"
+                + "             }\n"
+                + "        } GROUP BY ?item ?equiv_target ?doi ?target_name\n"
+                + "} } ORDER BY ?item LIMIT 10 OFFSET 0";
+        queries.put(queryCase.key, queryCase);
+   }
 }

@@ -134,9 +134,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private boolean inConstruct = false;
     
+    private boolean inSelect = false;
+    
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = false;
+    final boolean SHOW_DEBUG_IN_QUERY = true;
     
     //private int nextAnon = 1;
     
@@ -441,7 +443,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Distinct dstnct) throws QueryExpansionException {
         TupleExpr tupleExpr = dstnct.getArg();
         if (tupleExpr instanceof Projection){
-            if (this.whereOpen){
+            if (this.whereOpen || this.inSelect){
                 newLine();
                 queryString.append("{ ");
                 if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
@@ -706,7 +708,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
-            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
+           if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 writeWhere(caller);
             }
         }
@@ -962,7 +964,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (this.inConstruct && !this.whereOpen) {
             writeWhere("prjctn");
         }
-        if (this.whereOpen){
+        if (this.whereOpen || this.inSelect){
             newLine();
             queryString.append("{ ");
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
@@ -1015,8 +1017,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append("{ ");
             newLine();
         }
-        queryString.append("SELECT ");
+        queryString.append("SElECT ");
         queryString.append(modifier);
+        this.inSelect = true;
         addExpanded(prjctn);
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         //This gets the names that represent functions in the select statemenet.
@@ -1026,6 +1029,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
+        if (SHOW_DEBUG_IN_QUERY) {
+            queryString.append("#Projection with modifier before where");
+            queryString.append("" + this.whereOpen);
+            newLine();
+        }
+
         writeWhereIfRequired(prjctn, "meet Projection with modifier");
         prjctn.getArg().visit(this);
         closeWhereIfRequired();
@@ -1034,7 +1043,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#project inContruct");
             newLine();
         }
-    }
+        this.inSelect = false;
+     }
 
     /**
      * Add the Where's } unless it has already been done.
