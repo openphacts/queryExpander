@@ -1026,6 +1026,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
+        writeWhereIfRequired(prjctn, "meet Projection with modifier");
         prjctn.getArg().visit(this);
         closeWhereIfRequired();
         if (extraCurly){
