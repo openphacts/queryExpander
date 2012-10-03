@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
+@Ignore
 public class Ops1_1QueryTest  extends LoaderBase {
     
     @Test
@@ -50,7 +51,7 @@ public class Ops1_1QueryTest  extends LoaderBase {
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false,
                     ExpansionStategy.FILTER_GRAPH);
             //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
 

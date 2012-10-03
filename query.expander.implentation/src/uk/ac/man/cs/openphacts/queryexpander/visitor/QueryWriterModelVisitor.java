@@ -134,9 +134,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private boolean inConstruct = false;
     
+    private boolean inSelect = false;
+    
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = true;
+    final boolean SHOW_DEBUG_IN_QUERY = false;
     
     //private int nextAnon = 1;
     
@@ -441,18 +443,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Distinct dstnct) throws QueryExpansionException {
         TupleExpr tupleExpr = dstnct.getArg();
         if (tupleExpr instanceof Projection){
-            if (this.whereOpen){
-                newLine();
-                queryString.append("{ ");
-                if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
-                newLine();
-                queryString.append(writeSubQuery(dstnct));
-                newLine();
-                queryString.append("} ");
-                if (SHOW_DEBUG_IN_QUERY) {
-                    queryString.append("#closesubquery");
-                    newLine();
-                }
+            if  (writeAsSubQuery(dstnct)){
+                //all Done.
             } else {
                 meet ((Projection)tupleExpr, " DISTINCT");
             }
@@ -706,7 +698,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
-            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
+           if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 writeWhere(caller);
             }
         }
@@ -962,16 +954,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         if (this.inConstruct && !this.whereOpen) {
             writeWhere("prjctn");
         }
-        if (this.whereOpen){
-            newLine();
-            queryString.append("{ ");
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
-            newLine();
-            queryString.append(writeSubQuery(prjctn));
-            newLine();
-            queryString.append("} ");
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
-            newLine();
+        if (writeAsSubQuery(prjctn)){
+            //AllDone
         } else {
             switch (workoutQueryType(prjctn.getProjectionElemList())){
                 case CONSTRUCT: 
@@ -1017,6 +1001,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
         queryString.append("SELECT ");
         queryString.append(modifier);
+        this.inSelect = true;
         addExpanded(prjctn);
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         //This gets the names that represent functions in the select statemenet.
@@ -1026,6 +1011,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
+        if (SHOW_DEBUG_IN_QUERY) {
+            queryString.append("#Projection with modifier before where");
+            newLine();
+        }
+        writeWhereIfRequired(prjctn, "meet Projection with modifier");
         meetProjectionArg(prjctn.getArg());
         closeWhereIfRequired();
         if (extraCurly){
@@ -1033,7 +1023,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#project inContruct");
             newLine();
         }
-    }
+        this.inSelect = false;
+     }
 
     /**
      * Used by UnionExpansionVisitor to repeat visits.
@@ -1427,18 +1418,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Slice ASK");
             newLine();
         } else {
-            if (this.whereOpen){
-                newLine();
-                queryString.append("{ ");
-                if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
-                newLine();
-                queryString.append(writeSubQuery(slice));
-                newLine();
-                queryString.append("} ");
-                if (SHOW_DEBUG_IN_QUERY) {
-                    queryString.append("#closesubquery");
-                    newLine();
-                }
+            if (writeAsSubQuery(slice)){
+                //All Done
             } else {
                 slice.getArg().visit(this);
                 if (slice.hasLimit()){
@@ -1455,7 +1436,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private boolean isAsk(Slice slice){
+     private boolean isAsk(Slice slice){
         if (!(slice.hasLimit())) return false;
         if (slice.getLimit() > 1) return false;
         TupleExpr arg = slice.getArg();
@@ -1791,6 +1772,31 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         return queryString.toString();
     }
 
+    private boolean writeAsSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
+        if (this.whereOpen || this.inSelect){
+            newLine();
+            if (!this.whereOpen){
+                queryString.append("WHERE ");
+            }
+            //Second brackets is because antonis says Virtuso wants that.
+            queryString.append("{ { ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
+            newLine();
+            queryString.append(writeSubQuery(tupleExpr));
+            newLine();
+            queryString.append("} }");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("#closesubquery");
+            newLine(); 
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+   /*
+    * This method calls the specific visitpor again
+     * It will be overrided by other sub classes.
+    */
     protected String writeSubQuery(TupleExpr tupleExpr) 
             throws QueryExpansionException{
         QueryWriterModelVisitor writer = new QueryWriterModelVisitor(originalDataSet);
