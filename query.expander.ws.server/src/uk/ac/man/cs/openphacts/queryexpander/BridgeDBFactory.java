@@ -15,6 +15,7 @@ import org.bridgedb.sql.SQLAccess;
 import org.bridgedb.sql.SQLUrlMapper;
 import org.bridgedb.sql.SqlFactory;
 import org.bridgedb.url.URLMapper;
+import org.bridgedb.utils.StoreType;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
@@ -28,7 +29,7 @@ public class BridgeDBFactory {
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
-            SQLAccess sqlAccess = SqlFactory.createSQLAccess();
+            SQLAccess sqlAccess = SqlFactory.createSQLAccess(StoreType.LIVE);
             URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {

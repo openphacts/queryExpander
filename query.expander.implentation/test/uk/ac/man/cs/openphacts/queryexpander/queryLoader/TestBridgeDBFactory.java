@@ -8,6 +8,7 @@ import org.bridgedb.sql.SQLAccess;
 import org.bridgedb.sql.SQLUrlMapper;
 import org.bridgedb.sql.SqlFactory;
 import org.bridgedb.url.URLMapper;
+import org.bridgedb.utils.StoreType;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -42,7 +43,7 @@ public class TestBridgeDBFactory {
     	
     public static SQLAccess createTestSQLAccess() {
         try {
-            SQLAccess sqlAccess = SqlFactory.createTestSQLAccess();
+            SQLAccess sqlAccess = SqlFactory.createSQLAccess(StoreType.TEST);
             sqlAccess.getConnection();
             return sqlAccess;
         } catch (BridgeDbSqlException ex) {
