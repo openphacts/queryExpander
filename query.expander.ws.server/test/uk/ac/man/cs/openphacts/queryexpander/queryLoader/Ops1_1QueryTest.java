@@ -22,15 +22,17 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class Ops1_1QueryTest {
-    
+public class Ops1_1QueryTest extends LoaderBase {
+
     @Test
     public void testAllWithMapping() throws Exception{
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
          
-        BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
+        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
+        System.out.println("here");
+        System.out.println(queryKeys);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
@@ -38,9 +40,9 @@ public class Ops1_1QueryTest {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, true, ExpansionStategy.FILTER_GRAPH);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false, ExpansionStategy.FILTER_GRAPH);
             //ystem.out.println(newQuery);
-//            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
+            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }
     }
 

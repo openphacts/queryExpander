@@ -8,10 +8,12 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 import java.io.IOException;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.linkset.LinksetLoader;
-import org.bridgedb.rdf.RdfStoreType;
+import org.bridgedb.metadata.validator.ValidationType;
+import org.bridgedb.rdf.RdfFactory;
 import org.bridgedb.rdf.RdfWrapper;
 import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.utils.Reporter;
+import org.bridgedb.utils.StoreType;
 import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
 
@@ -27,20 +29,18 @@ public abstract class LoaderBase {
         TestSqlFactory.createTestSQLAccess();
 
         Reporter.report("Clearing Data");
-        RdfWrapper.clear(RdfStoreType.TEST);
-        
-        LinksetLoader loader = new LinksetLoader();
+        RdfFactory.clear(StoreType.TEST);
         
         Reporter.report("cw-cs.ttl");
-        loader.parse("test-data/cw-cs.ttl", "test");
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-cm.ttl");
-        loader.parse("test-data/cw-cm.ttl", "test");
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-dd.ttl");
-        loader.parse("test-data/cw-dd.ttl", "test");
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-ct.ttl");
-        loader.parse("test-data/cw-ct.ttl", "test");
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-dt.ttl");
-        loader.parse("test-data/cw-dt.ttl", "test");
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
 	}
 
 }
