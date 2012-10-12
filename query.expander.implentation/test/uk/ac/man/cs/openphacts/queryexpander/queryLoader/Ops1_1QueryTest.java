@@ -36,7 +36,7 @@ public class Ops1_1QueryTest  extends LoaderBase {
         
         HardCodedGraphResolver imsMapper = new HardCodedGraphResolver(dummyMapper);*/
         
-        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
+       BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             System.out.println("Testing " + loader.getQueryName(queryKey));

@@ -32,15 +32,15 @@ public abstract class LoaderBase {
         RdfFactory.clear(StoreType.TEST);
         
         Reporter.report("cw-cs.ttl");
-        LinksetLoader.parse("test-data/cw-cs.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-cm.ttl");
-        LinksetLoader.parse("test-data/cw-cm.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-dd.ttl");
-        LinksetLoader.parse("test-data/cw-dd.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-ct.ttl");
-        LinksetLoader.parse("test-data/cw-ct.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
         Reporter.report("cw-dt.ttl");
-        LinksetLoader.parse("test-data/cw-dt.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
 	}
 
 }

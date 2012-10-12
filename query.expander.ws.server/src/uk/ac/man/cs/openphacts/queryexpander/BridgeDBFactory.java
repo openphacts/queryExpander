@@ -31,24 +31,11 @@ public class BridgeDBFactory {
         try {
             SQLAccess sqlAccess = SqlFactory.createSQLAccess(StoreType.LIVE);
             URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
+            System.out.println(urlMapper.getOverallStatistics());
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
-            throw new QueryExpansionException("Error setting up File mapper ", ex);
+            throw new QueryExpansionException("Error setting up BridgeDB mapper ", ex);
         }
     }
      
-    private static final File OFFLINE_TEST_FILE = new File ("D:/OpenPhacts/queryExpander/query.expander.implentation/test-data/offlineTest.txt");
-	
-    /*public static BridgeDBMapper getBridgeDBMapperLocal() throws QueryExpansionException{
-        HardCodedGraphResolver resolver = new HardCodedGraphResolver();
-        try {
-            IDMapper idMapper = new IDMapperText(OFFLINE_TEST_FILE.toURL());
-            WrapperURLMapper urlMapper = new WrapperURLMapper(idMapper);
-            return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
-        } catch (Exception ex) {
-            throw new QueryExpansionException("Error setting up File mapper ", ex);
-        }
-    }*/
-    	
-
 }
