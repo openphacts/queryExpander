@@ -10,29 +10,20 @@
     dcterms:title "ConceptWiki to ChemSpider Linkset"^^xsd:string ;
     dcterms:description """A linkset connecting ConceptWiki concepts 
     	with ChemSpider Molecules."""^^xsd:string;
-    dcterms:creator <http://www.foo.com/> ;
-    dcterms:created "2012-08-06"^^xsd:date;
     foaf:primaryTopic :conceptwiki_chemspider .
 
 :conceptwiki_chemspider a void:Linkset ;
-    dcterms:license "unknown" ;
     void:subjectsTarget :conceptwiki ;
     void:objectsTarget :chemspider ;
     void:subset :conceptwiki ;
     void:linkPredicate skos:exactMatch ;
-    dcterms:created "2012-02-28"^^xsd:date ;
     dcterms:creator <http://www.conceptwiki.org> .
 :conceptwiki a void:Dataset ;
 	dcterms:title "ConceptWiki"^^xsd:string ;
-    dcterms:license "unknown" ;
-    dcterms:subject "unknown" ;
-    pav:retrievedOn "2012-02-28"^^xsd:date ;
     void:uriSpace <http://www.conceptwiki.org/concept/> .
 :chemspider a void:Dataset ;
 	dcterms:title "ChemSpider"^^xsd:string ;
-    dcterms:license "http://www.chemspider.com/Disclaimer.aspx" ;
-    dcterms:subject "unknown" ;
-     pav:version "unknown" ;
+    dcterms:license <http://www.chemspider.com/Disclaimer.aspx> ;
    void:uriSpace <http://rdf.chemspider.com/> .
    
 <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> skos:exactMatch <http://rdf.chemspider.com/187440> .

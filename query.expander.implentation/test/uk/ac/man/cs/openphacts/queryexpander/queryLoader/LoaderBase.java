@@ -23,6 +23,8 @@ import org.openrdf.OpenRDFException;
  */
 public abstract class LoaderBase {
 
+    private static boolean LOAD = true;
+    
     @BeforeClass
     public static void testLoader() throws IDMapperException, IOException, OpenRDFException  {
         //Check database is running and settup correctly or kill the test.
@@ -32,15 +34,20 @@ public abstract class LoaderBase {
         RdfFactory.clear(StoreType.TEST);
         
         Reporter.report("cw-cs.ttl");
-        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, 
+                ValidationType.LINKSMINIMAL, LOAD);
         Reporter.report("cw-cm.ttl");
-        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, 
+                ValidationType.LINKSMINIMAL, LOAD);
         Reporter.report("cw-dd.ttl");
-        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, 
+                ValidationType.LINKSMINIMAL, LOAD);
         Reporter.report("cw-ct.ttl");
-        LinksetLoader.parse("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, 
+                ValidationType.LINKSMINIMAL, LOAD);
         Reporter.report("cw-dt.ttl");
-        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, ValidationType.LINKSMINIMAL);
+        LinksetLoader.parse("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, 
+                ValidationType.LINKSMINIMAL, LOAD);
 	}
 
 }
