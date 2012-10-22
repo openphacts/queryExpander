@@ -20,6 +20,8 @@ public class BugLoader extends QueryCaseLoader{
        loadBug3Med1();
        loadBug3Med2();
        loadBug3();
+       loadBug4small();
+       loadBug4();
    }
    
    private void loadBug1() {
@@ -444,4 +446,134 @@ public class BugLoader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
    }
 
+    private void loadBug4small() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug4small";
+        queryCase.name = "Bug Query 4small ";
+        queryCase.originalQuery = "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "CONSTRUCT { "
+                + "     ?item chembl:forMolecule ?equiv_compound;\n"
+                + "         chembl:type ?std_type;\n"
+                + "}\n"
+                + "WHERE { {       \n"
+                + "     SELECT DISTINCT ?item \n"
+                + "     { {\n"
+                + "             ?cw_uri skos:prefLabel ?target_name .\n"
+                + "     }} \n"
+                + "} }";
+        queries.put(queryCase.key, queryCase);
+   }
+
+    private void loadBug4() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug4";
+        queryCase.name = "Bug Query 4";
+        queryCase.originalQuery = "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "CONSTRUCT { "
+                + "     [] ops:input <http://www.conceptwiki.org/concept/00059958-a045-4581-9dc5-e5a08bb0c291> .\n"
+                + "     ?item chembl:forMolecule ?equiv_compound;\n"
+                + "         chembl:type ?std_type;\n"
+                + "         chembl:relation ?relation;\n"
+                + "         chembl:standardValue ?std_value;\n"
+                + "         chembl:standardUnits ?std_unit;\n"
+                + "         chembl-ops:normalisedValue ?activity_value ;\n"
+                + "         chembl:onAssay ?equiv_assay ;\n"
+                + "         bibo:pmid ?pmid ;\n"
+                + "         chembl:citesAsDataSource ?doi ;\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf> .\n"
+                + "     ?equiv_assay chembl:hasTarget ?equiv_target ;\n"
+                + "         chembl:organism ?assay_organism ;\n"
+                + "         chembl:hasDescription ?assay_description ;\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf> .\n"
+                + "     ?equiv_target ops:target_organism ?target_organism ;\n"
+                + "         skos:exactMatch ?cw_uri ;\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf> .\n"
+                + "     ?cw_uri skos:prefLabel ?target_name ;\n"
+                + "         void:inDataset <http://www.conceptwiki.org/> .\n"
+                + "     ?equiv_compound ?node1 ?molweight ;\n"
+                + "         skos:exactMatch ?compound_cs ;\n"
+                + "         skos:exactMatch ?compound_cw ;\n"
+                + "         void:inDataset <http://data.kasabi.com/dataset/chembl-rdf> .\n"
+                + "     ?compound_cs chemspider:smiles ?smiles ;\n"
+                + "         chemspider:inchi ?inchi ;\n"
+                + "         chemspider:inchikey ?inchi_key;\n"
+                + "         ops:ro5_violations ?num_ro5_violations ;\n"
+                + "         void:inDataset <http://rdf.chemspider.com/> .\n"
+                + "     ?compound_cw skos:prefLabel ?compound_name ;\n"
+                + "         void:inDataset <http://www.conceptwiki.org/> .\n"
+                + "}\n"
+                + "WHERE { {       \n"
+                + "     SELECT DISTINCT ?item ?equiv_target ?cw_uri ?equiv_compound ?compound_cs ?compound_cw ?inchi \n"
+                + "         ?inchi_key ?smiles ?compound_name ?target_name ?target_organism ?std_type ?relation \n"
+                + "         ?std_value ?std_unit ?activity_value ?doi ?pmid ?equiv_assay ?assay_description "
+                + "         ?assay_organism ?node1 ?molweight ?num_ro5_violations \n"
+                + "     { {\n"
+                + "         GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "             ?assay_uri chembl:hasTarget ?chembl_uri ;\n"
+                + "                 owl:equivalentClass ?equiv_assay .\n"
+                + "             ?chembl_uri owl:equivalentClass ?equiv_target .\n"
+                + "             ?item chembl:onAssay ?assay_uri ;\n"
+                + "             chembl:forMolecule ?compound_chembl .\n"
+                + "             ?compound_chembl owl:equivalentClass ?equiv_compound . \n"
+                + "             ?equiv_compound skos:exactMatch ?compound_cs .\n"
+                + "         	OPTIONAL { ?chembl_uri chembl:organism ?target_organism }\n"
+                + "             OPTIONAL { ?assay_uri chembl:organism ?assay_organism }\n"
+                + "         	OPTIONAL { ?assay_uri chembl:hasDescription ?assay_description }\n"
+                + "             OPTIONAL { ?item chembl:type ?std_type }\n"
+                + "             OPTIONAL { ?item chembl:relation ?relation }\n"
+                + "             OPTIONAL { ?item chembl:standardValue ?std_value }\n"
+                + "             OPTIONAL { ?item chembl:standardUnits ?std_unit }\n"
+                + "             OPTIONAL { ?item chembl-ops:normalisedValue ?activity_value}\n"
+                + "             OPTIONAL { ?item cito:citesAsDataSource ?doi_internal .\n"
+                + "                OPTIONAL { ?doi_internal owl:sameAs ?doi }\n"
+                + "                OPTIONAL { ?doi_internal bibo:pmid ?pmid }\n"
+                + "             }\n"
+                + "             OPTIONAL { ?compound_chembl sio:CHEMINF_000200 ?node1 . \n"
+                + "                 ?node1 a sio:CHEMINF_000198 ;\n"
+                + "                 sio:SIO_000300 ?molweight }\n"
+                + "         }\n"
+                + "         GRAPH <http://www.chemspider.com> {\n"
+                + "             ?compound_cs chemspider:inchi ?inchi;\n"
+                + "                 chemspider:inchikey ?inchi_key;\n"
+                + "                 chemspider:smiles ?smiles . \n"
+                + "             OPTIONAL { [] obo:IAO_0000136 ?compound_cs ;\n"
+                + "                a cheminf:CHEMINF_000367;\n"
+                + "                qudt:numericValue ?num_ro5_violations . }\n"
+                + "         }\n"
+                + "         GRAPH <http://www.conceptwiki.org> {\n"
+                + "             ?cw_uri skos:prefLabel ?target_name .\n"
+                + "             ?compound_cw skos:exactMatch ?compound_cs ; \n"
+                + "                 skos:prefLabel ?compound_name .\n"
+                + "         }\n"
+                + "     }} \n"
+                + "     ORDER BY ?item \n"
+                + "     LIMIT 10  \n"
+                + "     OFFSET 0 \n"
+                + "} }";
+        queries.put(queryCase.key, queryCase);
+   }
 }

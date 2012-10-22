@@ -1222,9 +1222,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 newLine();
             }
             mp.getArg().visit(this);
-            queryString.append("} ");
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection2");
-            newLine();
+            closeWhereIfRequired();
         } else {
             throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }
