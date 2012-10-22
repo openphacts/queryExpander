@@ -71,7 +71,7 @@ public class QueryExpanderImpl implements QueryExpander{
         try {
             parsedQuery = parser.parseQuery(newQuery, null);
         } catch (MalformedQueryException ex) {
-            throw new QueryExpansionException("OOPS! Unable to parse the result query " + newQuery, ex);
+            throw new QueryExpansionException("OOPS! Unable to parse the result query \n" + newQuery, ex);
         }
         return newQuery;
     }
