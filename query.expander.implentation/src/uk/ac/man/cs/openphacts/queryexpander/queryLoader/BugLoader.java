@@ -17,7 +17,9 @@ public class BugLoader extends QueryCaseLoader{
        loadBug3small2();
        loadBug3small3();
        loadBug3small4();
-//       loadBug3();
+       loadBug3Med1();
+       loadBug3Med2();
+       loadBug3();
    }
    
    private void loadBug1() {
@@ -207,6 +209,104 @@ public class BugLoader extends QueryCaseLoader{
                 + "         SELECT DISTINCT ?item \n"
                 + "         WHERE { {\n"
                 + "                	?cw_uri skos:prefLabel ?compound_name.\n"
+                + "         } } "
+                + "         GROUP BY ?item \n"
+                + "         ORDER BY ?item   \n"
+                + "         LIMIT 10  \n"
+                + "         OFFSET 0 \n"
+                + "     } "
+                + "}\n";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadBug3Med1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug3med1";
+        queryCase.name = "Bug Query 3 med1";
+        queryCase.originalQuery = "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "CONSTRUCT { \n"
+                + "     ?item chembl:forMolecule ?equiv_compound ;\n"
+                + "}  \n"
+                + "WHERE { \n"
+                + "     { {\n"
+                + "         SELECT DISTINCT ?db_uri ?drug_name \n"
+                + "             (GROUP_CONCAT(DISTINCT ?drugType ; SEPARATOR=' , ') AS ?drugTypes) \n"
+                + "         {\n"
+                + "             GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "                 ?db_uri drugbank:genericName ?drug_name .\n"
+                + "             }\n"
+                + "         } GROUP BY ?drug_name ?db_uri\n"
+                + "     } }\n"
+                + "     {\n"
+                + "         SELECT DISTINCT ?item \n"
+                + "         { {\n"
+                + "             GRAPH <http://www.conceptwiki.org> {\n"
+                + "                	?cw_uri skos:prefLabel ?compound_name.\n"
+                + "             }\n"
+                + "         } } "
+                + "         LIMIT 10  \n"
+                + "     } "
+                + "}\n";
+        queries.put(queryCase.key, queryCase);
+   }
+   
+   private void loadBug3Med2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bugmed23";
+        queryCase.name = "Bug Query 3 med2";
+        queryCase.originalQuery = "PREFIX ops: <http://www.openphacts.org/api#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX void: <http://rdfs.org/ns/void#>\n"
+                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "CONSTRUCT { \n"
+                + "     ?item chembl:forMolecule ?equiv_compound ;\n"
+                + "}  \n"
+                + "WHERE { \n"
+                + "     { {\n"
+                + "         SELECT DISTINCT ?db_uri ?drug_name \n"
+                + "             (GROUP_CONCAT(DISTINCT ?drugType ; SEPARATOR=' , ') AS ?drugTypes) \n"
+                + "         {\n"
+                + "             GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "                 ?db_uri drugbank:genericName ?drug_name .\n"
+                + "             }\n"
+                + "         } GROUP BY ?drug_name ?db_uri\n"
+                + "     } }\n"
+                + "     {\n"
+                + "         SELECT DISTINCT ?item \n"
+                + "         { {\n"
+                + "             GRAPH <http://www.conceptwiki.org> {\n"
+                + "                	?cw_uri skos:prefLabel ?compound_name.\n"
+                + "             }\n"
+                + "             GRAPH <http://www.chemspider.com> {\n"
+                + "        	        ?cs_uri chemspider:smiles ?smiles .\n"
+                + "             }\n"
                 + "         } } "
                 + "         GROUP BY ?item \n"
                 + "         ORDER BY ?item   \n"

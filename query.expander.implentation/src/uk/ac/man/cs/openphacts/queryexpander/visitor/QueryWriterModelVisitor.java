@@ -138,7 +138,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     
     private String propertyPath = null;
     
-    final boolean SHOW_DEBUG_IN_QUERY = true;
+    final boolean SHOW_DEBUG_IN_QUERY = false;
     
     //private int nextAnon = 1;
     
@@ -641,7 +641,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Intersection i) throws QueryExpansionException {
-        writeWhereIfRequired(i, "Intersection");
+        writeWhereIfNotInWhere(i, "Intersection");
+        if (SHOW_DEBUG_IN_QUERY){
+            queryString.append("#Intersection"); 
+            newLine();
+        }
         i.getLeftArg().visit(this);
         i.getRightArg().visit(this);
     }
@@ -698,6 +702,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
+    private void writeWhereIfNotInWhere(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
+        if (!whereOpen){
+            writeWhere(caller);
+        }
+    }
+    
     private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
@@ -705,13 +715,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             }
         }
     }
-    
+
     private void writeWhere(String caller) throws QueryExpansionException {
         newLine();
         queryString.append("WHERE {");
         whereOpen= true;
         if (SHOW_DEBUG_IN_QUERY){
-            newLine();
             queryString.append("#openWhere in " + caller); 
             newLine();
         }
