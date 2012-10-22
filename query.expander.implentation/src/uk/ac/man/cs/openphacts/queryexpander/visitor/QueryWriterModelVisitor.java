@@ -1019,8 +1019,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         //This gets the names that represent functions in the select statemenet.
         this.namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(prjctn.getArg());
-        //This mapes to sub functions.
-        this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
+        if (this.namesInExtensions.isEmpty()){
+            this.extensionMappings =  new HashMap<String,String>();
+        } else {
+            //This mapes to sub functions.
+            this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
+        }
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
@@ -1069,6 +1073,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             whereOpen = false;
         }
     }
+    
     private void printDataset(){
         if (originalDataSet == null) return;
         System.out.println(originalDataSet);
@@ -1222,9 +1227,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 newLine();
             }
             mp.getArg().visit(this);
-            queryString.append("} ");
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection2");
-            newLine();
+            closeWhereIfRequired();
         } else {
             throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }
