@@ -22,6 +22,8 @@ public class BugLoader extends QueryCaseLoader{
        loadBug3();
        loadBug4small();
        loadBug4();
+       loadBug5Small();
+       loadBug5();
    }
    
    private void loadBug1() {
@@ -576,4 +578,121 @@ public class BugLoader extends QueryCaseLoader{
                 + "} }";
         queries.put(queryCase.key, queryCase);
    }
+    
+   private void loadBug5Small() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug5Small";
+        queryCase.name = "Bug Query 5Small";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "SELECT DISTINCT ?item  ?assay_organism WHERE {\n"
+                + "     { \n "
+                + "         SELECT DISTINCT ?item \n"
+                + "         {"
+                + "                 ?cw_uri skos:prefLabel ?compound_name.\n"
+                + "         } \n"
+                + "         LIMIT 50 \n"
+                + "     } \n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   private void loadBug5() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug5";
+        queryCase.name = "Bug Query 5";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n"
+                + "PREFIX chemspider: <http://rdf.chemspider.com/#>\n"
+                + "PREFIX obo: <http://purl.obolibrary.org/obo/>\n"
+                + "PREFIX cheminf: <http://semanticscience.org/ontology/cheminf.owl/>\n"
+                + "PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>\n"
+                + "PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#>\n"
+                + "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n"
+                + "PREFIX sio: <http://semanticscience.org/resource/>\n"
+                + "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX chembl-ops: <http://www.openphacts.org/chembl/onto/#>\n"
+                + "PREFIX cito: <http://purl.org/spar/cito/>\n"
+                + "PREFIX bibo: <http://purl.org/ontology/bibo/>\n"
+                + "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/>\n"
+                + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+                + "SELECT DISTINCT ?item  ?assay_organism WHERE {\n"
+                + "     { \n "
+                + "         SELECT DISTINCT ?item ?doi ?pmid ?equiv_compound ?std_type ?relation ?std_value ?std_unit \n"
+                + "                 ?activity_value ?equiv_assay ?assay_organism \n"
+                + "                 ?bNode1 ?molweight ?assay_description ?db_uri ?drug_name "
+                + "                 ?cw_uri ?compound_name ?cs_uri ?smiles ?inchi ?inchiKey ?num_ro5_violations \n"
+                + "                 (GROUP_CONCAT(DISTINCT ?equiv_target ; SEPARATOR=' , ') AS ?target_uris) "
+                + "                 (GROUP_CONCAT(DISTINCT ?target_name ; SEPARATOR=' , ') AS ?target_names) "
+                + "                 (GROUP_CONCAT(DISTINCT ?target_organism ; SEPARATOR=' , ') AS ?target_organisms) "
+                + "                 (GROUP_CONCAT(DISTINCT ?drugType ; SEPARATOR=' , ') AS ?drugTypes) \n"
+                + "         {"
+                + "             GRAPH <http://www.conceptwiki.org> {\n"
+                + "                 ?cw_uri skos:prefLabel ?compound_name.\n"
+                + "             }\n"
+                + "             GRAPH <http://www.chemspider.com> {\n"
+                + "                 ?cs_uri chemspider:smiles ?smiles ;\n"
+                + "                     chemspider:inchi ?inchi ;\n"
+                + "                     chemspider:inchikey ?inchiKey .\n"
+                + "                 OPTIONAL { [] obo:IAO_0000136 ?cs_uri ;\n"
+                + "                     a cheminf:CHEMINF_000367;\n"
+                + "                     qudt:numericValue ?num_ro5_violations . }\n"
+                + "             }\n"
+                + "             GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {\n"
+                + "                 ?item chembl:forMolecule ?chembl_uri ;\n"
+                + "                     chembl:onAssay ?assay_uri .\n"
+                + "                 ?chembl_uri owl:equivalentClass ?equiv_compound .\n"
+                + "                 ?equiv_compound sio:CHEMINF_000200 [] .\n"
+                + "                 ?assay_uri owl:equivalentClass ?equiv_assay .\n"
+                + "                 OPTIONAL { ?assay_uri chembl:hasTarget ?target_uri .\n"
+                + "                     ?target_uri owl:equivalentClass ?equiv_target\n"
+                + "                     OPTIONAL { ?target_uri dc:title ?target_name }\n"
+                + "                     OPTIONAL { ?target_uri chembl:organism ?target_organism }\n"
+                + "                 }\n"
+                + "                 OPTIONAL { ?assay_uri chembl:organism ?assay_organism }\n"
+                + "                 OPTIONAL { ?assay_uri chembl:hasDescription ?assay_description }\n"
+                + "                 OPTIONAL { ?item chembl:type ?std_type }\n"
+                + "                 OPTIONAL { ?item chembl:relation ?relation }\n"
+                + "                 OPTIONAL { ?item chembl:standardValue ?std_value }\n"
+                + "                 OPTIONAL { ?item chembl:standardUnits ?std_unit }\n"
+                + "                 OPTIONAL { ?item chembl-ops:normalisedValue ?activity_value}\n"
+                + "                 OPTIONAL { ?item cito:citesAsDataSource ?doi_internal .\n"
+                + "                     OPTIONAL {?doi_internal owl:sameAs ?doi }\n"
+                + "                     OPTIONAL { ?doi_internal bibo:pmid ?pmid }\n"
+                + "                 }\n"
+                + "                 OPTIONAL { ?chembl_uri sio:CHEMINF_000200 ?bNode1 .\n"
+                + "                     ?bNode1 a sio:CHEMINF_000198 ;\n"
+                + "                     sio:SIO_000300 ?molweight. }\n"
+                + "             }\n"
+                + "             OPTIONAL {\n"
+                + "                 GRAPH <http://linkedlifedata.com/resource/drugbank> {\n"
+                + "                     ?db_uri drugbank:genericName ?drug_name ;\n"
+                + "                         drugbank:drugType ?drugType_uri .\n"
+                + "                     ?drugType_uri rdfs:label ?drugType.\n"
+                + "                 }\n"
+                + "             }\n"
+                + "         } \n"
+                + "         GROUP BY ?item ?equiv_compound ?db_uri ?drug_name ?doi ?pmid ?equiv_assay ?assay_organism \n"
+                + "             ?assay_description ?std_type ?relation ?std_value ?std_unit ?bNode1 ?molweight \n"
+                + "             ?activity_value ?cw_uri ?compound_name ?cs_uri ?smiles ?inchi ?inchiKey \n"
+                + "             ?num_ro5_violations \n"
+                + "         ORDER BY ?assay_organism \n"
+                + "         LIMIT 50 \n"
+                + "         OFFSET 0 \n"
+                + "     } \n"
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
 }
