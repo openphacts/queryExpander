@@ -762,7 +762,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
         //If context is null no GRAPH clause is open 
         if (context == null){
-            if (statementsInNextGraph() > statementsInExpression(lj.getRightArg())){
+            //If contexts is empty is just subqueries so no swap required 
+            if (!contexts.isEmpty() && statementsInNextGraph() > statementsInExpression(lj.getRightArg())){
                 //There are statements in the graph which will be written after the optional is closed
                 //For example this happens if there is mmore than one Optional clause in a single graph.
                 //So the wrting of the Optional is delayed until the GRAPH clause is added.
