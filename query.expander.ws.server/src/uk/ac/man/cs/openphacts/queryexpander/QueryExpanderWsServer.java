@@ -675,7 +675,7 @@ public class QueryExpanderWsServer {
             sb.append(inputURI);
             sb.append("</h2>\n"); 
             if (graph != null && !graph.isEmpty()){
-                sb.append("<h3>Limited to ones fro graph ");
+                sb.append("<h3>Limited to ones from graph ");
                 sb.append(graph);
                 sb.append("</h3>\n");     
             }
@@ -683,7 +683,9 @@ public class QueryExpanderWsServer {
             sb.append("<ul>");
             for (String mapping:mappings){
                 sb.append("<li>");
+                sb.append("<a href=\"").append(mapping).append("\">");
                 sb.append(mapping);
+                sb.append("</a>");
                 sb.append("</li>");
             }
             sb.append("</ul>");
