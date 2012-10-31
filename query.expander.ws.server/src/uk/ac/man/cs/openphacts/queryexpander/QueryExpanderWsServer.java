@@ -683,7 +683,9 @@ public class QueryExpanderWsServer {
             sb.append("<ul>");
             for (String mapping:mappings){
                 sb.append("<li>");
+                sb.append("<a href=\"").append(mapping).append("\">");
                 sb.append(mapping);
+                sb.append("</a>");
                 sb.append("</li>");
             }
             sb.append("</ul>");
