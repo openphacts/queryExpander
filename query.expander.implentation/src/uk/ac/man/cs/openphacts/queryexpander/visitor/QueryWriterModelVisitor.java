@@ -338,6 +338,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             queryString.append(name);
         }
         queryString.append("{");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#meet(BindingSetAssignment bsa)");
         newLine();
         for (BindingSet bindingSet:bsa.getBindingSets()){
             queryString.append(" (");
@@ -640,7 +641,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
     @Override
     public void meet(Intersection i) throws QueryExpansionException {
-       i.getLeftArg().visit(this);
+        writeWhereIfNotInWhere(i, "Intersection");
+        if (SHOW_DEBUG_IN_QUERY){
+            queryString.append("#Intersection"); 
+            newLine();
+        }
+        i.getLeftArg().visit(this);
         i.getRightArg().visit(this);
     }
 
@@ -696,6 +702,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
+    private void writeWhereIfNotInWhere(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
+        if (!whereOpen){
+            writeWhere(caller);
+        }
+    }
+    
     void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
         if (!whereOpen){
            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
@@ -703,13 +715,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             }
         }
     }
-    
+
     private void writeWhere(String caller) throws QueryExpansionException {
         newLine();
         queryString.append("WHERE {");
         whereOpen= true;
         if (SHOW_DEBUG_IN_QUERY){
-            newLine();
             queryString.append("#openWhere in " + caller); 
             newLine();
         }
@@ -751,7 +762,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
 
         //If context is null no GRAPH clause is open 
         if (context == null){
-            if (statementsInNextGraph() > statementsInExpression(lj.getRightArg())){
+            //If contexts is empty is just subqueries so no swap required 
+            if (!contexts.isEmpty() && statementsInNextGraph() > statementsInExpression(lj.getRightArg())){
                 //There are statements in the graph which will be written after the optional is closed
                 //For example this happens if there is mmore than one Optional clause in a single graph.
                 //So the wrting of the Optional is delayed until the GRAPH clause is added.
@@ -975,7 +987,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctn.getArg());
         meet (prjctn.getProjectionElemList(), mappedExstensionElements);
         queryString.append("} ");
-        if (SHOW_DEBUG_IN_QUERY) queryString.append("#writeConstruct");
+        if (SHOW_DEBUG_IN_QUERY) queryString.append("#writeConstruct 1");
         newLine();
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         prjctn.getArg().visit(this);
@@ -997,7 +1009,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         boolean extraCurly = false;
         if (this.inConstruct){
             queryString.append("{ ");
+            if (SHOW_DEBUG_IN_QUERY) queryString.append("# meet(Projection prjctn, String modifier)");
             newLine();
+            extraCurly = true;
         }
         queryString.append("SELECT ");
         queryString.append(modifier);
@@ -1006,8 +1020,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         //This gets the names that represent functions in the select statemenet.
         this.namesInExtensions = ExpansionNameFinderVisitor.getNamesFound(prjctn.getArg());
-        //This mapes to sub functions.
-        this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
+        if (this.namesInExtensions.isEmpty()){
+            this.extensionMappings =  new HashMap<String,String>();
+        } else {
+            //This mapes to sub functions.
+            this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
+        }
         prjctn.getProjectionElemList().visit(this);
         newLine();
         printDataset();
@@ -1062,6 +1080,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             whereOpen = false;
         }
     }
+    
     private void printDataset(){
         if (originalDataSet == null) return;
         System.out.println(originalDataSet);
@@ -1215,9 +1234,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 newLine();
             }
             mp.getArg().visit(this);
-            queryString.append("} ");
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection2");
-            newLine();
+            closeWhereIfRequired();
         } else {
             throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }
@@ -1380,7 +1397,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         queryString.append("SERVICE ");
         srvc.getServiceRef().visit(this);
         newLine();
-        queryString.append("{ ");        
+        queryString.append("{ "); 
+        if (SHOW_DEBUG_IN_QUERY) {
+            queryString.append("# meet(Projection prjctn, String modifier)");
+            newLine();
+        }
         srvc.getArg().visit(this);
         newLine();
         queryString.append("} ");
@@ -1700,6 +1721,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     public void meet(Union union) throws QueryExpansionException {
         writeWhereIfRequired(union, "union");
         queryString.append("{");
+        if (SHOW_DEBUG_IN_QUERY) {
+            queryString.append("# meet(Union union)");
+            newLine();
+        }
+
         union.getLeftArg().visit(this);
         newLine();
         queryString.append("} UNION {");
@@ -1773,13 +1799,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     private boolean writeAsSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
-        if (this.whereOpen || this.inSelect){
+        if (this.whereOpen || this.inSelect || this.inConstruct){
             newLine();
             if (!this.whereOpen){
                 queryString.append("WHERE ");
             }
             //Second brackets is because antonis says Virtuso wants that.
             queryString.append("{ { ");
+            if (SHOW_DEBUG_IN_QUERY) {
+                queryString.append("# writeAsSubQuery");
+                newLine();
+            }
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#open subquery");
             newLine();
             queryString.append(writeSubQuery(tupleExpr));
@@ -1789,6 +1819,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             newLine(); 
             return true;
         } else {
+            if (SHOW_DEBUG_IN_QUERY) {
+                queryString.append("# not subQuery");
+                newLine();
+            }
             return false;
         }
     }

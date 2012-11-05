@@ -10,29 +10,19 @@
     dcterms:title "ConceptWiki to ChEBMBL targets Linkset"^^xsd:string ;
     dcterms:description """A linkset connecting ConceptWiki concepts 
     	with ChEMBL-RDF targets."""^^xsd:string;
-    dcterms:creator <http://www.foo.com/> ;
-    dcterms:created "2012-08-06"^^xsd:date;
     foaf:primaryTopic :conceptwiki_chembl13_targets .
 
 :conceptwiki_chembl13_targets a void:Linkset ;
-    dcterms:license "unknown" ;
     void:subjectsTarget :conceptwiki ;
     void:objectsTarget :chembl13_targets ;
     void:subset :conceptwiki ;
     void:linkPredicate skos:exactMatch ;
-    dcterms:created "2012-02-14"^^xsd:date ;
     dcterms:creator <http://www.conceptwiki.org> .
 :conceptwiki a void:Dataset ;
 	dcterms:title "ConceptWiki"^^xsd:string ;
-    dcterms:license "unknown" ;
-    dcterms:subject "unknown" ;
-    pav:retrievedOn "2012-02-14"^^xsd:date ;
     void:uriSpace <http://www.conceptwiki.org/concept/> .
 :chembl13_targets a void:Dataset ;
 	dcterms:title "ChEMBL Targets"^^xsd:string ;
-    dcterms:license "unknown" ;
-    dcterms:subject "unknown" ;
-    pav:version "unknown" ;
     void:uriSpace <http://data.kasabi.com/dataset/chembl-rdf/target/> .
    
 <http://www.conceptwiki.org/concept/516c9a26-885c-4920-9a13-d0a68cf99084> skos:exactMatch <http://data.kasabi.com/dataset/chembl-rdf/target/t11063> .

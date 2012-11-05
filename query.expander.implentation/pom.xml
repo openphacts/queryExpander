@@ -29,6 +29,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
+			<artifactId>org.bridgedb.utils</artifactId>
+			<version>${bridbgedb.version}</version>
+            <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.sql</artifactId>
 			<version>${bridbgedb.version}</version>
             <scope>compile</scope>

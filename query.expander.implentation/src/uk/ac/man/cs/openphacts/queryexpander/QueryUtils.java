@@ -150,10 +150,11 @@ public class QueryUtils {
                         Reporter.report(pos + " in line " + line);
                     }
                     int start = pos -20;
-                    if (pos < 0) pos = 0;
+                    if (start < 0) start = 0;
                     int end = pos + 20;
                     if (pos > len) pos = len;
                     if (verbose){
+                        Reporter.report(""+tree1.length() + "  " + start + "  " + end);
                         Reporter.report(tree1.subSequence(start, end).toString());
                         Reporter.report(tree2.subSequence(start, end).toString());
                         Reporter.report (text);

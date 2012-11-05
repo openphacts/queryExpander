@@ -67,6 +67,7 @@ public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpansionEx
     public static ArrayList<Var> getContexts(TupleExpr tupleExpr) throws QueryExpansionException{
         ContextListerVisitor listener = new ContextListerVisitor();
         tupleExpr.visit(listener);
-        return listener.getContexts();
+        ArrayList<Var> result = listener.getContexts();
+        return result;
     }
 }
