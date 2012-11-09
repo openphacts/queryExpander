@@ -5,6 +5,8 @@
 
 package uk.ac.man.cs.openphacts.queryexpander;
 
+import org.apache.log4j.Logger;
+import org.bridgedb.utils.ConfigReader;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
@@ -15,7 +17,10 @@ import org.openrdf.query.parser.sparql.SPARQLParser;
  * @author Christian
  */
 public class Test {
-   public static void main(String[] args) throws Exception{
+    static final Logger logger = Logger.getLogger(Test.class);
+
+    public static void main(String[] args) throws Exception{
+       ConfigReader.logToConsole();
        String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
                 "SELECT ?name ?mbox\n" +
                 "WHERE  { \n" +
@@ -29,6 +34,6 @@ public class Test {
        SPARQLParser parser = new SPARQLParser();
        ParsedQuery parsedQuery = parser.parseQuery(query, null);
        TupleExpr tupleExpr = parsedQuery.getTupleExpr();
-       System.out.println(tupleExpr);
+       logger.info(tupleExpr);
    }
 }

@@ -13,6 +13,7 @@ import org.bridgedb.metadata.validator.ValidationType;
 import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.utils.Reporter;
 import org.bridgedb.utils.StoreType;
+import org.bridgedb.utils.TestUtils;
 import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
 
@@ -20,7 +21,7 @@ import org.openrdf.OpenRDFException;
  *
  * @author Christian
  */
-public abstract class LoaderBase {
+public abstract class LoaderBase extends TestUtils{
 
     static final Logger logger = Logger.getLogger(LoaderBase.class);
 

@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class Ops1_1QueryTest  extends LoaderBase {
+public class Ops1_1QueryTest extends LoaderBase {
     
     @Test
     public void testAllNoMapping() throws Exception{
@@ -39,7 +39,7 @@ public class Ops1_1QueryTest  extends LoaderBase {
        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            System.out.println("Testing " + loader.getQueryName(queryKey));
+            report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery;
             targetQuery = loader.getTextReplaceQuery(queryKey);

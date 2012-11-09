@@ -5,8 +5,7 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.bridgedb.IDMapper;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.file.IDMapperText;
@@ -26,11 +25,13 @@ import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
  */
 public class BridgeDBFactory {
     
+    static final Logger logger = Logger.getLogger(BridgeDBFactory.class);
+    
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             URLMapper urlMapper =new SQLUrlMapper(false, StoreType.LIVE);
-            System.out.println(urlMapper.getOverallStatistics());
+            logger.info(urlMapper.getOverallStatistics());
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpansionException("Error setting up BridgeDB mapper ", ex);
