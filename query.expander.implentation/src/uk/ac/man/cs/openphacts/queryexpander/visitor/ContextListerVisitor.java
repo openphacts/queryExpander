@@ -6,7 +6,7 @@ import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
 /**
  * The purpose of this visitor is list the contexts (Graphs) that each statement comes from.
@@ -22,7 +22,7 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
  * 
  * @author Christian
  */
-public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpansionException>{
+public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpanderException>{
 
     private ArrayList<Var> contexts = new ArrayList<Var>();
     
@@ -35,13 +35,13 @@ public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpansionEx
     }
     
     @Override
-    public void meet(StatementPattern sp) throws QueryExpansionException {
+    public void meet(StatementPattern sp) throws QueryExpanderException {
         //Record the context even if NULL.
         contexts.add(sp.getContextVar());
     }
 
     @Override
-    public void meet(Projection prjctn) throws QueryExpansionException {
+    public void meet(Projection prjctn) throws QueryExpanderException {
         //in subquery so stop
     }
 
@@ -62,9 +62,9 @@ public class ContextListerVisitor extends QueryModelVisitorBase<QueryExpansionEx
      * 
      * @param tupleExpr Query or subquery.
      * @return An list of contexts. Warning this will probably include NULLs. 
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    public static ArrayList<Var> getContexts(TupleExpr tupleExpr) throws QueryExpansionException{
+    public static ArrayList<Var> getContexts(TupleExpr tupleExpr) throws QueryExpanderException{
         ContextListerVisitor listener = new ContextListerVisitor();
         tupleExpr.visit(listener);
         ArrayList<Var> result = listener.getContexts();

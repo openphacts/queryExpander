@@ -17,7 +17,8 @@ import org.openrdf.query.algebra.Join;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 
 /**
@@ -39,7 +40,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     }
 
     @Override
-    void meetProjectionArg(TupleExpr arg) throws QueryExpansionException {
+    void meetProjectionArg(TupleExpr arg) throws QueryExpanderException {
         if (expansionStategy == ExpansionStategy.UNION_ALL){
             insertUnion(arg);
         } else if (expansionStategy == ExpansionStategy.UNION_GRAPH){
@@ -54,7 +55,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     }
 
     @Override
-    public void meet(Join join) throws QueryExpansionException {
+    public void meet(Join join) throws QueryExpanderException {
         if (expansionStategy == ExpansionStategy.UNION_GRAPH && !inUnion) {
             if (singleGraph(join)){
                 insertUnion(join);
@@ -68,7 +69,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         }
     }
 
-    private void unionOrMeet(TupleExpr expr) throws QueryExpansionException{
+    private void unionOrMeet(TupleExpr expr) throws QueryExpanderException{
         if (singleGraph(expr)){
             insertUnion(expr);
         } else {
@@ -77,7 +78,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     }
 
     @Override
-    void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
+    void writeStatementPattern(StatementPattern sp) throws QueryExpanderException {
         if (expansionStategy == ExpansionStategy.UNION_STATEMENT){
              unionStatementPattern(sp);
         } else if (expansionStategy == ExpansionStategy.UNION_GRAPH && !inUnion ) {
@@ -87,7 +88,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         }
     }
 
-    private void unionStatementPattern(StatementPattern sp) throws QueryExpansionException {
+    private void unionStatementPattern(StatementPattern sp) throws QueryExpanderException {
         Var subject = sp.getSubjectVar();
         Var object = sp.getObjectVar();
         List<URI> subjectMaps = getMappings(subject);
@@ -146,7 +147,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         }
     }
 
-    private boolean singleGraph (TupleExpr expr) throws QueryExpansionException{
+    private boolean singleGraph (TupleExpr expr) throws QueryExpanderException{
         ArrayList<Var> list = ContextListerVisitor.getContexts(expr);
        //Let the statement code handle this
         if (list.size() < 2 ){
@@ -165,7 +166,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         return true;
     }
 
-    private List<URI> getMappings (Var var) throws QueryExpansionException{
+    private List<URI> getMappings (Var var) throws QueryExpanderException{
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
@@ -178,7 +179,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         return null;
     }
 
-    private void insertUnion(TupleExpr expr) throws QueryExpansionException{
+    private void insertUnion(TupleExpr expr) throws QueryExpanderException{
         Set<URI> uris = URIExtractorVisitor.extactURI(expr);
         HashMap<URI,List<URI>> mappings = new HashMap<URI,List<URI>>();
         for (URI uri:uris){
@@ -203,7 +204,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
 
     private void doUnionAlternatives(TupleExpr expr, Set<URI> keys, HashMap<URI,List<URI>> mappings,
             ArrayList<Var> holderContexts)
-            throws QueryExpansionException{
+            throws QueryExpanderException{
         URI key = keys.iterator().next();
         for (URI uri: mappings.get(key)){
             currentMappings.put(key, uri);
@@ -242,9 +243,9 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
      * If it is not a URI the normal write method is used.
      *
      * @param var Var to be written.
-     * @throws QueryExpansionException
+     * @throws QueryExpanderException
      */
-    void writeStatementPart(Var var) throws QueryExpansionException{
+    void writeStatementPart(Var var) throws QueryExpanderException{
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
@@ -265,14 +266,14 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
      * <p>
      * Works if and only if the model was visited exactly once.
      * @return query as a String
-     * @throws QueryExpansionException Declared as thrown to allow calling methods to catch it specifically.
+     * @throws QueryExpanderException Declared as thrown to allow calling methods to catch it specifically.
      */
-    private String getQuery() throws QueryExpansionException {
+    private String getQuery() throws QueryExpanderException {
         return queryString.toString();
     }
 
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, 
-            IMSMapper mapper, ExpansionStategy expansionStategy) throws QueryExpansionException{
+            IMSMapper mapper, ExpansionStategy expansionStategy) throws QueryExpanderException{
         UnionExpansionVisitor writer = new UnionExpansionVisitor(dataSet, mapper, expansionStategy);
         tupleExpr.visit(writer);
         return writer.getQuery();

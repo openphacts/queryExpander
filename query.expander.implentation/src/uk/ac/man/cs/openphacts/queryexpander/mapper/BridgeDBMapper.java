@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import org.bridgedb.url.URLMapper;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
 /**
  *
@@ -27,7 +27,7 @@ public class BridgeDBMapper implements IMSMapper{
     }
     
     @Override
-    public List<URI> getMatchesForURI(URI uri) throws QueryExpansionException {
+    public List<URI> getMatchesForURI(URI uri) throws QueryExpanderException {
         try {
             Set<String> stringResults = bridgeDB.mapURL(uri.stringValue());
             //Hack sort the results for testing
@@ -38,12 +38,12 @@ public class BridgeDBMapper implements IMSMapper{
             }
             return results;
         } catch (Exception ex) {
-            throw new QueryExpansionException("Unable to map " + uri , ex);
+            throw new QueryExpanderException("Unable to map " + uri , ex);
         }
     }
 
     @Override
-    public List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpansionException {
+    public List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpanderException {
         try {
             Set<String> specificNameSpaces =  allowedNamespaces.get(graph);
             Set<String> stringResults;
@@ -53,7 +53,7 @@ public class BridgeDBMapper implements IMSMapper{
                 stringResults = bridgeDB.mapURL(uri.stringValue(), specificNameSpaces.toArray(EMPTY_STRING_ARRAY));
             }
             if (stringResults == null){
-                throw new QueryExpansionException("null results returned for " + uri + " and graph " + graph);
+                throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);
             }
             //Hack sort the results for testing
             TreeSet<String> sorted = new TreeSet(stringResults);
@@ -63,7 +63,7 @@ public class BridgeDBMapper implements IMSMapper{
             }
             return results;
         } catch (Exception ex) {
-            throw new QueryExpansionException("Unable to map " + uri , ex);
+            throw new QueryExpanderException("Unable to map " + uri , ex);
         }
     }
 

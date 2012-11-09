@@ -11,7 +11,7 @@ import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.url.URLMapper;
 import org.bridgedb.utils.StoreType;
 import org.junit.Test;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
 
@@ -31,14 +31,14 @@ public class TestBridgeDBFactory {
             "http://rdf.chemspider.com/"};
 
     
-    public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
+    public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             TestSqlFactory.checkSQLAccess();
             URLMapper urlMapper =new SQLUrlMapper(false, StoreType.TEST);
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
-            throw new QueryExpansionException("Error setting up File mapper ", ex);
+            throw new QueryExpanderException("Error setting up File mapper ", ex);
         }
     }
     	

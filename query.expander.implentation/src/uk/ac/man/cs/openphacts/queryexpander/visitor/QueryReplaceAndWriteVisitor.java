@@ -13,7 +13,7 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 
 /**
@@ -66,9 +66,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * 
      * @param uri The URI for which replacements are to be found.
      * @return A List of replacement URIs or NULL is not replacement are returned by the mapper.
-     * @throws QueryExpansionException Some expection thrown by the mapping service.
+     * @throws QueryExpanderException Some expection thrown by the mapping service.
      */
-    private List<URI> getMappings(URI uri) throws QueryExpansionException{
+    private List<URI> getMappings(URI uri) throws QueryExpanderException{
         if (context == null){
             return mapper.getMatchesForURI(uri);            
         } else {
@@ -81,7 +81,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         }
     }
     
-    private List<URI> getMappings(ValueExpr uriArg) throws QueryExpansionException {
+    private List<URI> getMappings(ValueExpr uriArg) throws QueryExpanderException {
         Value value;
         if (uriArg instanceof ValueConstant){
             ValueConstant vc = (ValueConstant)uriArg;
@@ -91,15 +91,15 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
             if (var.hasValue()){
                value = var.getValue();
             } else {
-                throw new QueryExpansionException ("Expected a URI but found : " + uriArg);        
+                throw new QueryExpanderException ("Expected a URI but found : " + uriArg);        
             }
         } else {
-            throw new QueryExpansionException ("Expected a URI but found : " + uriArg);
+            throw new QueryExpanderException ("Expected a URI but found : " + uriArg);
         }
         if (value instanceof URI){
             return getMappings((URI)value);
         } else {
-            throw new QueryExpansionException ("Expected a URI but found : " + uriArg);            
+            throw new QueryExpanderException ("Expected a URI but found : " + uriArg);            
         }
     }
 
@@ -177,7 +177,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
         queryString.append(")");
     }
 
-    private void mapParameter(String variableName) throws QueryExpansionException{
+    private void mapParameter(String variableName) throws QueryExpanderException{
         //If the name is not in the parameter list nothing needs to be done
         if (!(parameters.contains(variableName))) return;
         //if there is already a paramter mapping nothing needs to be done
@@ -201,9 +201,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * If it is not a URI the normal write method is used.
      * 
      * @param var Var to be written.
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    void writeStatementPart(Var var) throws QueryExpansionException{
+    void writeStatementPart(Var var) throws QueryExpanderException{
         meet(var);         
         if (!var.isAnonymous()){
             String name = "?" + var.getName();
@@ -229,9 +229,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * @param compareOp The comparison operator. Note: Only Equals and  Not equals make sence.
      * @param normalArg The none URI arguement.
      * @param uriArg The URI arguement
-     * @throws QueryExpansionException If uriArg is not a URI, compareOp is not "=" or "!=" or a mapping exception.
+     * @throws QueryExpanderException If uriArg is not a URI, compareOp is not "=" or "!=" or a mapping exception.
      */
-    private void writeCompareWithURI(CompareOp compareOp, ValueExpr normalArg, ValueExpr uriArg) throws QueryExpansionException {
+    private void writeCompareWithURI(CompareOp compareOp, ValueExpr normalArg, ValueExpr uriArg) throws QueryExpanderException {
         queryString.append("(");
         normalArg.visit(this);
         queryString.append(" ");
@@ -252,7 +252,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
                         queryString.append(" && ");        
                         break;
                     default:  //LT, LE, GE, GT do not make sense applied to a URI: 
-                        throw new QueryExpansionException ("Did not expect " + compareOp + " in a Compare with URIs");
+                        throw new QueryExpanderException ("Did not expect " + compareOp + " in a Compare with URIs");
                 }
                 normalArg.visit(this);
                 queryString.append(" ");
@@ -269,7 +269,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * Write a compare that does not include a URi by writing the three parts. 
      */
     private void writeCompareWithoutURI (CompareOp operator, ValueExpr leftArg,  ValueExpr rightArg) 
-            throws QueryExpansionException{
+            throws QueryExpanderException{
         queryString.append("(");
         leftArg.visit(this);    
         queryString.append(" ");
@@ -308,13 +308,13 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     /**
      * Checks if the compare incluses a URi and calls the appropriate method writeCompareWithURI or writeCompareWithoutURI.
      * @param cmpr 
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    public void meet(Compare cmpr) throws QueryExpansionException {
+    public void meet(Compare cmpr) throws QueryExpanderException {
         //ystem.out.println(cmpr);
         if (isURI(cmpr.getRightArg())){
             if (isURI(cmpr.getLeftArg())) {
-                throw new QueryExpansionException ("Unexpected compare with two URIs; " + cmpr);
+                throw new QueryExpanderException ("Unexpected compare with two URIs; " + cmpr);
             } else {
                 writeCompareWithURI(cmpr.getOperator(), cmpr.getLeftArg(), cmpr.getRightArg());
             }
@@ -331,9 +331,9 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     /**
      * Checks if the Variable is a URI and if so writes the mapped list otherwise just writes the variable
      * @param decribeVariable Variable which may be a URI
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    void writeDescribeVariable(ValueExpr decribeVariable) throws QueryExpansionException{
+    void writeDescribeVariable(ValueExpr decribeVariable) throws QueryExpanderException{
         if (isURI(decribeVariable)){
             //See if there are any mapped URIs
             List<URI> mappedURIs = getMappings(decribeVariable);
@@ -357,14 +357,14 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * <p>
      * Works if and only if the model was visited exactly once.
      * @return query as a String
-     * @throws QueryExpansionException Declared as thrown to allow calling methods to catch it specifically.
+     * @throws QueryExpanderException Declared as thrown to allow calling methods to catch it specifically.
      */
-    private String getQuery() throws QueryExpansionException {
+    private String getQuery() throws QueryExpanderException {
         return queryString.toString();
     }
 
     @Override
-    protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
+    protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpanderException{
         QueryReplaceAndWriteVisitor writer = 
                 new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper);
         tupleExpr.visit(writer);
@@ -373,7 +373,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, List<String> placeholders, 
             URI replacementVariable, IMSMapper mapper, 
-            List<String> requiredAttributes) throws QueryExpansionException{
+            List<String> requiredAttributes) throws QueryExpanderException{
         QueryReplaceAndWriteVisitor writer = new QueryReplaceAndWriteVisitor(dataSet, placeholders,  replacementVariable, mapper);
         tupleExpr.visit(writer);
         return writer.getQuery();

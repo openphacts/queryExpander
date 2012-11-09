@@ -39,25 +39,27 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException {
+    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpanderException {
         return expand(originalQuery, parameters, inputURI, false, null);
     }
         
     @Override
-    public String expand(String originalQuery) throws QueryExpansionException {
+    public String expand(String originalQuery) throws QueryExpanderException {
         return expand(originalQuery, new ArrayList<String>(), null, false, null);
     }
 
     public String expand(String originalQuery, List<String> parameters, String inputURI, 
             boolean verbose, ExpansionStategy expansionStategy)
-            throws QueryExpansionException {
+            throws QueryExpanderException {
+        logger.info("expand called with " + inputURI);
+        logger.trace("expand called with " + originalQuery);
         inputURI = checkURI(inputURI);
         if (verbose) logger.info(originalQuery);
         ParsedQuery parsedQuery; 
         try {
             parsedQuery = parser.parseQuery(originalQuery, null);
         } catch (MalformedQueryException ex) {
-            throw new QueryExpansionException("Unable to parse the query " + originalQuery, ex);
+            throw new QueryExpanderException("Unable to parse the query " + originalQuery, ex);
         }
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
         if (verbose) logger.info(tupleExpr);
@@ -76,18 +78,18 @@ public class QueryExpanderImpl implements QueryExpander{
         try {
             parsedQuery = parser.parseQuery(newQuery, null);
         } catch (MalformedQueryException ex) {
-            throw new QueryExpansionException("OOPS! Unable to parse the result query \n" + newQuery, ex);
+            throw new QueryExpanderException("OOPS! Unable to parse the result query \n" + newQuery, ex);
         }
         return newQuery;
     }
 
     @Override
-    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException {
+    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpanderException {
         return imsMapper.getURISpacesPerGraph();
     }
 
     @Override
-    public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException {
+    public List<String> mapURI(String inputURI, String graph) throws QueryExpanderException {
         URI uri = new URIImpl(inputURI);
         List<URI> mappings;
         if (graph != null && !graph.isEmpty()){

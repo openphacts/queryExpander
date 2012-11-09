@@ -13,13 +13,13 @@ import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
 /**
  *
  * @author Christian
  */
-public class URIExtractorVisitor extends QueryModelVisitorBase<QueryExpansionException>{
+public class URIExtractorVisitor extends QueryModelVisitorBase<QueryExpanderException>{
 
     private HashSet<URI> uris = new HashSet<URI>();
 
@@ -31,14 +31,14 @@ public class URIExtractorVisitor extends QueryModelVisitorBase<QueryExpansionExc
 
     //We dont want predicates
     @Override
-    public void meet(StatementPattern sp) throws QueryExpansionException  {
+    public void meet(StatementPattern sp) throws QueryExpanderException  {
         sp.getSubjectVar().visit(this);
         //do not visit sp.getPredicateVar()
         sp.getObjectVar().visit(this);
     }
 
     @Override
-    public void meet(Var var) throws QueryExpansionException {
+    public void meet(Var var) throws QueryExpanderException {
         if (var.hasValue()){
             Value value = var.getValue();
             if (value instanceof URI){
@@ -47,7 +47,7 @@ public class URIExtractorVisitor extends QueryModelVisitorBase<QueryExpansionExc
         }
     }
 
-    public static Set<URI> extactURI(TupleExpr tupleExpr) throws QueryExpansionException{
+    public static Set<URI> extactURI(TupleExpr tupleExpr) throws QueryExpanderException{
         URIExtractorVisitor visitor = new URIExtractorVisitor();
         tupleExpr.visit(visitor);
         return visitor.uris;
