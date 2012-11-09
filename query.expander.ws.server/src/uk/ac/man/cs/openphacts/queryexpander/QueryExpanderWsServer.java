@@ -439,7 +439,7 @@ public class QueryExpanderWsServer {
     private List<String> scrubInput(String query, List<String> parameters, String inputURI) 
             throws QueryExpansionException {
         if (query == null){
-            throw new QueryExpansionException("query paramater is missing!");
+            throw new QueryExpanderException("query paramater is missing!");
         }
         //Check that parameters is not a single empty String
         if (parameters.size() == 1) {
@@ -455,13 +455,13 @@ public class QueryExpanderWsServer {
         //check for both or neither extra parameters
         if (parameters.isEmpty()){
             if (inputURI != null && !inputURI.isEmpty()) {
-                throw new QueryExpansionException("\"parameter\" is missing! \n"
+                throw new QueryExpanderException("\"parameter\" is missing! \n"
                         + "If you specify an \"inputURI\" you must also specify one or more parameters.");
             }
             //Ok no Parameters and no inputURI old URI lookup method will be used.
         } else {
             if (inputURI == null || inputURI.isEmpty()){
-                throw new QueryExpansionException("\"inputURI\" is missing!\n"
+                throw new QueryExpanderException("\"inputURI\" is missing!\n"
                         + "You have specified " + parameters.size() + " parameters. \n"
                         + "If you specify one or more parameters you must specify an \"inputURI\".");
             }

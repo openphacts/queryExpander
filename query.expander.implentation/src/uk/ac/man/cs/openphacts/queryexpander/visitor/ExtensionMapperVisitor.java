@@ -83,9 +83,9 @@ import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.ZeroLengthPath;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
-public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionException>{
+public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpanderException>{
 
     private HashMap<String,String> extensionMappings = new HashMap<String,String>();
     
@@ -94,130 +94,130 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
     private ExtensionMapperVisitor(){
     }
         
-    public static HashMap<String,String> getMappings(TupleExpr tupleExpr) throws QueryExpansionException{
+    public static HashMap<String,String> getMappings(TupleExpr tupleExpr) throws QueryExpanderException{
         ExtensionMapperVisitor listener = new ExtensionMapperVisitor();
         tupleExpr.visit(listener);
         return listener.extensionMappings;
     }
 
     @Override
-    public void meet(QueryRoot qr) throws QueryExpansionException {
+    public void meet(QueryRoot qr) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Add add) throws QueryExpansionException {
+    public void meet(Add add) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(And and) throws QueryExpansionException {
+    public void meet(And and) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
+    public void meet(ArbitraryLengthPath alp) throws QueryExpanderException {
         //These are solved without using Extension Mapping so stop looking
     }
 
     @Override
-    public void meet(Avg avg) throws QueryExpansionException {
+    public void meet(Avg avg) throws QueryExpanderException {
         this.extension.append(" AVG (");
         avg.getArg().visit(this);
         this.extension.append(") ");        
     }
 
     @Override
-    public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
+    public void meet(BindingSetAssignment bsa) throws QueryExpanderException {
         //No TuplExpr children
         //No Extensions in Binding sets so stop looking
     }
 
     @Override
-    public void meet(BNodeGenerator bng) throws QueryExpansionException {
+    public void meet(BNodeGenerator bng) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Bound bound) throws QueryExpansionException {
+    public void meet(Bound bound) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Clear clear) throws QueryExpansionException {
+    public void meet(Clear clear) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Coalesce clsc) throws QueryExpansionException {
+    public void meet(Coalesce clsc) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Compare cmpr) throws QueryExpansionException {
+    public void meet(Compare cmpr) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(CompareAll ca) throws QueryExpansionException {
+    public void meet(CompareAll ca) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(CompareAny ca) throws QueryExpansionException {
+    public void meet(CompareAny ca) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Copy copy) throws QueryExpansionException {
+    public void meet(Copy copy) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Count count) throws QueryExpansionException {
+    public void meet(Count count) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Create create) throws QueryExpansionException {
+    public void meet(Create create) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Datatype dtp) throws QueryExpansionException {
+    public void meet(Datatype dtp) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(DeleteData dd) throws QueryExpansionException {
+    public void meet(DeleteData dd) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Difference dfrnc) throws QueryExpansionException {
+    public void meet(Difference dfrnc) throws QueryExpanderException {
         //should be ok bit keep checking just in case.
         dfrnc.getLeftArg().visit(this);
         dfrnc.getRightArg().visit(this);
     }
 
     @Override
-    public void meet(Distinct dstnct) throws QueryExpansionException {
+    public void meet(Distinct dstnct) throws QueryExpanderException {
         //probably a sub query but lets go down to double check.
         dstnct.getArg().visit(this);
     }
 
     @Override
-    public void meet(EmptySet es) throws QueryExpansionException {
+    public void meet(EmptySet es) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Exists exists) throws QueryExpansionException {
+    public void meet(Exists exists) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Extension extnsn) throws QueryExpansionException {
+    public void meet(Extension extnsn) throws QueryExpanderException {
         for (ExtensionElem extensionElem:extnsn.getElements()){
             meet(extensionElem);
         }
@@ -225,7 +225,7 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
     }
 
     @Override
-    public void meet(ExtensionElem ee) throws QueryExpansionException {
+    public void meet(ExtensionElem ee) throws QueryExpanderException {
         String name = ee.getName();
         if (name.startsWith("-") || name.startsWith("_")){
             extension = new StringBuilder();
@@ -236,264 +236,264 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
     }
 
     @Override
-    public void meet(Filter filter) throws QueryExpansionException {
+    public void meet(Filter filter) throws QueryExpanderException {
         filter.getArg().visit(this);
     }
 
     @Override
-    public void meet(FunctionCall fc) throws QueryExpansionException {
+    public void meet(FunctionCall fc) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Group group) throws QueryExpansionException {
+    public void meet(Group group) throws QueryExpanderException {
         //Should be ok but keep checking just in case
         group.getArg().visit(this);
     }
 
     @Override
-    public void meet(GroupConcat gc) throws QueryExpansionException {
+    public void meet(GroupConcat gc) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(GroupElem ge) throws QueryExpansionException {
+    public void meet(GroupElem ge) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(If i) throws QueryExpansionException {
+    public void meet(If i) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(In in) throws QueryExpansionException {
+    public void meet(In in) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(InsertData id) throws QueryExpansionException {
+    public void meet(InsertData id) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Intersection i) throws QueryExpansionException {
+    public void meet(Intersection i) throws QueryExpanderException {
         i.getLeftArg().visit(this);
         i.getRightArg().visit(this);
     }
 
     @Override
-    public void meet(IRIFunction irif) throws QueryExpansionException {
+    public void meet(IRIFunction irif) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(IsBNode ibn) throws QueryExpansionException {
+    public void meet(IsBNode ibn) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(IsLiteral il) throws QueryExpansionException {
+    public void meet(IsLiteral il) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(IsNumeric in) throws QueryExpansionException {
+    public void meet(IsNumeric in) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(IsResource ir) throws QueryExpansionException {
+    public void meet(IsResource ir) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(IsURI isuri) throws QueryExpansionException {
+    public void meet(IsURI isuri) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Join join) throws QueryExpansionException {
+    public void meet(Join join) throws QueryExpanderException {
         //should be ok bit keep checking just in case.
         join.getLeftArg().visit(this);
         join.getRightArg().visit(this);
     }
 
     @Override
-    public void meet(Label label) throws QueryExpansionException {
+    public void meet(Label label) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Lang lang) throws QueryExpansionException {
+    public void meet(Lang lang) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(LangMatches lm) throws QueryExpansionException {
+    public void meet(LangMatches lm) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(LeftJoin lj) throws QueryExpansionException {
+    public void meet(LeftJoin lj) throws QueryExpanderException {
         //should be ok bit keep checking just in case.
         lj.getLeftArg().visit(this);
         lj.getRightArg().visit(this);
     }
 
     @Override
-    public void meet(Like like) throws QueryExpansionException {
+    public void meet(Like like) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Load load) throws QueryExpansionException {
+    public void meet(Load load) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(LocalName ln) throws QueryExpansionException {
+    public void meet(LocalName ln) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(MathExpr me) throws QueryExpansionException {
+    public void meet(MathExpr me) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Max max) throws QueryExpansionException {
+    public void meet(Max max) throws QueryExpanderException {
         this.extension.append(" MAX(");
         max.getArg().visit(this);
         this.extension.append(") ");        
     }
 
     @Override
-    public void meet(Min min) throws QueryExpansionException {
+    public void meet(Min min) throws QueryExpanderException {
         this.extension.append(" MIN(");
         min.getArg().visit(this);
         this.extension.append(") ");        
     }
 
     @Override
-    public void meet(Modify modify) throws QueryExpansionException {
+    public void meet(Modify modify) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Move move) throws QueryExpansionException {
+    public void meet(Move move) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(MultiProjection mp) throws QueryExpansionException {
+    public void meet(MultiProjection mp) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Namespace nmspc) throws QueryExpansionException {
+    public void meet(Namespace nmspc) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Not not) throws QueryExpansionException {
+    public void meet(Not not) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Or or) throws QueryExpansionException {
+    public void meet(Or or) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Order order) throws QueryExpansionException {
+    public void meet(Order order) throws QueryExpanderException {
         //Don't expect one in the order element but no harm looking
         order.getArg();
     }
 
     @Override
-    public void meet(OrderElem oe) throws QueryExpansionException {
+    public void meet(OrderElem oe) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Projection prjctn) throws QueryExpansionException {
+    public void meet(Projection prjctn) throws QueryExpanderException {
         //in subquery so stop
     }
 
     @Override
-    public void meet(ProjectionElem pe) throws QueryExpansionException {
+    public void meet(ProjectionElem pe) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(ProjectionElemList pel) throws QueryExpansionException {
+    public void meet(ProjectionElemList pel) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Reduced rdcd) throws QueryExpansionException {
+    public void meet(Reduced rdcd) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Regex regex) throws QueryExpansionException {
+    public void meet(Regex regex) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(SameTerm st) throws QueryExpansionException {
+    public void meet(SameTerm st) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Sample sample) throws QueryExpansionException {
+    public void meet(Sample sample) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Service srvc) throws QueryExpansionException {
+    public void meet(Service srvc) throws QueryExpanderException {
        //Don't expect exstension here but not sure so lets check
         srvc.getArg().visit(this);
     }
 
     @Override
-    public void meet(SingletonSet ss) throws QueryExpansionException {
+    public void meet(SingletonSet ss) throws QueryExpanderException {
        //Nothing here
     }
 
     @Override
-    public void meet(Slice slice) throws QueryExpansionException {
+    public void meet(Slice slice) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(StatementPattern sp) throws QueryExpansionException {
+    public void meet(StatementPattern sp) throws QueryExpanderException {
         //Extensions come before SatemementPatterns so stop looking
     }
 
     @Override
-    public void meet(Str str) throws QueryExpansionException {
+    public void meet(Str str) throws QueryExpanderException {
         this.extension.append(" STR(");
         str.getArg().visit(this);
         this.extension.append(") ");        
     }
 
     @Override
-    public void meet(Sum sum) throws QueryExpansionException {
+    public void meet(Sum sum) throws QueryExpanderException {
         this.extension.append("SUM (");
         sum.getArg().visit(this);
         this.extension.append(") ");        
     }
 
     @Override
-    public void meet(Union union) throws QueryExpansionException {
+    public void meet(Union union) throws QueryExpanderException {
         union.getLeftArg().visit(this);
         union.getRightArg().visit(this);
     }
 
     @Override
-    public void meet(ValueConstant vc) throws QueryExpansionException {
+    public void meet(ValueConstant vc) throws QueryExpanderException {
         addValue(vc.getValue());
     }
 
@@ -508,7 +508,7 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
     }
     
     @Override
-    public void meet(Var var) throws QueryExpansionException {
+    public void meet(Var var) throws QueryExpanderException {
         if (var.hasValue()){
             addValue(var.getValue());
         } else if (var.isAnonymous()){
@@ -521,12 +521,12 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpansionE
     }
 
     @Override
-    public void meet(ZeroLengthPath zlp) throws QueryExpansionException {
+    public void meet(ZeroLengthPath zlp) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meetOther(QueryModelNode qmn) throws QueryExpansionException {
+    public void meetOther(QueryModelNode qmn) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

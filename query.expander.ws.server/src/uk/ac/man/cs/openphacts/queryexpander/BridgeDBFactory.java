@@ -15,7 +15,7 @@ import org.bridgedb.sql.SQLUrlMapper;
 import org.bridgedb.sql.SqlFactory;
 import org.bridgedb.url.URLMapper;
 import org.bridgedb.utils.StoreType;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
 
@@ -27,14 +27,14 @@ public class BridgeDBFactory {
     
     static final Logger logger = Logger.getLogger(BridgeDBFactory.class);
     
-     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
+     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             URLMapper urlMapper =new SQLUrlMapper(false, StoreType.LIVE);
             logger.info(urlMapper.getOverallStatistics());
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
-            throw new QueryExpansionException("Error setting up BridgeDB mapper ", ex);
+            throw new QueryExpanderException("Error setting up BridgeDB mapper ", ex);
         }
     }
      

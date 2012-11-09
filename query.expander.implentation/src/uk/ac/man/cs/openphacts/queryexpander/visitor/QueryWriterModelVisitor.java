@@ -89,14 +89,14 @@ import org.openrdf.query.algebra.ValueConstant;
 import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.ZeroLengthPath;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryType;
 
 /**
  *
  * @author Christian
  */
-public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansionException>{
+public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderException>{
     
     //Builder to write the query to bit by bit
     StringBuilder queryString = new StringBuilder();
@@ -160,12 +160,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(Add add) throws QueryExpansionException {
+    public void meet(Add add) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(ArbitraryLengthPath alp) throws QueryExpansionException {
+    public void meet(ArbitraryLengthPath alp) throws QueryExpanderException {
         //Limited implenation expanded as discovered so far
         TupleExpr path = alp.getPathExpression();
         if (path instanceof StatementPattern){
@@ -178,7 +178,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, StatementPattern sp) throws QueryExpansionException{
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, StatementPattern sp) throws QueryExpanderException{
         beforeStatmentPattern(sp);
         Var object = sp.getObjectVar();
         writeStatementPart(sp.getSubjectVar());
@@ -193,7 +193,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         afterStatmentPattern(sp);
     }
     
-    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, Union union) throws QueryExpansionException{
+    private void meetArbitraryLengthPath(ArbitraryLengthPath alp, Union union) throws QueryExpanderException{
         TupleExpr leftExpr = union.getLeftArg();
         if (!(leftExpr instanceof StatementPattern)){
             throw new UnsupportedOperationException
@@ -238,7 +238,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(And and) throws QueryExpansionException {
+    public void meet(And and) throws QueryExpanderException {
         queryString.append("(");
         and.getLeftArg().visit(this);
         queryString.append(" && ");
@@ -247,7 +247,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Avg avg) throws QueryExpansionException {
+    public void meet(Avg avg) throws QueryExpanderException {
         queryString.append("AVG(");
         avg.getArg().visit(this);
         queryString.append(") ");
@@ -331,7 +331,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
      @Override
-    public void meet(BindingSetAssignment bsa) throws QueryExpansionException {
+    public void meet(BindingSetAssignment bsa) throws QueryExpanderException {
         queryString.append("BINDINGS");
         for(String name:bsa.getBindingNames()){
             queryString.append(" ?");
@@ -352,24 +352,24 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
    @Override
-    public void meet(BNodeGenerator bng) throws QueryExpansionException {
+    public void meet(BNodeGenerator bng) throws QueryExpanderException {
         queryString.append(" BNODE() ");
     }
 
     @Override
-    public void meet(Bound bound) throws QueryExpansionException {
+    public void meet(Bound bound) throws QueryExpanderException {
         queryString.append("BOUND(");
         bound.getArg().visit(this);
         queryString.append(") ");        
     }
 
     @Override
-    public void meet(Clear clear) throws QueryExpansionException {
+    public void meet(Clear clear) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Coalesce clsc) throws QueryExpansionException {
+    public void meet(Coalesce clsc) throws QueryExpanderException {
         queryString.append("COALESCE(");
         List<ValueExpr> children = clsc.getArguments();
         children.get(0).visit(this);
@@ -381,7 +381,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Compare cmpr) throws QueryExpansionException {
+    public void meet(Compare cmpr) throws QueryExpanderException {
         queryString.append("(");
         cmpr.getLeftArg().visit(this);
         queryString.append(" ");
@@ -392,46 +392,46 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(CompareAll ca) throws QueryExpansionException {
-        throw new QueryExpansionException("CompareAl not supported yet.");
+    public void meet(CompareAll ca) throws QueryExpanderException {
+        throw new QueryExpanderException("CompareAl not supported yet.");
     }
 
     @Override
-    public void meet(CompareAny ca) throws QueryExpansionException {
-        throw new QueryExpansionException("CompareAny not supported yet.");
+    public void meet(CompareAny ca) throws QueryExpanderException {
+        throw new QueryExpanderException("CompareAny not supported yet.");
     }
 
     @Override
-    public void meet(Copy copy) throws QueryExpansionException {
+    public void meet(Copy copy) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Count count) throws QueryExpansionException {
+    public void meet(Count count) throws QueryExpanderException {
         queryString.append("COUNT(");
         count.getArg().visit(this);
         queryString.append(") ");
     }
 
     @Override
-    public void meet(Create create) throws QueryExpansionException {
+    public void meet(Create create) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Datatype dtp) throws QueryExpansionException {
+    public void meet(Datatype dtp) throws QueryExpanderException {
         queryString.append(" DATATYPE(");
         dtp.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(DeleteData dd) throws QueryExpansionException {
+    public void meet(DeleteData dd) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Difference dfrnc) throws QueryExpansionException {
+    public void meet(Difference dfrnc) throws QueryExpanderException {
         dfrnc.getLeftArg().visit(this);
         queryString.append(" MINUS {");
         dfrnc.getRightArg().visit(this);
@@ -441,7 +441,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Distinct dstnct) throws QueryExpansionException {
+    public void meet(Distinct dstnct) throws QueryExpanderException {
         TupleExpr tupleExpr = dstnct.getArg();
         if (tupleExpr instanceof Projection){
             if  (writeAsSubQuery(dstnct)){
@@ -450,17 +450,17 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 meet ((Projection)tupleExpr, " DISTINCT");
             }
         } else {
-            throw new QueryExpansionException("Distinct only supported followed by Projection.");
+            throw new QueryExpanderException("Distinct only supported followed by Projection.");
         }
     }
 
     @Override
-    public void meet(EmptySet es) throws QueryExpansionException {
-        throw new QueryExpansionException("EmptySet not supported yet.");
+    public void meet(EmptySet es) throws QueryExpanderException {
+        throw new QueryExpanderException("EmptySet not supported yet.");
     }
 
     @Override
-    public void meet(Exists exists) throws QueryExpansionException {
+    public void meet(Exists exists) throws QueryExpanderException {
         queryString.append(" EXISTS {");
         exists.getSubQuery().visit(this);
         queryString.append(" } ");
@@ -469,7 +469,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Extension extnsn) throws QueryExpansionException {
+    public void meet(Extension extnsn) throws QueryExpanderException {
         //I assume that this is also part of the ProjectionElemList so not required again.
         //extnsn.getElements();
         List<ExtensionElem> extensionElems = extnsn.getElements();
@@ -480,7 +480,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(ExtensionElem ee) throws QueryExpansionException {
+    public void meet(ExtensionElem ee) throws QueryExpanderException {
         String name = ee.getName();
         if (name.startsWith("-") || name.startsWith("_")){
             //will be writen by writeanon so not here
@@ -500,7 +500,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Filter filter) throws QueryExpansionException {
+    public void meet(Filter filter) throws QueryExpanderException {
         writeWhereIfRequired(filter, "filter");
         newLine();
         if (writeNotPredicate(filter)) return;
@@ -518,7 +518,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * @param filter
      * @return 
      */
-    private boolean writeHaving(Filter filter) throws QueryExpansionException{
+    private boolean writeHaving(Filter filter) throws QueryExpanderException{
         //May prove to be incomplete
         if (this.whereOpen) return false;
         //Must add to the mappings as normally lookahead stops when it hit
@@ -537,7 +537,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * 
      * For example { ?x !rdf:type ?y }
      */
-    private boolean writeNotPredicate(Filter filter) throws QueryExpansionException{
+    private boolean writeNotPredicate(Filter filter) throws QueryExpanderException{
         ValueExpr conditionExpr = filter.getCondition();
         if (!(conditionExpr instanceof Compare)) return false;
         Compare compare = (Compare)conditionExpr;
@@ -559,7 +559,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(FunctionCall fc) throws QueryExpansionException {
+    public void meet(FunctionCall fc) throws QueryExpanderException {
         String uriString = fc.getURI();
         try {
             URIImpl uri = new URIImpl(uriString);
@@ -583,7 +583,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Group group) throws QueryExpansionException {
+    public void meet(Group group) throws QueryExpanderException {
         group.getArg().visit(this);
         closeWhereIfRequired();
         Set<String> groupings = group.getGroupBindingNames();
@@ -601,7 +601,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(GroupConcat gc) throws QueryExpansionException {
+    public void meet(GroupConcat gc) throws QueryExpanderException {
         queryString.append("GROUP_CONCAT(");
         if (gc.isDistinct()) queryString.append(" DISTINCT ");
         gc.getArg().visit(this);
@@ -613,12 +613,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(GroupElem ge) throws QueryExpansionException {
-        throw new QueryExpansionException("GroupElem not supported yet.");
+    public void meet(GroupElem ge) throws QueryExpanderException {
+        throw new QueryExpanderException("GroupElem not supported yet.");
     }
 
     @Override
-    public void meet(If i) throws QueryExpansionException {
+    public void meet(If i) throws QueryExpanderException {
         queryString.append("IF ( ");
         i.getCondition().visit(this);
         queryString.append(" , ");
@@ -629,18 +629,18 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(In in) throws QueryExpansionException {
+    public void meet(In in) throws QueryExpanderException {
         //So far in all examples the parse replaces the in with alteratives
-        throw new QueryExpansionException("In not supported yet.");
+        throw new QueryExpanderException("In not supported yet.");
     }
 
     @Override
-    public void meet(InsertData id) throws QueryExpansionException {
+    public void meet(InsertData id) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Intersection i) throws QueryExpansionException {
+    public void meet(Intersection i) throws QueryExpanderException {
         writeWhereIfNotInWhere(i, "Intersection");
         if (SHOW_DEBUG_IN_QUERY){
             queryString.append("#Intersection"); 
@@ -651,46 +651,46 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(IRIFunction irif) throws QueryExpansionException {
+    public void meet(IRIFunction irif) throws QueryExpanderException {
         queryString.append(" IRI(");
         irif.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(IsBNode ibn) throws QueryExpansionException {
+    public void meet(IsBNode ibn) throws QueryExpanderException {
         queryString.append(" ISBLANK(");
         ibn.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(IsLiteral il) throws QueryExpansionException {
+    public void meet(IsLiteral il) throws QueryExpanderException {
         queryString.append(" ISLITERAL(");
         il.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(IsNumeric in) throws QueryExpansionException {
+    public void meet(IsNumeric in) throws QueryExpanderException {
         queryString.append(" ISNUMERIC(");
         in.getArg().visit(this);
         queryString.append(")");    }
 
     @Override
-    public void meet(IsResource ir) throws QueryExpansionException {
-        throw new QueryExpansionException("IsResource not supported yet.");
+    public void meet(IsResource ir) throws QueryExpanderException {
+        throw new QueryExpanderException("IsResource not supported yet.");
     }
 
     @Override
-    public void meet(IsURI isuri) throws QueryExpansionException {
+    public void meet(IsURI isuri) throws QueryExpanderException {
         queryString.append(" ISIRI(");
         isuri.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(Join join) throws QueryExpansionException {
+    public void meet(Join join) throws QueryExpanderException {
         writeWhereIfRequired(join, "join");
         if (join.getLeftArg() instanceof BindingSetAssignment){
             join.getRightArg().visit(this);
@@ -702,13 +702,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void writeWhereIfNotInWhere(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
+    private void writeWhereIfNotInWhere(TupleExpr tupleExpr, String caller) throws QueryExpanderException {
         if (!whereOpen){
             writeWhere(caller);
         }
     }
     
-    private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpansionException {
+    private void writeWhereIfRequired(TupleExpr tupleExpr, String caller) throws QueryExpanderException {
         if (!whereOpen){
            if (!ExtensionFinderVisitor.hasExtension(tupleExpr)){
                 writeWhere(caller);
@@ -716,7 +716,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void writeWhere(String caller) throws QueryExpansionException {
+    private void writeWhere(String caller) throws QueryExpanderException {
         newLine();
         queryString.append("WHERE {");
         whereOpen= true;
@@ -727,19 +727,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(Label label) throws QueryExpansionException {
-        throw new QueryExpansionException("Label not supported yet.");
+    public void meet(Label label) throws QueryExpanderException {
+        throw new QueryExpanderException("Label not supported yet.");
     }
 
     @Override
-    public void meet(Lang lang) throws QueryExpansionException {
+    public void meet(Lang lang) throws QueryExpanderException {
         queryString.append(" LANG(");
         lang.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(LangMatches lm) throws QueryExpansionException {
+    public void meet(LangMatches lm) throws QueryExpanderException {
         queryString.append(" LANGMATCHES(");
         lm.getLeftArg().visit(this);
         queryString.append(" ,");
@@ -751,9 +751,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     /**
      * 
      * @param lj
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    public void meet(LeftJoin lj) throws QueryExpansionException {
+    public void meet(LeftJoin lj) throws QueryExpanderException {
         
         writeWhereIfRequired(lj, "left join");
         //The leftArg is the stuff outside of the optional.
@@ -848,31 +848,31 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * Counts the number of statements in this query or sub query.
      * @param tupleExpr query or sub query
      * @return Number of statements met.
-     * @throws QueryExpansionException Unlikely but just in case.
+     * @throws QueryExpanderException Unlikely but just in case.
      */
-    private int statementsInExpression(TupleExpr tupleExpr) throws QueryExpansionException{
+    private int statementsInExpression(TupleExpr tupleExpr) throws QueryExpanderException{
         //Could be done with a lister that counts instead of lists but this reuses code.
         ArrayList<Var> localContexts = ContextListerVisitor.getContexts(tupleExpr);
         return localContexts.size();
     }
     
     @Override
-    public void meet(Like like) throws QueryExpansionException {
-        throw new QueryExpansionException("Like not supported yet.");
+    public void meet(Like like) throws QueryExpanderException {
+        throw new QueryExpanderException("Like not supported yet.");
     }
 
     @Override
-    public void meet(Load load) throws QueryExpansionException {
+    public void meet(Load load) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(LocalName ln) throws QueryExpansionException {
-        throw new QueryExpansionException("LocalName not supported yet.");
+    public void meet(LocalName ln) throws QueryExpanderException {
+        throw new QueryExpanderException("LocalName not supported yet.");
     }
 
     @Override
-    public void meet(MathExpr me) throws QueryExpansionException {
+    public void meet(MathExpr me) throws QueryExpanderException {
         queryString.append("(");
         me.getLeftArg().visit(this);
         //queryString.append(" ");
@@ -883,41 +883,41 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Max max) throws QueryExpansionException {
+    public void meet(Max max) throws QueryExpanderException {
         queryString.append("MAX(");
         max.getArg().visit(this);
         queryString.append(") ");
     }
 
     @Override
-    public void meet(Min min) throws QueryExpansionException {
+    public void meet(Min min) throws QueryExpanderException {
         queryString.append("MIN(");
         min.getArg().visit(this);
         queryString.append(") ");
     }
 
     @Override
-    public void meet(Modify modify) throws QueryExpansionException {
+    public void meet(Modify modify) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(Move move) throws QueryExpansionException {
+    public void meet(Move move) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meet(MultiProjection mp) throws QueryExpansionException {
-        throw new QueryExpansionException("MultiProjection not supported yet.");
+    public void meet(MultiProjection mp) throws QueryExpanderException {
+        throw new QueryExpanderException("MultiProjection not supported yet.");
     }
 
     @Override
-    public void meet(Namespace nmspc) throws QueryExpansionException {
-        throw new QueryExpansionException("Namespace not supported yet.");
+    public void meet(Namespace nmspc) throws QueryExpanderException {
+        throw new QueryExpanderException("Namespace not supported yet.");
     }
 
     @Override
-    public void meet(Not not) throws QueryExpansionException {
+    public void meet(Not not) throws QueryExpanderException {
         ValueExpr inner = not.getArg();
         if (inner instanceof Exists){
             queryString.append(" NOT"); //ouch no space after the not. Lexer can not handle double whitespace after a not!
@@ -930,7 +930,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Or or) throws QueryExpansionException {
+    public void meet(Or or) throws QueryExpanderException {
         queryString.append("(");
         or.getLeftArg().visit(this);
         queryString.append(" || ");
@@ -939,7 +939,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Order order) throws QueryExpansionException {
+    public void meet(Order order) throws QueryExpanderException {
         order.getArg().visit(this);
         closeWhereIfRequired();
         newLine();
@@ -951,7 +951,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(OrderElem oe) throws QueryExpansionException {
+    public void meet(OrderElem oe) throws QueryExpanderException {
         if (oe.isAscending()){
             queryString.append("ASC(");    
         } else {
@@ -962,7 +962,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Projection prjctn) throws QueryExpansionException {
+    public void meet(Projection prjctn) throws QueryExpanderException {
         if (this.inConstruct && !this.whereOpen) {
             writeWhere("prjctn");
         }
@@ -977,12 +977,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                     meet (prjctn, "");
                     break;
                 default: 
-                    throw new QueryExpansionException("Unexpected QueryType");
+                    throw new QueryExpanderException("Unexpected QueryType");
             }
         }
     }
 
-    private void writeConstruct(Projection prjctn) throws QueryExpansionException{
+    private void writeConstruct(Projection prjctn) throws QueryExpanderException{
         queryString.append("CONSTRUCT {");
         HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctn.getArg());
         meet (prjctn.getProjectionElemList(), mappedExstensionElements);
@@ -1002,10 +1002,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * 
      * Currently not used but left in if required again.
      */
-    void addExpanded(Projection prjctn) throws QueryExpansionException{
+    void addExpanded(Projection prjctn) throws QueryExpanderException{
     }
     
-    public void meet(Projection prjctn, String modifier) throws QueryExpansionException {
+    public void meet(Projection prjctn, String modifier) throws QueryExpanderException {
         boolean extraCurly = false;
         if (this.inConstruct){
             queryString.append("{ ");
@@ -1081,7 +1081,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(ProjectionElemList pel) throws QueryExpansionException {
+    public void meet(ProjectionElemList pel) throws QueryExpanderException {
         List<ProjectionElem> elements = pel.getElements();
         for (ProjectionElem element:elements){
             element.visit(this);
@@ -1115,10 +1115,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      *
      * @param pel
      * @param mappedExstensionElements
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
     private void meet(List<ProjectionElemList> pels, HashMap<String, ValueExpr> mappedExstensionElements) 
-            throws QueryExpansionException {
+            throws QueryExpanderException {
         for (ProjectionElemList pel:pels){
             newLine();
             meet(pel, mappedExstensionElements);
@@ -1131,10 +1131,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      *
      * @param pel
      * @param mappedExstensionElements
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
     private void meet(ProjectionElemList pel, HashMap<String, ValueExpr> mappedExstensionElements) 
-            throws QueryExpansionException {
+            throws QueryExpanderException {
         List<ProjectionElem> elements = pel.getElements();
         for (ProjectionElem element:elements){
             meet(element, mappedExstensionElements);
@@ -1143,7 +1143,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(ProjectionElem pe) throws QueryExpansionException {
+    public void meet(ProjectionElem pe) throws QueryExpanderException {
         String sourceName = pe.getSourceName();
         //if (requiredAttributes != null){
         //    if (!(requiredAttributes.contains(sourceName))){
@@ -1163,10 +1163,10 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * 
      * @param pe
      * @param mappedExstensionElements
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
     private void meet(ProjectionElem pe, HashMap<String, ValueExpr> mappedExstensionElements) 
-            throws QueryExpansionException {
+            throws QueryExpanderException {
         String name = pe.getSourceName();
         ValueExpr mapped = mappedExstensionElements.get(name);
         if (mapped == null){
@@ -1180,13 +1180,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(QueryRoot qr) throws QueryExpansionException {
-        throw new QueryExpansionException("QueryRoot not supported yet.");
+    public void meet(QueryRoot qr) throws QueryExpanderException {
+        throw new QueryExpanderException("QueryRoot not supported yet.");
     }
 
     //REDUCE is found both in CONSTRUCT AND SELECT QUERIES
     @Override
-    public void meet(Reduced rdcd) throws QueryExpansionException {
+    public void meet(Reduced rdcd) throws QueryExpanderException {
         TupleExpr arg = rdcd.getArg();
         if (arg instanceof Projection){
             Projection prjctn = (Projection)arg;
@@ -1200,7 +1200,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                     if (prjctnArg instanceof Filter){
                         writeDescribe((Filter)prjctnArg);
                     } else {
-                        throw new QueryExpansionException ("Reduced assumed to be a Describe but "
+                        throw new QueryExpanderException ("Reduced assumed to be a Describe but "
                                 + "Projection element is not a Filter");
                     }
                     break;
@@ -1208,7 +1208,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                     meet (prjctn, " REDUCED");
                     break;
                 default: 
-                    throw new QueryExpansionException("Unexpected QueryType");
+                    throw new QueryExpanderException("Unexpected QueryType");
             }
         }  else if (arg instanceof MultiProjection){
             //Assuming it must be construct
@@ -1229,13 +1229,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
             mp.getArg().visit(this);
             closeWhereIfRequired();
         } else {
-            throw new QueryExpansionException("Reduced with non Projection/ MultiProjection child not supported yet.");
+            throw new QueryExpanderException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }
     }
 
     //Look ahead function to match names ProjectionElem to ExtensionElem
     //Used by reduce
-    private HashMap<String, ValueExpr> mapExensionElements(TupleExpr tupleExpr) throws QueryExpansionException{
+    private HashMap<String, ValueExpr> mapExensionElements(TupleExpr tupleExpr) throws QueryExpanderException{
         HashMap<String, ValueExpr> mappedExstensionElements = new HashMap<String, ValueExpr>();
         if (tupleExpr instanceof Extension){
             Extension extnsn = (Extension) tupleExpr;
@@ -1251,9 +1251,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * Writes a Describe query based on a Filter that has been dettermined to be a Describe.
      * 
      * @param filter Filter tree representing a describe query
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    private void writeDescribe(Filter filter) throws QueryExpansionException {
+    private void writeDescribe(Filter filter) throws QueryExpanderException {
         contexts = ContextListerVisitor.getContexts(filter);
         queryString.append ("DESCRIBE ");
         ValueExpr condition = filter.getCondition();
@@ -1275,9 +1275,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * <p>
      * Subclasses may replace a uriString with mapped URIs
      * @param decribeVariable
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    void writeDescribeVariable(ValueExpr decribeVariable) throws QueryExpansionException{
+    void writeDescribeVariable(ValueExpr decribeVariable) throws QueryExpanderException{
         queryString.append(extractName(decribeVariable));
     }
     
@@ -1291,9 +1291,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * This method looks for the SameTerm(?-descr-subj, describeVariable) then extracts the describeVariable
      * and calls writeDescribeVariable(ValueExpr) to do the actual writting. (So that sub classes can replace URIs)
      * @param condition
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    private void findandWriteDescribeVariable(ValueExpr condition) throws QueryExpansionException {
+    private void findandWriteDescribeVariable(ValueExpr condition) throws QueryExpanderException {
         if (condition instanceof Or){
            Or or = (Or)condition;
            findandWriteDescribeVariable(or.getLeftArg());
@@ -1307,19 +1307,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                //ystem.out.println(leftName);
            }
         } else {
-            throw new QueryExpansionException ("Expected Or when extracting DescribeVariable");
+            throw new QueryExpanderException ("Expected Or when extracting DescribeVariable");
         }
     }
     
     //currently unit test fails.
-    String extractName(ValueExpr expr) throws QueryExpansionException{
+    String extractName(ValueExpr expr) throws QueryExpanderException{
         if (expr instanceof Var){
             Var var = (Var)expr;
             String name = var.getName();
             if (var != null){
                 return " ?" + name;
             } else {
-                throw new QueryExpansionException ("Expected null name when extracting a name");
+                throw new QueryExpanderException ("Expected null name when extracting a name");
             }
         } if (expr instanceof ValueConstant){
             Value value = ((ValueConstant)expr).getValue();
@@ -1330,12 +1330,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 return value.stringValue();
             }
         } else {
-            throw new QueryExpansionException ("Expected Var when extracting a name");
+            throw new QueryExpanderException ("Expected Var when extracting a name");
         }
     }
 
     @Override
-    public void meet(Regex regex) throws QueryExpansionException {
+    public void meet(Regex regex) throws QueryExpanderException {
         queryString.append("regex(");
         regex.getArg().visit(this);
         queryString.append(",");
@@ -1349,14 +1349,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Sample sample) throws QueryExpansionException {
+    public void meet(Sample sample) throws QueryExpanderException {
         queryString.append("SAMPLE(");
         sample.getArg().visit(this);
         queryString.append(") ");
     }
 
     @Override
-    public void meet(SameTerm st) throws QueryExpansionException {
+    public void meet(SameTerm st) throws QueryExpanderException {
         queryString.append(" SAMETERM(");
         st.getLeftArg().visit(this);
         queryString.append(" ,");
@@ -1377,7 +1377,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
     
     @Override
-    public void meet(Service srvc) throws QueryExpansionException {
+    public void meet(Service srvc) throws QueryExpanderException {
         writeWhereIfRequired(srvc, "service");
         //ystem.out.println(srvc);
         //ystem.out.println("BaseURI:" +srvc.getBaseURI());
@@ -1402,7 +1402,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(SingletonSet ss) throws QueryExpansionException {
+    public void meet(SingletonSet ss) throws QueryExpanderException {
         writeWhereIfRequired(ss,"SingkletonSet");
         newLine();
         //queryString.append("{} ");
@@ -1416,14 +1416,14 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * Sub classes will do fancy things here.
      * 
      * @param var Var to be written.
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      */
-    void writeStatementPart(Var var) throws QueryExpansionException{
+    void writeStatementPart(Var var) throws QueryExpanderException{
         meet(var);
     }
 
     @Override
-    public void meet(Slice slice) throws QueryExpansionException {
+    public void meet(Slice slice) throws QueryExpanderException {
         if (isAsk(slice)){
             queryString.append("ASK ");
             contexts = ContextListerVisitor.getContexts(slice);
@@ -1468,23 +1468,23 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     //Stetement Pattern split inb three as meetArbitraryLengthPath method process StatementPatterns
     //And these also need to handle context.
     @Override
-    public void meet(StatementPattern sp) throws QueryExpansionException  {
+    public void meet(StatementPattern sp) throws QueryExpanderException  {
         beforeStatmentPattern(sp);
         
         writeStatementPattern(sp);
         afterStatmentPattern(sp);
     }
     
-    private void beforeStatmentPattern(StatementPattern sp) throws QueryExpansionException{
+    private void beforeStatmentPattern(StatementPattern sp) throws QueryExpanderException{
         writeWhereIfRequired(sp,"StatementPattern");
         //Double check that then statement has the expected context 
         if (contexts.get(0) == null){
             if (sp.getContextVar() != null) {
-                throw new QueryExpansionException ("Expected null context in statement: " + sp);
+                throw new QueryExpanderException ("Expected null context in statement: " + sp);
             }
         } else {
             if (!(contexts.get(0).equals(sp.getContextVar()))) {
-               throw new QueryExpansionException ("Expected context  " + contexts.get(0) + " in statement: " + sp); 
+               throw new QueryExpanderException ("Expected context  " + contexts.get(0) + " in statement: " + sp); 
             }
         }       
         //Remove the context from the list, so it only has future contexts in it.
@@ -1502,7 +1502,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         
     }
     
-    private void writeStatementPattern(StatementPattern sp) throws QueryExpansionException {
+    private void writeStatementPattern(StatementPattern sp) throws QueryExpanderException {
         //No need to write the describe pattern the parser will do that
         if (isDescribePattern(sp)) return;
         //    //No need to write a pattern for eliminated elements.
@@ -1526,7 +1526,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
         }
     }
 
-    private void afterStatmentPattern(StatementPattern sp) throws QueryExpansionException{
+    private void afterStatmentPattern(StatementPattern sp) throws QueryExpanderException{
         //Now use the look ahead provided by the context list. 
         if (contexts.isEmpty()){
             //Last Statement so close and flush filters
@@ -1577,9 +1577,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      *    attribute list remove the statement. Otherwise keep it
      * @param sp Statement to check
      * @return If the statement is predicted to be removed.
-     * @throws QueryExpansionException 
+     * @throws QueryExpanderException 
      * /
-    boolean canEliminate(StatementPattern sp) throws QueryExpansionException {
+    boolean canEliminate(StatementPattern sp) throws QueryExpanderException {
         //ystem.out.println(sp);
         if (sp.getSubjectVar().isAnonymous()){
             //We don't think subject variables can be literals but just in case.
@@ -1606,7 +1606,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                         return true;
                     } else {
                         //remove predicate keep
-                        throw new QueryExpansionException ("Statement has an Eliminate variable ( " + 
+                        throw new QueryExpanderException ("Statement has an Eliminate variable ( " + 
                                 sp.getObjectVar().getName() +") and a Keep variable (" + 
                                 sp.getObjectVar().getName() + ")");
                     }
@@ -1618,7 +1618,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
                 } else {
                     if (canEliminate(sp.getObjectVar().getName())){
                          //keep predicate remove
-                        throw new QueryExpansionException ("Statement has a Keep variable ( " + 
+                        throw new QueryExpanderException ("Statement has a Keep variable ( " + 
                                 sp.getObjectVar().getName() +") and an Eliminate variable (" + 
                                 sp.getObjectVar().getName() + ")");
                     } else {
@@ -1680,9 +1680,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * Checks if a new context GRAPH) needs to be opend and does so if required.
      * 
      * @param sp Statement about to be written.
-     * @throws QueryExpansionException Not expected but just in case.
+     * @throws QueryExpanderException Not expected but just in case.
      */
-    private void openNewContextIfRequired(StatementPattern sp) throws QueryExpansionException {
+    private void openNewContextIfRequired(StatementPattern sp) throws QueryExpanderException {
         //Check not already in a context
         if (context == null) {
            //Check statement is part of a context 
@@ -1697,21 +1697,21 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(Str str) throws QueryExpansionException {
+    public void meet(Str str) throws QueryExpanderException {
         queryString.append(" STR(");
         str.getArg().visit(this);
         queryString.append(")");
     }
 
     @Override
-    public void meet(Sum sum) throws QueryExpansionException {
+    public void meet(Sum sum) throws QueryExpanderException {
         queryString.append("SUM(");
         sum.getArg().visit(this);
         queryString.append(") ");
     }
 
     @Override
-    public void meet(Union union) throws QueryExpansionException {
+    public void meet(Union union) throws QueryExpanderException {
         writeWhereIfRequired(union, "union");
         queryString.append("{");
         if (SHOW_DEBUG_IN_QUERY) {
@@ -1730,13 +1730,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(ValueConstant vc) throws QueryExpansionException {
+    public void meet(ValueConstant vc) throws QueryExpanderException {
         Value value = vc.getValue();
         addValue(value);
     }
 
     @Override
-    public void meet(Var var) throws QueryExpansionException {
+    public void meet(Var var) throws QueryExpanderException {
         if (var.hasValue()){
             Value value = var.getValue();
             addValue(value);
@@ -1750,13 +1750,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
     }
 
     @Override
-    public void meet(ZeroLengthPath zlp) throws QueryExpansionException {
+    public void meet(ZeroLengthPath zlp) throws QueryExpanderException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void meetOther(QueryModelNode qmn) throws QueryExpansionException {
-        throw new QueryExpansionException("meetOther not supported yet.");
+    public void meetOther(QueryModelNode qmn) throws QueryExpanderException {
+        throw new QueryExpanderException("meetOther not supported yet.");
     }
     
     private void addValue(Value value){
@@ -1785,13 +1785,13 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * <p>
      * Works if and only if the model was visited exactly once.
      * @return query as a String
-     * @throws QueryExpansionException Declared as thrown to allow calling methods to catch it specifically.
+     * @throws QueryExpanderException Declared as thrown to allow calling methods to catch it specifically.
      */
-    private String getQuery() throws QueryExpansionException {
+    private String getQuery() throws QueryExpanderException {
         return queryString.toString();
     }
 
-    private boolean writeAsSubQuery(TupleExpr tupleExpr) throws QueryExpansionException{
+    private boolean writeAsSubQuery(TupleExpr tupleExpr) throws QueryExpanderException{
         if (this.whereOpen || this.inSelect || this.inConstruct){
             newLine();
             if (!this.whereOpen){
@@ -1825,7 +1825,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpansion
      * It will be overrided by other sub classes.
     */
     protected String writeSubQuery(TupleExpr tupleExpr) 
-            throws QueryExpansionException{
+            throws QueryExpanderException{
         QueryWriterModelVisitor writer = new QueryWriterModelVisitor(originalDataSet);
  
         tupleExpr.visit(writer);

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.openrdf.model.URI;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
 /**
  * Interface for the mthods a Mapper service should include.
@@ -21,7 +21,7 @@ public interface IMSMapper {
      * @param uri A URI to Map.
      * @return (Possibly empty) List of URIs or even a null.
      */
-    List<URI> getMatchesForURI(URI uri) throws QueryExpansionException;
+    List<URI> getMatchesForURI(URI uri) throws QueryExpanderException;
 
     /**
      * Maps an URI to a list of URI.
@@ -38,7 +38,7 @@ public interface IMSMapper {
      *    There is no guarantee that every URI in the List will be in the GRAPH, 
      *    only that it Maps and there is not enough available information to say it can not be in the GRAPH.
      */
-    List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpansionException;
+    List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpanderException;
 
     public Map<String, Set<String>> getURISpacesPerGraph();
 }

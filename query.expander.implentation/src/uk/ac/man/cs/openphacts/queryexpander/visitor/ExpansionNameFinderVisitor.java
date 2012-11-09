@@ -9,9 +9,9 @@ import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
-public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpansionException>{
+public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpanderException>{
 
     private ArrayList<String> foundNames = new ArrayList<String>();
     
@@ -19,22 +19,22 @@ public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpan
     }
     
     @Override
-    public void meet(ExtensionElem ee) throws QueryExpansionException {
+    public void meet(ExtensionElem ee) throws QueryExpanderException {
         foundNames.add(ee.getName());
     }
     
     @Override
-    public void meet(Join join) throws QueryExpansionException {
+    public void meet(Join join) throws QueryExpanderException {
         //No need to look father as now in statements
     }
 
     @Override
-    public void meet(LeftJoin join) throws QueryExpansionException {
+    public void meet(LeftJoin join) throws QueryExpanderException {
         //No need to look father as now in statements
     }
     
     @Override
-    public void meet(Projection prjctn) throws QueryExpansionException {
+    public void meet(Projection prjctn) throws QueryExpanderException {
         //in subquery so stop
     }
 
@@ -42,7 +42,7 @@ public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpan
         return foundNames;
     }
     
-    public static ArrayList<String> getNamesFound(TupleExpr tupleExpr) throws QueryExpansionException{
+    public static ArrayList<String> getNamesFound(TupleExpr tupleExpr) throws QueryExpanderException{
         ExpansionNameFinderVisitor listener = new ExpansionNameFinderVisitor();
         tupleExpr.visit(listener);
         return listener.getNamesFound();
