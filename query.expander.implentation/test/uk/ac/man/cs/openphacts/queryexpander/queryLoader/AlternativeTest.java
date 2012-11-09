@@ -12,7 +12,7 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
@@ -31,13 +31,13 @@ import static org.junit.Assert.*;
 public class AlternativeTest {
     
     public String expand(String originalQuery, ExpansionStategy expansionStategy)
-            throws QueryExpansionException {
+            throws QueryExpanderException {
         ParsedQuery parsedQuery;
         SPARQLParser parser = new SPARQLParser();
         try {
             parsedQuery = parser.parseQuery(originalQuery, null);
         } catch (MalformedQueryException ex) {
-            throw new QueryExpansionException("Unable to parse the query " + originalQuery, ex);
+            throw new QueryExpanderException("Unable to parse the query " + originalQuery, ex);
         }
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
         Dataset dataset = parsedQuery.getDataset();
@@ -49,7 +49,7 @@ public class AlternativeTest {
         try {
             parsedQuery = parser.parseQuery(newQuery, null);
         } catch (MalformedQueryException ex) {
-            throw new QueryExpansionException("OOPS! Unable to parse the result query " + newQuery, ex);
+            throw new QueryExpanderException("OOPS! Unable to parse the result query " + newQuery, ex);
         }
         return newQuery;
     }
