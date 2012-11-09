@@ -133,12 +133,12 @@ public class QueryUtils {
             String tree1 = QueryModelTreePrinter.printTree(tupleExpr1);
             String tree2 = QueryModelTreePrinter.printTree(tupleExpr2);
             if (verbose){
-                Reporter.report("*** Queries do not match ***");
-                Reporter.report(query1);
-                Reporter.report(tree1);
-                Reporter.report("*");
-                Reporter.report(query2);
-                Reporter.report(tree2);
+                Reporter.println("*** Queries do not match ***");
+                Reporter.println(query1);
+                Reporter.println(tree1);
+                Reporter.println("*");
+                Reporter.println(query2);
+                Reporter.println(tree2);
             }
             int len = tree1.length();
             if (tree2.length() < len) len = tree2.length();
@@ -147,17 +147,17 @@ public class QueryUtils {
                 //ystem.out.println (pos + " " + tree1.charAt(pos) + tree2.charAt(pos));
                 if (tree1.charAt(pos) != tree2.charAt(pos)) {
                     if (verbose){
-                        Reporter.report(pos + " in line " + line);
+                        Reporter.println(pos + " in line " + line);
                     }
                     int start = pos -20;
                     if (start < 0) start = 0;
                     int end = pos + 20;
                     if (pos > len) pos = len;
                     if (verbose){
-                        Reporter.report(""+tree1.length() + "  " + start + "  " + end);
-                        Reporter.report(tree1.subSequence(start, end).toString());
-                        Reporter.report(tree2.subSequence(start, end).toString());
-                        Reporter.report (text);
+                        Reporter.println(""+tree1.length() + "  " + start + "  " + end);
+                        Reporter.println(tree1.subSequence(start, end).toString());
+                        Reporter.println(tree2.subSequence(start, end).toString());
+                        Reporter.println (text);
                     }
                     return false;
                 }
@@ -167,17 +167,17 @@ public class QueryUtils {
             }
             if (tree1.length() != tree2.length()){
                 if (verbose){
-                    Reporter.report ("Length difference");
+                    Reporter.println ("Length difference");
                 }
             } else {
                 if (verbose){
-                    Reporter.report("No printable diff found");
+                    Reporter.println("No printable diff found");
                 }
                 //How am I ever going to find that.
                 return true;
             }
         }
-        Reporter.report (text);
+        Reporter.println (text);
         return false;
     }
     

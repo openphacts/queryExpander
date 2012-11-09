@@ -29,8 +29,7 @@ public class BridgeDBFactory {
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpansionException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
-            SQLAccess sqlAccess = SqlFactory.createSQLAccess(StoreType.LIVE);
-            URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
+            URLMapper urlMapper =new SQLUrlMapper(false, StoreType.LIVE);
             System.out.println(urlMapper.getOverallStatistics());
             return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
         } catch (Exception ex) {
