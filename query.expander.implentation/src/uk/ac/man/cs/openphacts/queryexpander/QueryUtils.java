@@ -3,6 +3,7 @@ package uk.ac.man.cs.openphacts.queryexpander;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.bridgedb.utils.Reporter;
 import org.openrdf.model.URI;
 import org.openrdf.query.Dataset;
@@ -24,6 +25,8 @@ public class QueryUtils {
    
     static SPARQLParser parser = new SPARQLParser();
     
+    static final Logger logger = Logger.getLogger(QueryUtils.class);
+
     /**
      * Convenience method for converting a String into a Tuple Expresions.
      * 
@@ -54,16 +57,16 @@ public class QueryUtils {
                 return true;
             } else {
                 if (verbose){
-                    System.out.println("Dataset 1 is null while Dataset 2 is:");
-                    System.out.println(dataset2);
+                    logger.info("Dataset 1 is null while Dataset 2 is:");
+                    logger.info(dataset2);
                 }
                 return false;
             }         
         } else {
             if (dataset2 == null){
                 if (verbose){
-                    System.out.println("Dataset 2 is null while Dataset 1 is:");
-                    System.out.println(dataset1);
+                    logger.info("Dataset 2 is null while Dataset 1 is:");
+                    logger.info(dataset1);
                 }
                 return false;
             }         
@@ -75,7 +78,7 @@ public class QueryUtils {
         //ystem.out.println(defaultGraphs2);
         if (!(defaultGraphs1.equals(defaultGraphs2))){
             if (verbose){
-               System.out.println("*** defaultGraphs do not match ***");
+               logger.info("*** defaultGraphs do not match ***");
             }
             return false;
         }
@@ -86,7 +89,7 @@ public class QueryUtils {
         //ystem.out.println(namedGraphs2);
         if (!(namedGraphs1.equals(namedGraphs2))){
             if (verbose){
-                System.out.println("*** namedGraphs do not match ***");
+                logger.info("*** namedGraphs do not match ***");
             }
             return false;
         }
@@ -133,12 +136,12 @@ public class QueryUtils {
             String tree1 = QueryModelTreePrinter.printTree(tupleExpr1);
             String tree2 = QueryModelTreePrinter.printTree(tupleExpr2);
             if (verbose){
-                Reporter.report("*** Queries do not match ***");
-                Reporter.report(query1);
-                Reporter.report(tree1);
-                Reporter.report("*");
-                Reporter.report(query2);
-                Reporter.report(tree2);
+                Reporter.println("*** Queries do not match ***");
+                Reporter.println(query1);
+                Reporter.println(tree1);
+                Reporter.println("*");
+                Reporter.println(query2);
+                Reporter.println(tree2);
             }
             int len = tree1.length();
             if (tree2.length() < len) len = tree2.length();
@@ -147,17 +150,17 @@ public class QueryUtils {
                 //ystem.out.println (pos + " " + tree1.charAt(pos) + tree2.charAt(pos));
                 if (tree1.charAt(pos) != tree2.charAt(pos)) {
                     if (verbose){
-                        Reporter.report(pos + " in line " + line);
+                        Reporter.println(pos + " in line " + line);
                     }
                     int start = pos -20;
                     if (start < 0) start = 0;
                     int end = pos + 20;
                     if (pos > len) pos = len;
                     if (verbose){
-                        Reporter.report(""+tree1.length() + "  " + start + "  " + end);
-                        Reporter.report(tree1.subSequence(start, end).toString());
-                        Reporter.report(tree2.subSequence(start, end).toString());
-                        Reporter.report (text);
+                        Reporter.println(""+tree1.length() + "  " + start + "  " + end);
+                        Reporter.println(tree1.subSequence(start, end).toString());
+                        Reporter.println(tree2.subSequence(start, end).toString());
+                        Reporter.println (text);
                     }
                     return false;
                 }
@@ -167,17 +170,17 @@ public class QueryUtils {
             }
             if (tree1.length() != tree2.length()){
                 if (verbose){
-                    Reporter.report ("Length difference");
+                    Reporter.println ("Length difference");
                 }
             } else {
                 if (verbose){
-                    Reporter.report("No printable diff found");
+                    Reporter.println("No printable diff found");
                 }
                 //How am I ever going to find that.
                 return true;
             }
         }
-        Reporter.report (text);
+        Reporter.println (text);
         return false;
     }
     
@@ -220,14 +223,14 @@ public class QueryUtils {
             return compare(dataset1, dataset2, verbose);
         } else {
             if (verbose){
-                System.out.println("*** Queries do not match ***");
-                System.out.println(query);
-                //System.out.println(QueryModelTreePrinter.printTree(tupleExpr));
-                System.out.println("*");
-                System.out.println(option1);
-                System.out.println("nor");
-                System.out.println(option2);
-                //System.out.println(QueryModelTreePrinter.printTree(tupleExpr1));
+                logger.info("*** Queries do not match ***");
+                logger.info(query);
+                //logger.info(QueryModelTreePrinter.printTree(tupleExpr));
+                logger.info("*");
+                logger.info(option1);
+                logger.info("nor");
+                logger.info(option2);
+                //logger.info(QueryModelTreePrinter.printTree(tupleExpr1));
             }
             return false;
         }

@@ -31,10 +31,8 @@ public class Ops1_1QueryTest extends LoaderBase {
          
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
-        System.out.println("here");
-        System.out.println(queryKeys);
         for (String queryKey:queryKeys){
-            System.out.println("Testing " + loader.getQueryName(queryKey));
+            report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getServerReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);
@@ -55,7 +53,7 @@ public class Ops1_1QueryTest extends LoaderBase {
          
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
-        System.out.println("speed test");
+        report("speed test");
         for (String queryKey:queryKeys){
             //ystem.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
@@ -67,6 +65,6 @@ public class Ops1_1QueryTest extends LoaderBase {
             //ystem.out.println(newQuery);
             //assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
-        System.out.println(new Date().getTime() - start.getTime());
+        report("Test took " + (new Date().getTime() - start.getTime()));
     }
 }

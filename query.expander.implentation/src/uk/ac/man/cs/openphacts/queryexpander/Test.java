@@ -7,6 +7,8 @@ package uk.ac.man.cs.openphacts.queryexpander;
 
 import java.util.Set;
 import org.openrdf.model.URI;
+import org.apache.log4j.Logger;
+import org.bridgedb.utils.ConfigReader;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
@@ -21,7 +23,10 @@ import uk.ac.man.cs.openphacts.queryexpander.visitor.UnionExpansionVisitor;
  * @author Christian
  */
 public class Test {
-   public static void main(String[] args) throws Exception{
+    static final Logger logger = Logger.getLogger(Test.class);
+
+    public static void main(String[] args) throws Exception{
+       ConfigReader.logToConsole();
        String query = "PREFIX foo: <http://www.foo.com/>\n" +
                 "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
                 "SELECT ?predicate ?object WHERE {\n" +
@@ -38,13 +43,14 @@ public class Test {
         SPARQLParser parser = new SPARQLParser();
         ParsedQuery parsedQuery = parser.parseQuery(query, null);
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
-        System.out.println(tupleExpr);
+        logger.info(tupleExpr);
         DummyIMSMapper imsMapper = new DummyIMSMapper();
         imsMapper.addMapping("http://www.foo.com/subj1", "http://www.bar.com/1");
         imsMapper.addMapping("http://www.foo.com/subj2", "http://www.bar.com/2");
         String newQuery = UnionExpansionVisitor.convertToQueryString(tupleExpr, null, imsMapper, 
                 ExpansionStategy.UNION_GRAPH);
-        System.out.println(newQuery);
+        logger.info(newQuery);
         parsedQuery = parser.parseQuery(newQuery, null);
     }
+
 }

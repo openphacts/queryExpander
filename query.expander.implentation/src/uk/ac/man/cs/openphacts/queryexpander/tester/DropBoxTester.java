@@ -13,6 +13,8 @@ import java.io.IOException;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
+import org.apache.log4j.Logger;
+import org.bridgedb.utils.ConfigReader;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
@@ -24,6 +26,8 @@ import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
  */
 public class DropBoxTester {
     
+    static final Logger logger = Logger.getLogger(DropBoxTester.class);
+
     private static String fileToString(File file) throws IOException, BadLocationException{
         String name = file.getName();
         if (name.endsWith("txt")){
@@ -48,7 +52,8 @@ public class DropBoxTester {
     }
     
     public static void main(String[] args) throws Exception {
-        System.out.println ("ready");
+        ConfigReader.logToConsole();
+        logger.info ("ready");
         File test = new File ("C:/temp/Expander_error1.txt");
         //File test = new File ("C:/Dropbox/OPS-queries/15May/Production/compoundInfo.txt");
         String query = fileToString (test);
@@ -56,9 +61,9 @@ public class DropBoxTester {
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         String newQuery = queryExpander.expand(query);
         if (QueryUtils.sameTupleExpr(query, newQuery, true, test.getAbsolutePath())){
-            System.out.println("ok");
+            logger.info("ok");
         } else {
-            System.out.println("error");
+            logger.info("error");
         }
     }
 }

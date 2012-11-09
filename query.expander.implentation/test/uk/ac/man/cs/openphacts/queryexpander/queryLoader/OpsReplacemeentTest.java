@@ -28,7 +28,7 @@ public class OpsReplacemeentTest  extends LoaderBase {
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            System.out.println("Testing " + loader.getQueryName(queryKey));
+            report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getTextReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);

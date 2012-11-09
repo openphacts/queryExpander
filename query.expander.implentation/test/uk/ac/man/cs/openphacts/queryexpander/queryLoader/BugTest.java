@@ -1,6 +1,8 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
 import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
+import org.apache.log4j.Logger;
+import org.bridgedb.utils.TestUtils;
 import org.junit.Ignore;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
@@ -21,8 +23,10 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class BugTest {
+public class BugTest extends TestUtils{
     
+    static final Logger logger = Logger.getLogger(BugTest.class);
+
     @Test
     public void testAllNoMapping() throws Exception{
         BugLoader loader = new BugLoader();
@@ -30,7 +34,7 @@ public class BugTest {
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            System.out.println("Testing " + loader.getQueryName(queryKey));
+            report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);

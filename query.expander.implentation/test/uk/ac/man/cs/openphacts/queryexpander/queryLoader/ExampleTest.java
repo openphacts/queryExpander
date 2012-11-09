@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import org.bridgedb.utils.TestUtils;
 import org.junit.Ignore;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
  * @author Christian
  */
 @Ignore
-public class ExampleTest {
+public class ExampleTest extends TestUtils{
     
     @Test
     public void testAllNoMapping() throws Exception{
@@ -31,7 +32,7 @@ public class ExampleTest {
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            System.out.println("Testing " + loader.getQueryName(queryKey));
+            report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Dataset;
@@ -25,6 +26,8 @@ import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor
  * @author Christian
  */
 public class QueryExpanderImpl implements QueryExpander{
+
+    static final Logger logger = Logger.getLogger(QueryExpanderImpl.class);
 
     private static final SPARQLParser parser = new SPARQLParser();
     private static final List<String> ALL_ATTRIBUTES = null;
@@ -49,7 +52,7 @@ public class QueryExpanderImpl implements QueryExpander{
             boolean verbose, ExpansionStategy expansionStategy)
             throws QueryExpansionException {
         inputURI = checkURI(inputURI);
-        if (verbose) System.out.println(originalQuery);
+        if (verbose) logger.info(originalQuery);
         ParsedQuery parsedQuery; 
         try {
             parsedQuery = parser.parseQuery(originalQuery, null);
@@ -57,7 +60,7 @@ public class QueryExpanderImpl implements QueryExpander{
             throw new QueryExpansionException("Unable to parse the query " + originalQuery, ex);
         }
         TupleExpr tupleExpr = parsedQuery.getTupleExpr();
-        if (verbose) System.out.println(tupleExpr);
+        if (verbose) logger.info(tupleExpr);
         Dataset dataset = parsedQuery.getDataset();
         URI InputAsURI = null;
         if (inputURI != null && !inputURI.isEmpty()){
