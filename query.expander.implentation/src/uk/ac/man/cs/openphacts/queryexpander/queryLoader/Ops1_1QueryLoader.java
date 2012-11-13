@@ -580,6 +580,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "    OPTIONAL { ?compound_uri c2b2r_chembl:inchi ?inchi } \n "
                 + "    OPTIONAL { ?compound_uri c2b2r_chembl:inchi_key ?inchiKey }\n"
                 + "    FiLTER (?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> || \n"
+                + "            ?replacedURI1 = <http://linkedchemistry.info/chembl/molecule/m276734> || \n"
                 + "            ?replacedURI1 = <http://rdf.chemspider.com/187440> || \n"
                 + "            ?replacedURI1 = <http://www.chemspider.com/187440> || \n"
                 + "            ?replacedURI1 = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> || \n"
