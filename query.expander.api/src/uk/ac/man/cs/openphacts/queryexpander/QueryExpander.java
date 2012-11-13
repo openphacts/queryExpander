@@ -15,7 +15,7 @@ import java.util.Set;
 public interface QueryExpander {
     
     /**
-     * Expands the query using the loaed mappings.
+     * Expands the query using the loaded mappings.
      * 
      * <p>
      * For each graph where any of the parameters is found a Filter statement is added to check if this var is equals 
@@ -23,21 +23,36 @@ public interface QueryExpander {
      * The Mapped URIs will be the ones that the mapping service returns as valid for this graph.
      * <p>
      * Currently it is allowed for both parameters to be empty (not null) AND inputURI to be null. 
-     *   In this case the depricated expand(String originalQuery) method will be called. 
+     *   In this case the deprecated expand(String originalQuery) method will be called. 
      * 
      * @param originalQuery Query in String Format
      * @param parameters List<String> of the parameters to add filters to. This is including the leading questionMark. 
-     * @param inputURI URI in String format The Uri to expand and then use in the filters. 
+     * @param inputURI URI in String format The URI to expand and then use in the filters. 
      *     This must represent a Valid URI according to the OpenRDF's standards.
-     *     Expected to include the http:// or equivelent start.
+     *     Expected to include the http:// or equivalent start.
      *     Do not include the angle brackets.
-     * @return Expanded query
-     * @throws QueryExpansionException 
-     * @param originalQuery Query in String Format
      * @return Expanded query
      * @throws QueryExpansionException 
      */
     public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException;
+
+    /**
+     * Expands the query using the loaded mappings.
+     * 
+     * <p>
+     * For each graph where any of the parameters is found a Filter statement is added to check if this var is equals 
+     *    to one of the mapped URI. 
+     * The Mapped URIs will be the ones that the mapping service returns as valid for this graph.
+     * <p>
+     * Currently it is allowed for both parameters to be empty (not null) AND inputURI to be null. 
+     *   In this case the deprecated expand(String originalQuery) method will be called. 
+     * 
+     * @param originalQuery Query in String Format
+     * @param qeStrategy the query expansion strategy that should be employed
+     * @return Expanded query
+     * @throws QueryExpansionException 
+     */
+    public String expandWithStrategy(String originalQuery, String qeStrategy) throws QueryExpansionException;
 
     /**
      * This is a previous version of the query expander interface.

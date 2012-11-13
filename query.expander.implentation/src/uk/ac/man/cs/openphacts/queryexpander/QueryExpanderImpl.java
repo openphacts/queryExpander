@@ -20,6 +20,7 @@ import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryExpandAndWriteVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor;
+import uk.ac.man.cs.openphacts.queryexpander.visitor.UnionExpansionVisitor;
 
 /**
  *
@@ -48,6 +49,28 @@ public class QueryExpanderImpl implements QueryExpander{
         return expand(originalQuery, new ArrayList<String>(), null, false, null);
     }
 
+    @Override 
+    public String expandWithStrategy (String originalQuery, String qeStrategy) 
+    		throws QueryExpanderException {
+        ExpansionStategy expansionStrategy = ExpansionStategy.FILTER_GRAPH; 
+        if (qeStrategy == null || qeStrategy.equals("")) {
+        	expansionStrategy = ExpansionStategy.FILTER_GRAPH;
+    	} else if (qeStrategy.equals("FILTER_ALL")) {
+        	expansionStrategy = ExpansionStategy.FILTER_ALL;
+        } else if (qeStrategy.equals("FILTER_STATEMENT")) {
+        	expansionStrategy = ExpansionStategy.FILTER_STATEMENT;
+        } else if (qeStrategy.equals("UNION_ALL")) {
+        	expansionStrategy = ExpansionStategy.UNION_ALL;
+        } else if (qeStrategy.equals("UNION_GRAPH")) {
+        	expansionStrategy = ExpansionStategy.UNION_GRAPH;
+        } else if (qeStrategy.equals("UNION_STATEMENT")) {
+        	expansionStrategy = ExpansionStategy.UNION_STATEMENT;
+        } else {
+        	expansionStrategy = ExpansionStategy.FILTER_GRAPH;
+        }
+        return expand(originalQuery, new ArrayList<String>(), null, false, expansionStrategy);
+    }
+    
     public String expand(String originalQuery, List<String> parameters, String inputURI, 
             boolean verbose, ExpansionStategy expansionStategy)
             throws QueryExpanderException {
@@ -70,7 +93,21 @@ public class QueryExpanderImpl implements QueryExpander{
         }
         String newQuery;
         if (parameters.isEmpty()){
-            newQuery = QueryExpandAndWriteVisitor.expandQuery(tupleExpr, dataset, imsMapper, expansionStategy);
+        	switch (expansionStategy) {
+			case FILTER_ALL:
+			case FILTER_GRAPH:
+			case FILTER_STATEMENT:
+				newQuery = QueryExpandAndWriteVisitor.expandQuery(tupleExpr, dataset, imsMapper, expansionStategy);
+				break;
+			case UNION_ALL:
+			case UNION_GRAPH:
+			case UNION_STATEMENT:
+				newQuery = UnionExpansionVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, expansionStategy);
+				break;
+			default:
+				newQuery = QueryExpandAndWriteVisitor.expandQuery(tupleExpr, dataset, imsMapper, ExpansionStategy.FILTER_GRAPH);
+				break;
+			}
         } else {
             newQuery = QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI,
                     imsMapper, ALL_ATTRIBUTES);
