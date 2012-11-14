@@ -53,6 +53,20 @@ public class QueryExpanderWSClient implements QueryExpander{
         return bean.getExpandedQuery();
     }
 
+    @Override
+    public String expandWithStrategy(String originalQuery, String qeStrategy) 
+    		throws QueryExpansionException {
+        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
+        params.add("query", originalQuery);
+        params.add("strategy", qeStrategy);
+        ExpanderBean bean = 
+                webResource.path("expand")
+                .queryParams(params)
+                .accept(MediaType.APPLICATION_XML_TYPE)
+                .get(new GenericType<ExpanderBean>() {});
+        return bean.getExpandedQuery();
+    }
+    
     /**
      * @deprecated 
      */

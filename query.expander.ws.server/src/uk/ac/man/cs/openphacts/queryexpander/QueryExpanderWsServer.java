@@ -620,6 +620,21 @@ public class QueryExpanderWsServer {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/expandWithStrategy") 
+    public ExpanderBean expandXML(@QueryParam("query") String query,
+            @QueryParam("strategy") String strategy) throws QueryExpansionException{
+        //Call scrub so that we validate that the query is provided 
+        if (query == null){
+            throw new QueryExpanderException("query paramater is missing!");
+        }
+        ExpanderBean result = new ExpanderBean();
+        result.setOrginalQuery(query);
+        result.setExpandedQuery(queryExpander.expandWithStrategy(query, strategy));
+        return result;
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
     public ExpanderBean expandAsXML(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
