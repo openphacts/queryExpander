@@ -26,6 +26,8 @@ public class BugLoader extends QueryCaseLoader{
        loadBug5();
        loadBug6small();
        loadBug6();
+       loadBug7();
+        loadBug7a();
    }
    
    private void loadBug1() {
@@ -864,4 +866,43 @@ public class BugLoader extends QueryCaseLoader{
                 + "}";
         queries.put(queryCase.key, queryCase);
    }
+   
+   //In this case the two graph statements are considered different 
+    private void loadBug7() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug7";
+        queryCase.name = "Bug Query 7a";
+        queryCase.originalQuery = "SELECT  DISTINCT ?compound_name "
+                + "WHERE {"
+                + "   { "
+                + "	     GRAPH <http://www.conceptwiki.org>  {"
+                + "			<http://www.bar.com/1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "	     } "
+                + "	  } UNION { "
+                + "	     GRAPH <http://www.conceptwiki.org>  {"
+                + "			<http://www.conceptwiki.org/concept/6161dfde-69c2-4466-8a02-cc5a5d6f6cf1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "	     } "
+                + "	  } "
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
+   //In this case the both statements have the same graph 
+   private void loadBug7a() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Bug7a";
+        queryCase.name = "Bug Query 7";
+        queryCase.originalQuery = "SELECT  DISTINCT ?compound_name "
+                + "WHERE {"
+                + "	GRAPH <http://www.conceptwiki.org>  {"
+                + "		{ "
+                + "			<http://www.bar.com/1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "		} UNION { "
+                + "			<http://www.conceptwiki.org/concept/6161dfde-69c2-4466-8a02-cc5a5d6f6cf1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "		} "
+                + "	} "
+                + "}";
+        queries.put(queryCase.key, queryCase);
+   }
+
 }

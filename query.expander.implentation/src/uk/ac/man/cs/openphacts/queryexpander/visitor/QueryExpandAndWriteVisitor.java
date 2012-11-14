@@ -122,7 +122,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * <p>
      * Subclasses with overwrite this method to add behavior such as adding URi replacement filters.
      */
-    void closeContext (){
+    void closeContext (String caller){
         //Close any optionals opened inside the Graph Clause.
         //optionsInGraph will never be > 0 outside of a context.
         //optionsIngraph is only used if there are more statements in the context than in the optional
@@ -160,7 +160,7 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
             contextUriVariables = new HashMap<URI,String>();
         }
         //Call super class to do the actual closing.
-        super.closeContext();
+        super.closeContext(caller);
     }
 
     /**
