@@ -30,6 +30,7 @@ public class Version2Loader extends QueryCaseLoader{
                 + "WHERE  { \n"
                 + "  ?x org:employeeName ?name . \n"
                 + "  FILTER (?x = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "       || ?x = <http://linkedchemistry.info/chembl/molecule/m276734> \n"
                 + "       || ?x = <http://rdf.chemspider.com/187440> \n"
                 + "       || ?x = <http://www.chemspider.com/187440> \n"
                 + "       || ?x = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
