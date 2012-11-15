@@ -304,14 +304,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
         return false;
     }
     
-    void writeAnon(String name){
+    private void writeAnon(String name){
         if (writeMappedExtension(name)) return;
         if (propertyPath != null){
             propertyPath = null;
         } else if (name.startsWith("-anon-") || name.startsWith("nps-x-")){
-            String numberPart = name.substring(6);
-            queryString.append(" _:_");
-            queryString.append(numberPart);
+            writeBNodeID(name);
         } else if(writeInnerName(name)){
             //do nothing already written
         } else {
@@ -320,6 +318,16 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
         }
     }
 
+    /**
+     * Adds a BNodeID must be offerriden by Union as each statement inside different union parts must have differen ids;
+     * @param name 
+     */
+    void writeBNodeID(String name){
+        String numberPart = name.substring(6);
+        queryString.append(" _:_");
+        queryString.append(numberPart);     
+    }
+    
     private boolean writeMappedExtension(String name){
         if (extensionMappings != null){
             //ystem.out.println("extensionMappings = " + extensionMappings);

@@ -18,9 +18,20 @@ import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 
-public class ParseErrorBug extends LoaderBase {
+public class ParseErrorBugTest extends LoaderBase {
 
 	String query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+"PREFIX chemspider: <http://rdf.chemspider.com/#> " + 
+"PREFIX sio: <http://semanticscience.org/resource/> "+ 
+"PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/> "+ 
+"SELECT DISTINCT ?molformula " + 
+"WHERE { " + 
+"        GRAPH <http://data.kasabi.com/dataset/chembl-rdf> {  " +
+"                <http://www.conceptwiki.org/concept/6161dfde-69c2-4466-8a02-cc5a5d6f6cf1> sio:CHEMINF_000200 _:node1 . " + 
+"        } " + 
+"}";
+	
+	String bigQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
 "PREFIX chemspider: <http://rdf.chemspider.com/#> " + 
 "PREFIX sio: <http://semanticscience.org/resource/> "+ 
 "PREFIX drugbank: <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/> "+ 
@@ -73,7 +84,6 @@ public class ParseErrorBug extends LoaderBase {
 "                OPTIONAL { <http://www.conceptwiki.org/concept/6161dfde-69c2-4466-8a02-cc5a5d6f6cf1> drugbank:meltingPoint ?meltingPoint } " + 
 "        } } " + 
 "}";
-	
     DummyIMSMapper imsMapper = new DummyIMSMapper();
     
     @Before
