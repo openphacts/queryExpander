@@ -176,20 +176,9 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * Subclasses with overwrite this method to add behavior such as adding URi replacement filters.
      */
     void closeContext (String caller){
-        //Close any optionals opened inside the Graph Clause.
-        //optionsInGraph will never be > 0 outside of a context.
-        //optionsIngraph is only used if there are more statements in the context than in the optional
-        //   So closing the optional first is cleaner.
-        while (optionInGraph > 0){
-            newLine();
-            queryString.append(" } "); 
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTION from close context");
-            //reduce the count so it is not closed again.
-            optionInGraph--;
-        }
+        closeInsideContext(caller);
         if (expansionStategy == ExpansionStategy.FILTER_GRAPH) addFilterNow();
-        //Call super class to do the actual closing.
-        super.closeContext(caller);
+        closeTheContext(caller);
     }
 
     @Override
