@@ -10,4 +10,5 @@ bin/
 
 # ignore log files #
 *.log
+logs/
 
