@@ -14,6 +14,8 @@ public class Version2Loader extends QueryCaseLoader{
        loadSparql2_6();
        loadJiraExample();
        loadBoundExample();
+       loadUnionGraph();
+       loadUnionGraph2();
    } 
    
    private void loadSparql2_6() {
@@ -137,6 +139,72 @@ public class Version2Loader extends QueryCaseLoader{
         queryCase.insertURI = "http://www.conceptwiki.org/concept/notThere";
         queries.put(queryCase.key, queryCase);
     }
+
+   private void loadUnionGraph() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Replacement UnionGraph";
+        queryCase.name = "Query Union Graph";
+        queryCase.originalQuery = "SELECT  DISTINCT ?compound_name \n"
+                + "WHERE {\n"
+                + "	GRAPH <http://www.conceptwiki.org>  {\n"
+                + "		{ \n"
+                + "			?concepWikiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} UNION { \n"
+                + "			?kasabiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} \n"
+                + "	} \n"
+                + "}\n";
+        queryCase.replaceQuery = "SELECT  DISTINCT ?compound_name \n"
+                + "WHERE {\n"
+                + "	GRAPH <http://www.conceptwiki.org>  {\n"
+                + "		{ \n"
+                + "			?concepWikiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} UNION { \n"
+                + "			?kasabiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} \n"
+                + "     FILTER (?kasabiURI = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "	} \n"
+                + "}\n";
+        queryCase.addParameter("?concepWikiURI");
+        queryCase.addParameter("?kasabiURI");
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
+        queries.put(queryCase.key, queryCase);
+   }
+   
+   private void loadUnionGraph2() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "Replacement UnionGraph2";
+        queryCase.name = "Query Union Graph 2";
+        queryCase.originalQuery = "SELECT  DISTINCT ?compound_name \n"
+                + "WHERE {\n"
+                + "	GRAPH <http://www.conceptwiki.org>  {\n"
+                + "		{ \n"
+                + "			?concepWikiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} UNION { \n"
+                + "			?kasabiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} \n"
+                + "	    <http://www.bar.com/1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "	} \n"
+                + "}\n";
+        queryCase.replaceQuery = "SELECT  DISTINCT ?compound_name \n"
+                + "WHERE {\n"
+                + "	GRAPH <http://www.conceptwiki.org>  {\n"
+                + "		{ \n"
+                + "			?concepWikiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} UNION { \n"
+                + "			?kasabiURI <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name \n"
+                + "		} \n"
+                + "	    <http://www.bar.com/1> <http://www.w3.org/2004/02/skos/core#prefLabel>  ?compound_name "
+                + "     FILTER (?kasabiURI = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5>)\n"
+                + "	} \n"
+                + "}\n";
+        queryCase.addParameter("?concepWikiURI");
+        queryCase.addParameter("?kasabiURI");
+        queryCase.insertURI = "http://www.conceptwiki.org/concept/38932552-111f-4a4e-a46a-4ed1d7bdf9d5";
+        queries.put(queryCase.key, queryCase);
+   }
 
    private void load() {
         QueryCase queryCase = new QueryCase();

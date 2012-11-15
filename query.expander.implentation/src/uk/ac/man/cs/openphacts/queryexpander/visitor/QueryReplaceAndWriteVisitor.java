@@ -117,23 +117,13 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * Subclasses with overwrite this method to add behavior such as adding URi replacement filters.
      */
     void closeContext (String caller){
-        //Close any optionals opened inside the Graph Clause.
-        //optionsInGraph will never be > 0 outside of a context.
-        //optionsIngraph is only used if there are more statements in the context than in the optional
-        //   So closing the optional first is cleaner.
-        while (optionInGraph > 0){
+        if (SHOW_DEBUG_IN_QUERY) {
+            queryString.append(" # IN closeContext " + unionsInGraph);
             newLine();
-            queryString.append(" } "); 
-            if (SHOW_DEBUG_IN_QUERY) queryString.append("#OPTION from close context");
-            //reduce the count so it is not closed again.
-            optionInGraph--;
         }
+        closeInsideContext(caller);
         //Add any required URI filters
         //if there are non no filters need to be added.
-        if (SHOW_DEBUG_IN_QUERY) {
-            queryString.append(" # IN closeContext");
-            newLine();
-        }
         if (!(mappings.isEmpty())){
             for (String variableName:mappings.keySet()){
                 List<URI> uriList = mappings.get(variableName);
@@ -146,8 +136,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
             //Clear the mappings so they are no closed again.
             mappings = new  HashMap<String,List<URI>>(); 
         }
-        //Call super class to do the actual closing.
-        super.closeContext(caller);
+        closeTheContext(caller);
     }
 
     private void addUnbound(String variableName){
