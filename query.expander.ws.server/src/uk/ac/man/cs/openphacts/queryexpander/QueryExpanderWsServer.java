@@ -398,6 +398,27 @@ public class QueryExpanderWsServer extends WSLinksetService{
             + "<p> Try the links on the left for IMS methods and the IMS API.</p>"
             ;
   
+        /**
+     * Allows Super classes to add to the side bar
+     */
+    @Override
+    protected void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) throws IDMapperException{
+        addSideBarQueryExpander(sb);
+        super.addSideBarMiddle(sb, httpServletRequest);
+    }
+    
+    /**
+     * Allows Super classes to add to the side bar
+     */
+    private void addSideBarQueryExpander(StringBuilder sb) throws IDMapperException{
+        sb.append("<div class=\"menugroup\">Query Expander</div>");
+        addSideBarItem(sb, "", "Home");
+        addSideBarItem(sb, "api", "Query Expander API");
+        addSideBarItem(sb, "examples", "Examples");
+        addSideBarItem(sb, "URISpacesPerGraph", "URISpaces per Graph");
+        addSideBarItem(sb, "mapURI", "Check Mapping for an URI");
+    }
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
@@ -503,7 +524,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
             @QueryParam("parameter") List<String> parameters,            
             @QueryParam("inputURI") String inputURI,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
-        StringBuilder sb = topAndSide("Query Expander Demo Page", httpServletRequest);
+        StringBuilder sb = topAndSide("Query Expander Demo Page.", httpServletRequest);
         sb.append(DEMO_EXPLAIN);
         addForm(sb, query, parameters, inputURI);
         sb.append(END);
