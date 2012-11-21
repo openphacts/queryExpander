@@ -11,12 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.bridgedb.IDMapperException;
+import org.bridgedb.ws.WSLinksetService;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -29,16 +33,17 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
  *
  * @author Christian
  */
-public class QueryExpanderWsServer {
+public class QueryExpanderWsServer extends WSLinksetService{
     
     private QueryExpander queryExpander;
     
-    public QueryExpanderWsServer() throws QueryExpansionException{
+    public QueryExpanderWsServer() throws IDMapperException, QueryExpanderException {
+        super();
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
         queryExpander = new QueryExpanderImpl(imsMapper);
     }
     
-    private final String HEADER_START = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+/*    private final String HEADER_START = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
             + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
             + "<html xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
             + "<head>\n"
@@ -59,7 +64,8 @@ public class QueryExpanderWsServer {
             + "				getObj(id).className = getObj(id).classNameOld;"
             + "		}"
             + "	</script>\n";
-    private final String TOGGLER ="<script language=\"javascript\">\n"
+
+     private final String TOGGLER ="<script language=\"javascript\">\n"
             + "function getItem(id)\n"
             + "{\n"
             + "    var itm = false;\n"
@@ -194,7 +200,7 @@ public class QueryExpanderWsServer {
             + "			</td>"
             + "			<td width=\"5\" style=\"border-right: 1px solid #D5D5FF\"></td>"
             + "			<td style=\"border-top: 1px solid #D5D5FF; width:100%\">";
-    private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
+*/    private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
             + "<p>This demo and the underlying service depends on the information held by the Query Expander, including the "
             + "     <a href=\"/OPS-IMS/getMappingInfo\">mappings</a> and the specific "
             + "     <a href=\"/QueryExpander/URISpacesPerGraph\">URISpaces per Graph</a>."
@@ -390,10 +396,10 @@ public class QueryExpanderWsServer {
   
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response welcomeMessage() {
+    public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
         List<String> parameters = new ArrayList<String>();
         parameters.add("?s");
-        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com");
+        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com", httpServletRequest);
     }
    
     @GET
@@ -402,7 +408,8 @@ public class QueryExpanderWsServer {
     public Response expandHtml(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters,            
             @QueryParam("inputURI") String inputURI,
-            @QueryParam("format") String format){
+            @QueryParam("format") String format,
+            @Context HttpServletRequest httpServletRequest) throws IDMapperException{
         try{
             parameters = scrubInput(query, parameters, inputURI);
             if ("xml".equals(format)){
@@ -410,14 +417,14 @@ public class QueryExpanderWsServer {
             }
             String result = queryExpander.expand(query, parameters, inputURI);
             //Find out how big to make the result box
-            StringBuilder sb = topAndSide("Query Expander Results");
+            StringBuilder sb = topAndSide("Query Expander Results", httpServletRequest);
             addTextArea(sb, "Expanded Query.", result);
             sb.append("<h2>Input Parameters.</h2>");
             addForm(sb, query, parameters, inputURI);
             sb.append(END);
             return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
         } catch (Exception e){
-            return showError(e.getMessage(), query, parameters, inputURI);                
+            return showError(e.getMessage(), query, parameters, inputURI, httpServletRequest);                
         }
     }
  
@@ -471,12 +478,13 @@ public class QueryExpanderWsServer {
         return parameters;
     }
     
-    private Response showError(String error, String query, List<String> parameters, String inputURI){
+    private Response showError(String error, String query, List<String> parameters, String inputURI, 
+            HttpServletRequest httpServletRequest) throws IDMapperException{
         int lines = 1;
         for (int i=0; i < error.length(); i++) {
             if (error.charAt(i) == '\n') lines++;
         }
-        StringBuilder sb = topAndSide("Error Expanding Query");
+        StringBuilder sb = topAndSide("Error Expanding Query", httpServletRequest);
         addTextArea(sb, "Error", error);
 		sb.append("<h2>Input Parameters.</h2>");
         addForm(sb, query, parameters, inputURI);
@@ -489,24 +497,15 @@ public class QueryExpanderWsServer {
     @Path("/demo") 
     public Response demo(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI){
-        StringBuilder sb = topAndSide("Query Expander Demo Page");
+            @QueryParam("inputURI") String inputURI,
+            @Context HttpServletRequest httpServletRequest) throws IDMapperException{
+        StringBuilder sb = topAndSide("Query Expander Demo Page", httpServletRequest);
         sb.append(DEMO_EXPLAIN);
         addForm(sb, query, parameters, inputURI);
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
 
-    private StringBuilder topAndSide(String header){
-        StringBuilder sb = new StringBuilder(HEADER);
-        sb.append(BODY);
-        sb.append(TOP_LEFT);
-        sb.append(header);
-        sb.append(TOP_RIGHT);
-        sb.append(MAIN_START);
-        return sb;
-    }
-    
     private void addForm(StringBuilder sb, String query, List<String> parameters, String inputURI){
         sb.append(FORM_START);
         if (query != null) {
@@ -549,13 +548,9 @@ public class QueryExpanderWsServer {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/examples") 
-    public Response examples() {
-        StringBuilder sb = new StringBuilder(TOGGLE_HEADER);
-        sb.append(BODY);
-        sb.append(TOP_LEFT);
-        sb.append("Groups of Examples");
-        sb.append(TOP_RIGHT);
-        sb.append(MAIN_START);
+    public Response examples(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+        StringBuilder sb = topAndSide("Example Queries Index", httpServletRequest);
+
         sb.append("<p>Click on any Group to expand or contract it.</p>\n");  
         sb.append("<p>Click on any Query Title to load it into the demo page</p>\n");  
         sb.append("<H2 onclick=\"toggleItem('ops')\" style=\"color:blue;\"> <u>LinkdedData Queries used in Open Phacts</u></H2>\n");
@@ -571,8 +566,8 @@ public class QueryExpanderWsServer {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/api") 
-    public Response api() {
-        StringBuilder sb = topAndSide("Query Expander API");
+    public Response api(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+        StringBuilder sb = topAndSide("Query Expander API", httpServletRequest);
         sb.append(API);  
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
@@ -642,10 +637,11 @@ public class QueryExpanderWsServer {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/URISpacesPerGraph") 
-    public Response URISpacesPerGraphAsHtml() throws QueryExpansionException{
+    public Response URISpacesPerGraphAsHtml(@Context HttpServletRequest httpServletRequest) 
+            throws QueryExpansionException, IDMapperException{
         Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
         
-        StringBuilder sb = topAndSide("URI Spaces per Graph (Query Context)");
+        StringBuilder sb = topAndSide("URI Spaces per Graph (Query Context)", httpServletRequest);
         sb.append("<h2>URISpaces Per Graph</H2>\n"); 
         sb.append("<p>");
         sb.append("<table border=\"1\">");
@@ -675,8 +671,9 @@ public class QueryExpanderWsServer {
     @Produces(MediaType.TEXT_HTML)
     @Path("/mapURI") 
     public Response mapURIasHtml(@QueryParam("inputURI") String inputURI,
-        @QueryParam("graph") String graph) throws QueryExpansionException{
-        StringBuilder sb = topAndSide("URI Mappings available per Graph (Query Context)");
+        @QueryParam("graph") String graph,
+        @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
+        StringBuilder sb = topAndSide("URI Mappings available per Graph (Query Context)",  httpServletRequest);
         if (inputURI != null && !inputURI.isEmpty()) {
             List<String> mappings = queryExpander.mapURI(inputURI, graph);
             sb.append("<h2>URI Mappings for ");
