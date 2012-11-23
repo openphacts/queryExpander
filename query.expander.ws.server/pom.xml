@@ -33,13 +33,7 @@
         </dependency>
  		<dependency>
 			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.sql</artifactId>
-			<version>${bridbgedb.version}</version>
-			<scope>compile</scope>
-		</dependency>
- 		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.ops.sql</artifactId>
+			<artifactId>org.bridgedb.ops.ws.service</artifactId>
 			<version>${bridbgedb.version}</version>
 			<scope>compile</scope>
 		</dependency>
@@ -47,6 +41,12 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>uk.ac.man.cs.openphacts</groupId>
@@ -81,6 +81,7 @@
 			<artifactId>org.bridgedb.linksets</artifactId>
 			<version>${bridbgedb.version}</version>
 			<scope>test</scope>
+            <type>test-jar</type>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>

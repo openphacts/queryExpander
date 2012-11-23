@@ -35,6 +35,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
+			<artifactId>org.bridgedb.linksets</artifactId>
+			<version>${bridbgedb.version}</version>
+            <scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.sql</artifactId>
 			<version>${bridbgedb.version}</version>
             <scope>compile</scope>
@@ -51,8 +57,8 @@
             <version>${sesame.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.openrdf.sesame</groupId>
-            <artifactId>sesame-queryparser-sparql</artifactId>
+           <groupId>org.openrdf.sesame</groupId>
+             <artifactId>sesame-queryparser-sparql</artifactId>
             <version>${sesame.version}</version>
         </dependency>
         <dependency>
@@ -86,6 +92,7 @@
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.linksets</artifactId>
 			<version>${bridbgedb.version}</version>
+                        <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
       </dependencies>
