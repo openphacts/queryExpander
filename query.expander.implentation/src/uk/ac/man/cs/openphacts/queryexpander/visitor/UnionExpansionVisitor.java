@@ -276,6 +276,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         queryString.append(numberPart);     
         queryString.append("_");
         queryString.append(unionCount);
+        queryString.append(" ");
     }
 
     /**
