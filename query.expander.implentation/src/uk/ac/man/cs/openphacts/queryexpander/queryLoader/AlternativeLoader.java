@@ -17,6 +17,7 @@ public class AlternativeLoader extends QueryCaseLoader{
         loadLifeScience2WithGraph();
         loadLifeScience2WithGraphAndFilter();
         loadLifeScience2WithGraphAnd2Filters();
+        loadAlasdair1();
     }
 
    private void loadSmall() {
@@ -870,6 +871,49 @@ public class AlternativeLoader extends QueryCaseLoader{
         queries.put(queryCase.key, queryCase);
    }
 
+    private void loadAlasdair1() {
+        QueryCase queryCase = new QueryCase();
+        queryCase.key = "AltAlasdair1";
+        queryCase.name = "Alternative Alasdair 1";
+        queryCase.originalQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n" +"PREFIX chembl: <http://rdf.farmbio.uu.se/chembl/onto/#> \n" +
+                "PREFIX sio: <http://semanticscience.org/resource/> \n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
+                "PREFIX chemspider: <http://rdf.chemspider.com/#> \n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+                "SELECT DISTINCT ?target_name ?compound_name ?csid_uri ?smiles ?inchi ?inchi_key ?molweight ?num_ro5_violations ?std_type ?relation ?std_value ?std_unit ?target_organism \n" +
+                "WHERE { \n" +
+                "        GRAPH <http://www.conceptwiki.org> { \n" +
+                "                <http://www.conceptwiki.org/concept/d915a79d-e556-4614-983d-e1f7830066d7> skos:prefLabel ?target_name . \n" +
+                "                ?compound_cw skos:exactMatch ?csid_uri ; \n" +
+                "                         skos:prefLabel ?compound_name . \n" +
+                "        } \n" +
+                "        GRAPH <http://data.kasabi.com/dataset/chembl-rdf> { \n" +
+                "                <http://www.conceptwiki.org/concept/d915a79d-e556-4614-983d-e1f7830066d7> chembl:organism ?target_organism .  \n" +
+                "                ?assay_uri chembl:hasTarget <http://www.conceptwiki.org/concept/d915a79d-e556-4614-983d-e1f7830066d7> . \n" +
+                "                ?activity_uri chembl:onAssay ?assay_uri ; \n" +
+                "                        chembl:type ?std_type ; \n" +
+                "                        chembl:relation ?relation ; \n" +
+                "                        chembl:standardValue ?std_value ; \n" +
+                "                        chembl:standardUnits ?std_unit ; \n" +
+                "                        chembl:forMolecule ?compound_uri . \n" +
+                "                ?compound_uri owl:equivalentClass ?equiv_uri .  \n" +
+                "                ?equiv_uri skos:exactMatch ?csid_uri . \n" +
+                "                OPTIONAL { ?compound_uri sio:CHEMINF_000200 _:node1 .  \n" +
+                "                        _:node1 a sio:CHEMINF_000314 ; \n" +
+                "                                sio:SIO_000300 ?num_ro5_violations } \n" +
+                "                OPTIONAL { ?compound_uri sio:CHEMINF_000200 _:node2 .  \n" +
+                "                        _:node2 a sio:CHEMINF_000198 ; \n" +
+                "                                sio:SIO_000300 ?molweight } \n" +
+                "        } \n" +
+                "        GRAPH <http://www.chemspider.com> { \n" +
+                "                ?csid_uri chemspider:inchi ?inchi; \n" +
+                "                        chemspider:inchikey ?inchi_key; \n" +
+                "                        chemspider:smiles ?smiles . \n" +
+                "        } \n" +
+                "}";
+        queries.put(queryCase.key, queryCase);
+    }
+    
    private void load() {
         QueryCase queryCase = new QueryCase();
         queryCase.key = "Alt";

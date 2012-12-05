@@ -67,24 +67,44 @@ public class QueryCaseLoader {
    }
 
    public String getFilterStatement(String key){
-       return queries.get(key).filterStatement;
+       String result = queries.get(key).filterStatement;
+       if (result == null){
+           result = queries.get(key).originalQuery;
+       }
+       return result;
    }
 
    public String getFilterAll(String key){
-       return queries.get(key).filterAll;
+       String result = queries.get(key).filterAll;
+       if (result == null){
+           result = queries.get(key).originalQuery;
+       }
+       return result;
    }
 
    public String getUnionAll(String key){
-       return queries.get(key).unionAll;
+       String result = queries.get(key).unionAll;
+       if (result == null){
+           result = queries.get(key).originalQuery;
+       }
+       return result;
    }
 
    public String getUnionGraph(String key){
-       return queries.get(key).unionGraph;
+       String result = queries.get(key).unionGraph;
+       if (result == null){
+           result = queries.get(key).originalQuery;
+       }
+       return result;
    }
 
    public String getUnionStatement(String key){
-       return queries.get(key).unionStatement;
-   }
+       String result = queries.get(key).unionStatement;
+       if (result == null){
+           result = queries.get(key).originalQuery;
+       }
+       return result;
+  }
 }
 
 

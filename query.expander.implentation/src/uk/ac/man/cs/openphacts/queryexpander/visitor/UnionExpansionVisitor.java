@@ -200,7 +200,9 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
             }
         }
         if (mappings.isEmpty()){
-            expr.visit(this);   
+            inUnion = true;
+            expr.visit(this);
+            inUnion = false;
         } else {
             ArrayList<Var> holderContexts = new ArrayList<Var>(contexts);
             writeWhereIfRequired(expr, "insertUnion!");

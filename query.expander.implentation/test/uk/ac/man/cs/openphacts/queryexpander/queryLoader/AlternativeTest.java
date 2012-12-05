@@ -43,7 +43,7 @@ public class AlternativeTest {
 
             newQuery = queryExpander.expandWithStrategy(originalQuery, "FILTER_STATEMENT");
             targetQuery = loader.getFilterStatement(queryKey);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " FILTER_STATEMENT"));
+          assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)+ " FILTER_STATEMENT"));
 
             newQuery = queryExpander.expandWithStrategy(originalQuery, "FILTER_ALL");
             targetQuery = loader.getFilterAll(queryKey);
