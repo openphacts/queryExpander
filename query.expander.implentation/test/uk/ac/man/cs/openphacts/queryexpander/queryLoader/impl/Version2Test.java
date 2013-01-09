@@ -19,7 +19,7 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.TestBridgeDBFactory;
  *
  * @author Christian
  */
-public class OpsReplacemeentTest extends uk.ac.man.cs.openphacts.queryexpander.queryLoader.OpsReplacemeentTest {
+public class Version2Test extends uk.ac.man.cs.openphacts.queryexpander.queryLoader.Version2Test {
         
     @BeforeClass
     public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException{

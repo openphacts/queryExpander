@@ -30,7 +30,7 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 public class Ops1_1QueryTest extends TestUtils {
 
     @BeforeClass
-    public void LoadTestData() throws IDMapperException, IOException, OpenRDFException{
+    public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException{
         TestLoader.LoadTestData();
     }
             
