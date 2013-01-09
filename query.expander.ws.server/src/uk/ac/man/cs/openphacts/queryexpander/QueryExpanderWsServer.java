@@ -48,164 +48,6 @@ public class QueryExpanderWsServer extends WSLinksetService{
     public String getDefaultResourceName(){
         return "QueryExpander";
     }
-/*    private final String HEADER_START = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
-            + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-            + "<html xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
-            + "<head>\n"
-            + " <title>"
-            + "     Manchester University OpenPhacts Query Expander"
-            + "	</title>\n"
-            + "	<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"></meta>\n"
-            + "	<script>"
-            + "		function getObj(id) {"
-            + "			return document.getElementById(id)"
-            + "		}"
-            + "		function DHTML_TextHilight(id) {"
-            + "			getObj(id).classNameOld = getObj(id).className;"
-            + "			getObj(id).className = getObj(id).className + \"_hilight\";"
-            + "		}"
-            + "		function DHTML_TextRestore(id) {"
-            + "			if (getObj(id).classNameOld != \"\")"
-            + "				getObj(id).className = getObj(id).classNameOld;"
-            + "		}"
-            + "	</script>\n";
-
-     private final String TOGGLER ="<script language=\"javascript\">\n"
-            + "function getItem(id)\n"
-            + "{\n"
-            + "    var itm = false;\n"
-            + "    if(document.getElementById)\n"
-            + "        itm = document.getElementById(id);\n"
-            + "    else if(document.all)\n"
-            + "        itm = document.all[id];\n"
-            + "     else if(document.layers)\n"
-            + "        itm = document.layers[id];\n"
-            + "    return itm;\n"
-            + "}\n\n"
-            + "function toggleItem(id)\n"
-            + "{\n"
-            + "    itm = getItem(id);\n"
-            + "    if(!itm)\n"
-            + "        return false;\n"
-            + "    if(itm.style.display == 'none')\n"
-            + "        itm.style.display = '';\n"
-            + "    else\n"
-            + "        itm.style.display = 'none';\n"
-            + "    return false;\n"
-            + "}\n\n"
-            + "function hideDetails()\n"
-            + "{\n"
-            + "     toggleItem('ops')\n"
-            + "     toggleItem('sparql')\n"
-            + "     return true;\n"
-            + "}\n\n"
-            + "</script>\n";
-    private final String HEADER_END = "	<style type=\"text/css\">"
-            + "		.texthotlink, .texthotlink_hilight {"
-            + "			width: 150px;"
-            + "			font-size: 85%;"
-            + "			padding: .25em;"
-            + "			cursor: pointer;"
-            + "			color: black;"
-            + "			font-family: Arial, sans-serif;"
-            + "		}"
-            + "		.texthotlink_hilight {"
-            + "			background-color: #fff6ac;"
-            + "		}"
-            + "		.menugroup {"
-            + "			font-size: 90%;"
-            + "			font-weight: bold;"
-            + "			padding-top: .25em;"
-            + "		}"
-            + "		input { background-color: #EEEEFF; }"
-            + "		body, td {"
-            + "			background-color: white;"
-            + "			font-family: sans-serif;"
-            + "		}"
-            + "	</style>\n"
-            + "</head>\n";            
-    private final String HEADER = HEADER_START + HEADER_END;
-    private final String TOGGLE_HEADER = HEADER_START + TOGGLER + HEADER_END;
-    private final String BODY ="<body style=\"margin: 0px\">";
-    private final String TOP_LEFT ="	<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n"
-            + "		<tr valign=\"top\">\n"
-            + "			<td style=\"background-color: white;\">"
-            + "				<a href=\"http://www.openphacts.org/\">"
-            + "                 <img style=\"border: none; padding: 0px; margin: 0px;\" "
-            + "                     src=\"http://www.openphacts.org/images/stories/banner.jpg\" "
-            + "                     alt=\"Open PHACTS\" height=\"50\">"
-            + "                 </img>"
-            + "             </a>"
-            + "			</td>\n"
-            + "			<td style=\"font-size: 200%; font-weight: bold; font-family: Arial;\">\n";
-    private final String TOP_RIGHT = "         </td>"
-            + "			<td style=\"background-color: white;\">"
-            + "				<a href=\"http://www.cs.manchester.ac.uk//\">"
-            + "                 <img style=\"border: none; padding: 0px; margin: 0px;\" align=\"right\" "
-            + "                     src=\"http://www.manchester.ac.uk/media/corporate/theuniversityofmanchester/assets/images/logomanchester.gif\" "
-            + "                    alt=\"The University of Manchester\" height=\"50\">"
-            + "                 </img>"
-            + "             </a>"
-            + "			</td>"
-            + "		</tr>"
-            + "	</table>";
-    private final String MAIN_START = "	<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">"
-            + "		<tr valign=\"top\">"
-            + "			<td style=\"border-top: 1px solid #D5D5FF\">"
-            + "				<div class=\"menugroup\">Query Expander</div>"
-            + "				<div id=\"menuQueryExpanderHome_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderHome_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderHome_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander&quot;;\">Home</div>"
-            + "				<div id=\"menuQueryExpanderAPI_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderAPI_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderAPI_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander/api&quot;;\">API</div>"
-            + "				<div id=\"menuQueryExpanderExamples_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderExamples_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderExamples_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander/examples&quot;;\">Examples</div>"
-            + "				<div id=\"menuQueryExpanderURISpacesPerGraph_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderURISpacesPerGraph_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderURISpacesPerGraph_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander/URISpacesPerGraph&quot;;\">"
-            + "                   URISpaces per Graph</div>"
-            + "				<div id=\"menuQueryExpanderMapURI_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuQueryExpanderMapURI_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuQueryExpanderMapURI_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/QueryExpander/mapURI&quot;;\">"
-            + "                   Check Mapping for an URI</div>"            
-            + "				<div class=\"menugroup\">OPS Identity Mapping Service</div>"
-            + "				<div id=\"menuOpsHome_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuOpsHome_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuOpsHome_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS&quot;;\">Home</div>"
-            + "				<div id=\"menuOpsInfo_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuOpsInfo_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuOpsInfo_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS/getMappingInfo&quot;;\">"
-            + "                   Mappings Summary</div>"
-            + "				<div id=\"menuGraphviz_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuGraphviz_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuGraphviz_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS/graphviz&quot;;\">"
-            + "                   Mappings Summary in Graphviz format</div>"
-            + "				<div id=\"menuOpsApi_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuOpsApi_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuOpsApi_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS/api&quot;;\">API</div>"
-            + "				<div id=\"menuOpsValidateVoid_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuOpsValidateVoid_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuOpsValidateVoid_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS/validateVoid&quot;;\">Validate Void</div>"
-            + "				<div id=\"menuOpsValidateLinkSet_text\" class=\"texthotlink\" "
-            + "                   onmouseout=\"DHTML_TextRestore('menuOpsValidateLinkSet_text'); return true; \" "
-            + "                   onmouseover=\"DHTML_TextHilight('menuOpsValidateLinkSet_text'); return true; \" "
-            + "                   onclick=\"document.location = &quot;/OPS-IMS/validateLinkSet&quot;;\">Validate LinkSet</div>"
-            + "			</td>"
-            + "			<td width=\"5\" style=\"border-right: 1px solid #D5D5FF\"></td>"
-            + "			<td style=\"border-top: 1px solid #D5D5FF; width:100%\">";
-*/    
     
     private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
             + "<p>This demo and the underlying service depends on the information held by the Query Expander, including the "
@@ -683,6 +525,14 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @GET
+    @Path("/expand") 
+    public ExpanderBean expandXMLGet(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI);
+    }
+    
+    @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandWithStrategy") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
@@ -698,13 +548,13 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @GET
-    @Path("/expand") 
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/expandWithStrategy") 
     public ExpanderBean expandXMLGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI);
+            @QueryParam("strategy") String strategy) throws QueryExpansionException{
+        return expandXMLGet(query, strategy);
     }
-    
+
     @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
