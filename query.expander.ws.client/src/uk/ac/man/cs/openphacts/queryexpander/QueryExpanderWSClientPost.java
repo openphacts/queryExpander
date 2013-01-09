@@ -49,7 +49,7 @@ public class QueryExpanderWSClientPost implements QueryExpander{
                 webResource.path("expand")
                 .queryParams(params)
                 .accept(MediaType.APPLICATION_XML_TYPE)
-                .get(new GenericType<ExpanderBean>() {});
+                .post(new GenericType<ExpanderBean>() {});
         return bean.getExpandedQuery();
     }
 
@@ -69,7 +69,7 @@ public class QueryExpanderWSClientPost implements QueryExpander{
                 webResource.path("expand")
                 .queryParams(params)
                 .accept(MediaType.APPLICATION_XML_TYPE)
-                .get(new GenericType<ExpanderBean>() {});
+                .post(new GenericType<ExpanderBean>() {});
         return bean.getExpandedQuery();
     }
 
@@ -78,7 +78,7 @@ public class QueryExpanderWSClientPost implements QueryExpander{
         List<URISpacesInGraphBean> beans = 
                 webResource.path("URISpacesPerGraph")
                 .accept(MediaType.APPLICATION_XML_TYPE)
-                .get(new GenericType<List<URISpacesInGraphBean>>() {});
+                .post(new GenericType<List<URISpacesInGraphBean>>() {});
         HashMap<String, Set<String>> results = new HashMap<String, Set<String>>();
         for (URISpacesInGraphBean bean:beans){
             results.put(bean.getGraph(), bean.getURISpace());

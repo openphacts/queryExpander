@@ -7,6 +7,7 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader.ws;
 import java.util.ArrayList;
 import org.bridgedb.IDMapperException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClientGet;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClientPost;
 
 /**
  *
@@ -14,9 +15,25 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClientGet;
  */
 public class QueryExpanderClientFactory {
     
-    public static QueryExpanderWSClientGet createTestQueryExpanderWSClient() throws IDMapperException{
-        System.out.println("Trying to set up a QueryExpanderWSClient");
+    public static QueryExpanderWSClientGet createTestQueryExpanderWSClientGet() throws IDMapperException{
+        System.out.println("Trying to set up a QueryExpanderWSClient Get Version");
         QueryExpanderWSClientGet webService = new QueryExpanderWSClientGet("http://localhost:8080/QueryExpander");
+        System.out.println("Set up a QueryExpanderWSClient");
+        try { 
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
+            System.out.println("QueryExpanderWSClient test successfull");
+        } catch (Exception ex) {
+            System.err.println(ex);
+            System.out.println ("***** SKIPPING QueryExpanderWSClient Test ******");
+            System.out.println ("Please make sure the server is running");
+            org.junit.Assume.assumeTrue(false);        
+        }
+        return webService;
+    }
+   
+    public static QueryExpanderWSClientPost createTestQueryExpanderWSClientPost() throws IDMapperException{
+        System.out.println("Trying to set up a QueryExpanderWSClient Post Version");
+        QueryExpanderWSClientPost webService = new QueryExpanderWSClientPost("http://localhost:8080/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
             webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
