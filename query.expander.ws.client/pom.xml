@@ -47,6 +47,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>uk.ac.man.cs.openphacts</groupId>
+            <artifactId>query.expander.implentation</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
         	<groupId>com.sun.jersey</groupId>
         	<artifactId>jersey-core</artifactId>
         	<version>${jersey.version}</version>
@@ -57,6 +64,13 @@
             <version>${jersey.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+			<groupId>org.bridgedb</groupId>
+			<artifactId>org.bridgedb.utils</artifactId>
+			<version>${bridbgedb.version}</version>
+            <type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

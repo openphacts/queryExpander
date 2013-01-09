@@ -1,20 +1,31 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.io.IOException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
+import org.bridgedb.IDMapperException;
+import org.bridgedb.utils.TestUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.openrdf.OpenRDFException;
+import uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /**
  *
  * @author Christian
  */
-public class Version2Test extends LoaderBase {
+public class Version2Test extends TestUtils{
 
+    @BeforeClass
+    public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException{
+        TestLoader.LoadTestData();
+    }
+            
     @Test
     public void testAllNoMapping() throws Exception{
         Version2Loader loader = new Version2Loader();

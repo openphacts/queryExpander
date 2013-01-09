@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.junit.Ignore;
@@ -9,15 +10,25 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
+import org.bridgedb.IDMapperException;
+import org.bridgedb.utils.TestUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.openrdf.OpenRDFException;
+import uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /**
  *
  * @author Christian
  */
-public class Ops1_1QueryTest extends LoaderBase {
+public class Ops1_1QueryTest extends TestUtils {
     
+    @BeforeClass
+    public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException{
+        TestLoader.LoadTestData();
+    }
+            
     @Test
     public void testAllNoMapping() throws Exception{
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();

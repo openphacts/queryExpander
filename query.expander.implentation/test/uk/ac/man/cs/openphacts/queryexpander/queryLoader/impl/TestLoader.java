@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
+package uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl;
 
 import java.io.IOException;
 import org.apache.log4j.Logger;
@@ -21,12 +21,11 @@ import org.openrdf.OpenRDFException;
  *
  * @author Christian
  */
-public abstract class LoaderBase extends TestUtils{
+public class TestLoader {
 
-    static final Logger logger = Logger.getLogger(LoaderBase.class);
+    static final Logger logger = Logger.getLogger(TestLoader.class);
 
-    @BeforeClass
-    public static void testLoader() throws IDMapperException, IOException, OpenRDFException  {
+    public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException  {
         //Check database is running and settup correctly or kill the test.
         TestSqlFactory.checkSQLAccess();
 

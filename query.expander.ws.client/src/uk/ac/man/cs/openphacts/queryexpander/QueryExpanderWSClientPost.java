@@ -22,13 +22,13 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author Christian
  * @see QueryExpander
  */
-public class QueryExpanderWSClient implements QueryExpander{
+public class QueryExpanderWSClientPost implements QueryExpander{
 
     protected final String serviceAddress;
 
     protected final WebResource webResource;
 
-    public QueryExpanderWSClient(String serviceAddress) {
+    public QueryExpanderWSClientPost(String serviceAddress) {
         this.serviceAddress = serviceAddress;
         ClientConfig config = new DefaultClientConfig();
         Client client = Client.create(config);
@@ -53,6 +53,11 @@ public class QueryExpanderWSClient implements QueryExpander{
         return bean.getExpandedQuery();
     }
 
+    @Override
+    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) throws QueryExpansionException {
+        return expand(originalQuery, parameters, inputURI);
+    }
+    
     /**
      * @deprecated 
      */

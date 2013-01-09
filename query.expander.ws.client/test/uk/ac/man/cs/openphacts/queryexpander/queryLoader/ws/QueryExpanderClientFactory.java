@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
+package uk.ac.man.cs.openphacts.queryexpander.queryLoader.ws;
 
 import java.util.ArrayList;
 import org.bridgedb.IDMapperException;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClient;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClientGet;
 
 /**
  *
@@ -14,9 +14,9 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWSClient;
  */
 public class QueryExpanderClientFactory {
     
-    public static QueryExpanderWSClient createTestQueryExpanderWSClient() throws IDMapperException{
+    public static QueryExpanderWSClientGet createTestQueryExpanderWSClient() throws IDMapperException{
         System.out.println("Trying to set up a QueryExpanderWSClient");
-        QueryExpanderWSClient webService = new QueryExpanderWSClient("http://localhost:8080/QueryExpander");
+        QueryExpanderWSClientGet webService = new QueryExpanderWSClientGet("http://localhost:8080/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
             webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
@@ -30,9 +30,9 @@ public class QueryExpanderClientFactory {
         return webService;
     }
    
-    public static QueryExpanderWSClient createOpenPhactsQueryExpanderWSClient() throws IDMapperException{
+    public static QueryExpanderWSClientGet createOpenPhactsQueryExpanderWSClient() throws IDMapperException{
         System.out.println("Trying to set up a QueryExpanderWSClient");
-        QueryExpanderWSClient webService = new QueryExpanderWSClient("http://openphacts.cs.man.ac.uk:9090/QueryExpander");
+        QueryExpanderWSClientGet webService = new QueryExpanderWSClientGet("http://openphacts.cs.man.ac.uk:9090/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
             webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
