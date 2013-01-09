@@ -14,7 +14,6 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.URIExtractorVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.UnionExpansionVisitor;
 

@@ -31,6 +31,13 @@
             <artifactId>query.expander.implentation</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>uk.ac.man.cs.openphacts</groupId>
+            <artifactId>query.expander.implentation</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
  		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.ops.ws.service</artifactId>

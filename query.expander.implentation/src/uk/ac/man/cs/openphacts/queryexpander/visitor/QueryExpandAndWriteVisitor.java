@@ -1,5 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.visitor;
 
+import uk.ac.man.cs.openphacts.queryexpander.ExpansionStategy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

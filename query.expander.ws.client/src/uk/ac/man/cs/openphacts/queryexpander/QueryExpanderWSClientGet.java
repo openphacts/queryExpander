@@ -22,13 +22,13 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author Christian
  * @see QueryExpander
  */
-public class QueryExpanderWSClient implements QueryExpander{
+public class QueryExpanderWSClientGet implements QueryExpander{
 
     protected final String serviceAddress;
 
     protected final WebResource webResource;
 
-    public QueryExpanderWSClient(String serviceAddress) {
+    public QueryExpanderWSClientGet(String serviceAddress) {
         this.serviceAddress = serviceAddress;
         ClientConfig config = new DefaultClientConfig();
         Client client = Client.create(config);
@@ -54,19 +54,10 @@ public class QueryExpanderWSClient implements QueryExpander{
     }
 
     @Override
-    public String expandWithStrategy(String originalQuery, String qeStrategy) 
-    		throws QueryExpansionException {
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("query", originalQuery);
-        params.add("strategy", qeStrategy);
-        ExpanderBean bean = 
-                webResource.path("expand")
-                .queryParams(params)
-                .accept(MediaType.APPLICATION_XML_TYPE)
-                .get(new GenericType<ExpanderBean>() {});
-        return bean.getExpandedQuery();
+    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose, ExpansionStategy expansionStategy) throws QueryExpansionException {
+        return expand(originalQuery, parameters, inputURI);
     }
-    
+
     /**
      * @deprecated 
      */
@@ -100,5 +91,10 @@ public class QueryExpanderWSClient implements QueryExpander{
     public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
+    @Override
+    public String expandWithStrategy(String originalQuery, String qeStrategy) throws QueryExpansionException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

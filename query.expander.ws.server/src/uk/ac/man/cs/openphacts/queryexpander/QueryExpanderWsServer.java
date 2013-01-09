@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -204,7 +205,9 @@ public class QueryExpanderWsServer extends WSLinksetService{
             + "			</td>"
             + "			<td width=\"5\" style=\"border-right: 1px solid #D5D5FF\"></td>"
             + "			<td style=\"border-top: 1px solid #D5D5FF; width:100%\">";
-*/    private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
+*/    
+    
+    private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
             + "<p>This demo and the underlying service depends on the information held by the Query Expander, including the "
             + "     <a href=\"/OPS-IMS/getMappingInfo\">mappings</a> and the specific "
             + "     <a href=\"/QueryExpander/URISpacesPerGraph\">URISpaces per Graph</a>."
@@ -419,7 +422,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
         addSideBarItem(sb, "mapURI", "Check Mapping for an URI");
     }
 
-    @GET
+    @POST
     @Produces(MediaType.TEXT_HTML)
     public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
         List<String> parameters = new ArrayList<String>();
@@ -428,6 +431,12 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
    
     @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response welcomeMessageGet(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+        return welcomeMessage(httpServletRequest);
+    }
+   
+    @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/expand") 
     public Response expandHtml(@QueryParam("query") String query,
@@ -453,6 +462,17 @@ public class QueryExpanderWsServer extends WSLinksetService{
         }
     }
  
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/expand") 
+    public Response expandHtmlGet(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters,            
+            @QueryParam("inputURI") String inputURI,
+            @QueryParam("format") String format,
+            @Context HttpServletRequest httpServletRequest) throws IDMapperException{
+        return expandHtml(query, parameters, inputURI, format, httpServletRequest);
+    }
+
     private void addTextArea(StringBuilder sb, String title, String text){
         int lines = 1;
         for (int i=0; i < text.length(); i++) {
@@ -517,7 +537,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
 
-    @GET
+    @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/demo") 
     public Response demo(@QueryParam("query") String query,
@@ -531,6 +551,16 @@ public class QueryExpanderWsServer extends WSLinksetService{
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
 
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/demo") 
+    public Response demoGet(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters,            
+            @QueryParam("inputURI") String inputURI,
+            @Context HttpServletRequest httpServletRequest) throws IDMapperException{
+        return demo(query, parameters, inputURI, httpServletRequest);
+    }
+    
     private void addForm(StringBuilder sb, String query, List<String> parameters, String inputURI){
         sb.append(FORM_START);
         if (query != null) {
@@ -570,7 +600,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
         return Response.temporaryRedirect(uri).build();
     }
     
-    @GET
+    @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/examples") 
     public Response examples(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
@@ -590,6 +620,13 @@ public class QueryExpanderWsServer extends WSLinksetService{
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Path("/examples") 
+    public Response examplesGet(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+        return examples(httpServletRequest);
+    }
+    
+    @POST
+    @Produces(MediaType.TEXT_HTML)
     @Path("/api") 
     public Response api(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
         StringBuilder sb = topAndSide("Query Expander API", httpServletRequest);
@@ -598,6 +635,13 @@ public class QueryExpanderWsServer extends WSLinksetService{
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
 
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/api") 
+    public Response apiGet(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+        return api(httpServletRequest);
+    }
+    
     public void loaderExamples(StringBuilder sb, QueryCaseLoader loader, String group) {
         sb.append("<ul id =\"");
         sb.append(group);
@@ -625,7 +669,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     	sb.append("</ul>");
     }
 
-    @GET
+    @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
@@ -654,6 +698,14 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @GET
+    @Path("/expand") 
+    public ExpanderBean expandXMLGet(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI);
+    }
+    
+    @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
     public ExpanderBean expandAsXML(@QueryParam("query") String query,
@@ -663,6 +715,15 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
         
     @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/expandXML") 
+    public ExpanderBean expandAsXMLGet(@QueryParam("query") String query,
+            @QueryParam("parameter") List<String> parameters ,            
+            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI);
+    }
+        
+    @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/URISpacesPerGraph") 
     public List<URISpacesInGraphBean> URISpacesPerGraphAsXML() throws QueryExpansionException{
@@ -675,6 +736,13 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
     
     @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Path("/URISpacesPerGraph") 
+    public List<URISpacesInGraphBean> URISpacesPerGraphAsXMLGet() throws QueryExpansionException{
+        return URISpacesPerGraphAsXML();
+    }
+
+    @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/URISpacesPerGraph") 
     public Response URISpacesPerGraphAsHtml(@Context HttpServletRequest httpServletRequest) 
@@ -709,6 +777,14 @@ public class QueryExpanderWsServer extends WSLinksetService{
     
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Path("/URISpacesPerGraph") 
+    public Response URISpacesPerGraphAsHtmlGet(@Context HttpServletRequest httpServletRequest) 
+            throws QueryExpansionException, IDMapperException {
+       return URISpacesPerGraphAsHtml(httpServletRequest); 
+    }
+
+    @POST
+    @Produces(MediaType.TEXT_HTML)
     @Path("/mapURI") 
     public Response mapURIasHtml(@QueryParam("inputURI") String inputURI,
         @QueryParam("graph") String graph,
@@ -738,5 +814,12 @@ public class QueryExpanderWsServer extends WSLinksetService{
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
     
-    
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/mapURI") 
+    public Response mapURIasHtmlGet(@QueryParam("inputURI") String inputURI,
+        @QueryParam("graph") String graph,
+        @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
+            return mapURIasHtml(inputURI, graph, httpServletRequest);
+    }    
 }

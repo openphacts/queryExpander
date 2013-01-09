@@ -1,24 +1,15 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-import java.util.Set;
 
 import org.bridgedb.utils.Reporter;
+import org.bridgedb.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.openrdf.query.MalformedQueryException;
-
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
-import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 
-public class ParseErrorBugTest extends LoaderBase {
+public class ParseErrorBugTest extends TestUtils {
 
 	String query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
 "PREFIX chemspider: <http://rdf.chemspider.com/#> " + 

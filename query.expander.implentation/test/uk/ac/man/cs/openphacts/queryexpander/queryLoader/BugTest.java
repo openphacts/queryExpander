@@ -1,6 +1,6 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
+import uk.ac.man.cs.openphacts.queryexpander.ExpansionStategy;
 import org.apache.log4j.Logger;
 import org.bridgedb.utils.TestUtils;
 import org.junit.Ignore;

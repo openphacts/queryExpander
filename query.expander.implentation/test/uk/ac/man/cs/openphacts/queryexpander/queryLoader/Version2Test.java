@@ -1,27 +1,34 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.io.IOException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import java.util.List;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
 import java.util.Set;
+import org.bridgedb.IDMapperException;
+import org.bridgedb.utils.TestUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
+import uk.ac.man.cs.openphacts.queryexpander.ExpansionStategy;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.openrdf.OpenRDFException;
+import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
+import uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /**
  *
  * @author Christian
  */
-public class Version2Test extends LoaderBase {
+public abstract class Version2Test extends TestUtils{
 
+    protected QueryExpander queryExpander;
+   
     @Test
     public void testAllNoMapping() throws Exception{
         Version2Loader loader = new Version2Loader();
         Set<String> queryKeys = loader.keySet();
-        BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
-        QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
             report("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);

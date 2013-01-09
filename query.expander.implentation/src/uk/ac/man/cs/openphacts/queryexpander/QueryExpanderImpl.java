@@ -17,7 +17,6 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.sparql.SPARQLParser;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryExpandAndWriteVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.QueryReplaceAndWriteVisitor;
 import uk.ac.man.cs.openphacts.queryexpander.visitor.UnionExpansionVisitor;
@@ -71,6 +70,7 @@ public class QueryExpanderImpl implements QueryExpander{
         return expand(originalQuery, new ArrayList<String>(), null, false, expansionStrategy);
     }
     
+    @Override
     public String expand(String originalQuery, List<String> parameters, String inputURI, 
             boolean verbose, ExpansionStategy expansionStategy)
             throws QueryExpanderException {

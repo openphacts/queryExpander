@@ -12,7 +12,7 @@ import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.OpsQueryLoader;
-import uk.ac.man.cs.openphacts.queryexpander.visitor.ExpansionStategy;
+import uk.ac.man.cs.openphacts.queryexpander.ExpansionStategy;
 import static org.junit.Assert.*;
 
 /*

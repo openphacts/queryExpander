@@ -55,6 +55,19 @@ public interface QueryExpander {
     public String expandWithStrategy(String originalQuery, String qeStrategy) throws QueryExpansionException;
 
     /**
+     * Testing methods which allows test to add verbose output.
+     * 
+     * @param originalQuery
+     * @param parameters
+     * @param inputURI
+     * @param verbose
+     * @return
+     * @throws QueryExpansionException 
+     */
+    public String expand(String originalQuery, List<String> parameters, String inputURI, 
+            boolean verbose, ExpansionStategy expansionStategy) throws QueryExpansionException;
+    
+    /**
      * This is a previous version of the query expander interface.
      * 
      * It will call the previous Query Expander service that looks up every URI and if requires replaces it.

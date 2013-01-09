@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package uk.ac.man.cs.openphacts.queryexpander.visitor;
+package uk.ac.man.cs.openphacts.queryexpander;
 
 /**
  *
