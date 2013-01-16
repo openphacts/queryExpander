@@ -40,7 +40,7 @@
         </dependency>
  		<dependency>
 			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.ops.ws.service</artifactId>
+			<artifactId>org.bridgedb.uri.ws.service</artifactId>
 			<version>${bridbgedb.version}</version>
 			<scope>compile</scope>
 		</dependency>

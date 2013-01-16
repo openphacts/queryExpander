@@ -19,7 +19,7 @@
 package uk.ac.man.cs.openphacts.queryexpander.tester;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.linkset.LinksetLoader;
-import org.bridgedb.metadata.validator.ValidationType;
+import org.bridgedb.tools.metadata.validator.ValidationType;
 import org.bridgedb.utils.ConfigReader;
 import org.bridgedb.utils.StoreType;
 

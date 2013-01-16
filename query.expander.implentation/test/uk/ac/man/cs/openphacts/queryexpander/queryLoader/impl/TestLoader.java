@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.linkset.LinksetLoader;
-import org.bridgedb.metadata.validator.ValidationType;
+import org.bridgedb.tools.metadata.validator.ValidationType;
 import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.utils.Reporter;
 import org.bridgedb.utils.StoreType;

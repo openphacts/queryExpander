@@ -7,23 +7,23 @@ This project depend on the BridgeDb project.
 To run it needs 
   	org.bridgedb
   	org.bridgedb.sql
-  	org.bridgedb.ops.sql
+  	org.bridgedb.uri.sql
 
 To load in data you need
  	org.bridgedb.linksets
 
 For the Links to the BridgeDB info sites you need
   	org.bridgedb.ws.core
-  	org.bridgedb.ops.ws.core
+  	org.bridgedb.uri.ws.core
   	org.bridgedb.ws.server
-  	org.bridgedb.ops.ws.server
+  	org.bridgedb.uri.ws.server
   	     (bridgeDb.war is not required except to run the none ops client tests with are repeated in ops anyway)
   	org.bridgedb.ws.service
-  	org.bridgedb.ops.ws.service
+  	org.bridgedb.uri.ws.service
 And the OPS-IMS.war in tomcat
 
 To create transative mappings you also nee:
-	org.bridgedb.transitive
+	org.bridgedb.tools.transitive
 	
 
 To run the query expander the easiest way is via the webservice:
@@ -47,7 +47,7 @@ HardCodedGraphResolver
     Provides a mapping between Larkc graphs/Contexts and the UriSpaces of the id that are found with it.
     If an unkown graph is use the query will be valid but with extra urls in it.
     
-UriSpaceMapper (in package org.bridgedb.ops.sql)
+UriSpaceMapper (in package org.bridgedb.uri.sql)
     Maps between UriSpaces and the DataSources.
     Only taken into consideration when the database is reset by loading using the "new" parameter.
     After that the current fix is to hack the SQL database.
