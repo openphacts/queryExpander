@@ -40,7 +40,7 @@
         </dependency>
  		<dependency>
 			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.uri.ws.service</artifactId>
+			<artifactId>org.bridgedb.uri.ws.server</artifactId>
 			<version>${bridbgedb.version}</version>
 			<scope>compile</scope>
 		</dependency>
@@ -55,13 +55,13 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>uk.ac.man.cs.openphacts</groupId>
             <artifactId>query.expander.implentation</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
  		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb</artifactId>
