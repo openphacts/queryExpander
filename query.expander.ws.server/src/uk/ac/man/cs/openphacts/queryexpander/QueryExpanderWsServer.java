@@ -670,7 +670,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expand") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -683,7 +683,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expand") 
     public ExpanderBean expandXMLGet(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -692,7 +692,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
     
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expandXML") 
     public ExpanderBean expandAsXML(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -701,7 +701,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
         
     @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expandXML") 
     public ExpanderBean expandAsXMLGet(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -710,7 +710,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
         
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/URISpacesPerGraph") 
     public List<URISpacesInGraphBean> URISpacesPerGraphAsXML() throws QueryExpansionException{
         Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
@@ -722,7 +722,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
     
     @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/URISpacesPerGraph") 
     public List<URISpacesInGraphBean> URISpacesPerGraphAsXMLGet() throws QueryExpansionException{
         return URISpacesPerGraphAsXML();
