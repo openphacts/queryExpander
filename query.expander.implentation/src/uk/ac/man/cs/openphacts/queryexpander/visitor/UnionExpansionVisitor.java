@@ -94,7 +94,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     private void unionStatementPattern(StatementPattern sp) throws QueryExpanderException {
         Var subject = sp.getSubjectVar();
         Var object = sp.getObjectVar();
-        List<URI> subjectMaps = getMappings(subject);
+        List<URI> subjectMaps = getMappings(subject, sp.getContextVar());
         if (subjectMaps != null){
             URI subjectURI = subjectMaps.get(0);
             startUnion();
@@ -112,7 +112,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
             inUnion = false;
             if (SHOW_DEBUG_IN_QUERY) queryString.append("# close union in writeStatementPattern ");
         } else {
-            List<URI> objectMaps = getMappings(object);
+            List<URI> objectMaps = getMappings(object, sp.getContextVar());
             if (objectMaps != null){
                 URI objectURI = objectMaps.get(0);
                 startUnion();
@@ -177,11 +177,11 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         return true;
     }
 
-    private List<URI> getMappings (Var var) throws QueryExpanderException{
+    private List<URI> getMappings (Var var, Var localContext) throws QueryExpanderException{
         if (var.isAnonymous()){
             Value value = var.getValue();
             if (value instanceof URI){
-                List<URI> maps = mapper.getMatchesForURI((URI)value);
+                List<URI> maps = getMappings((URI)value, localContext);
                 if (maps.size() > 1) {
                     return maps;
                 }
@@ -201,12 +201,14 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
      * @return A List of replacement URIs or NULL is not replacement are returned by the mapper.
      * @throws QueryExpanderException Some expection thrown by the mapping service.
      */
-    private List<URI> getMappings(URI uri) throws QueryExpanderException{
-        if (context == null || expansionStategy == ExpansionStategy.UNION_ALL){
+    private List<URI> getMappings(URI uri, Var localContext) throws QueryExpanderException{
+        System.out.println(uri);
+        System.out.println(localContext);
+        if (localContext == null || expansionStategy == ExpansionStategy.UNION_ALL){
             return mapper.getMatchesForURI(uri);            
         } else {
-            if (context.hasValue()){
-                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+            if (localContext.hasValue()){
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, localContext.getValue().stringValue());
                 return results;
             } else {
                 return mapper.getMatchesForURI(uri);   
@@ -216,9 +218,20 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
     
     private void insertUnion(TupleExpr expr) throws QueryExpanderException{
         Set<URI> uris = URIExtractorVisitor.extactURI(expr);
+        ArrayList<Var> localContexts = ContextListerVisitor.getContexts(expr);
+        Var localContext = null;
+        if (localContexts.size() >= 1){
+            localContext = localContexts.get(0);
+            for (int i = 1; i < localContexts.size(); i++){
+                if (localContext != null && !localContext.equals(contexts.get(i))){
+                    localContext = null;
+                }
+            }
+        } 
+        
         HashMap<URI,List<URI>> mappings = new HashMap<URI,List<URI>>();
         for (URI uri:uris){
-            List<URI> uriMappings = getMappings(uri);
+            List<URI> uriMappings = getMappings(uri, localContext);
             if (uriMappings.size() > 1){
                 mappings.put(uri, uriMappings);
             } else {
