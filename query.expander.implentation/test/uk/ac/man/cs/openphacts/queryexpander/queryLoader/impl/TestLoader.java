@@ -21,7 +21,7 @@ import org.openrdf.OpenRDFException;
  *
  * @author Christian
  */
-public class TestLoader {
+public abstract class TestLoader {
 
     static final Logger logger = Logger.getLogger(TestLoader.class);
 
