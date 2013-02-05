@@ -21,7 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.ws.WSLinksetService;
+import org.bridgedb.ws.uri.WSLinksetService;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -512,7 +512,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expand") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -525,15 +525,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @GET
-    @Path("/expand") 
-    public ExpanderBean expandXMLGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI);
-    }
-    
-    @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expandWithStrategy") 
     public ExpanderBean expandXML(@QueryParam("query") String query,
             @QueryParam("strategy") String strategy) throws QueryExpansionException{
@@ -556,7 +548,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
 
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expandXML") 
     public ExpanderBean expandAsXML(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -565,7 +557,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
         
     @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/expandXML") 
     public ExpanderBean expandAsXMLGet(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters ,            
@@ -574,7 +566,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
         
     @POST
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/URISpacesPerGraph") 
     public List<URISpacesInGraphBean> URISpacesPerGraphAsXML() throws QueryExpansionException{
         Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
@@ -586,7 +578,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     }
     
     @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/URISpacesPerGraph") 
     public List<URISpacesInGraphBean> URISpacesPerGraphAsXMLGet() throws QueryExpansionException{
         return URISpacesPerGraphAsXML();
