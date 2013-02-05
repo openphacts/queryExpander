@@ -202,7 +202,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
      * @throws QueryExpanderException Some expection thrown by the mapping service.
      */
     private List<URI> getMappings(URI uri) throws QueryExpanderException{
-        if (context == null || expansionStategy != ExpansionStategy.UNION_GRAPH){
+        if (context == null || expansionStategy == ExpansionStategy.UNION_ALL){
             return mapper.getMatchesForURI(uri);            
         } else {
             if (context.hasValue()){
