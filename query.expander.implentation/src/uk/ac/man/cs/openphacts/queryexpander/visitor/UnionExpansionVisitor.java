@@ -190,11 +190,35 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         return null;
     }
 
+    /**
+     * Retreives the mappings from this URI is any from the service.
+     * <p>
+     * Where applicable this function will attempt to retreive context specific mappings.
+     * Where there is no context for example the Statement is not inside a Graph claus,
+     * or the context is a variable all mapped URIs are retreived.
+     * 
+     * @param uri The URI for which replacements are to be found.
+     * @return A List of replacement URIs or NULL is not replacement are returned by the mapper.
+     * @throws QueryExpanderException Some expection thrown by the mapping service.
+     */
+    private List<URI> getMappings(URI uri) throws QueryExpanderException{
+        if (context == null || expansionStategy != ExpansionStategy.UNION_GRAPH){
+            return mapper.getMatchesForURI(uri);            
+        } else {
+            if (context.hasValue()){
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+                return results;
+            } else {
+                return mapper.getMatchesForURI(uri);   
+            }
+        }
+    }
+    
     private void insertUnion(TupleExpr expr) throws QueryExpanderException{
         Set<URI> uris = URIExtractorVisitor.extactURI(expr);
         HashMap<URI,List<URI>> mappings = new HashMap<URI,List<URI>>();
         for (URI uri:uris){
-            List<URI> uriMappings = mapper.getMatchesForURI(uri);
+            List<URI> uriMappings = getMappings(uri);
             if (uriMappings.size() > 1){
                 mappings.put(uri, uriMappings);
             } else {
