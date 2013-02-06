@@ -97,10 +97,15 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         List<URI> subjectMaps = getMappings(subject, sp.getContextVar());
         if (subjectMaps != null){
             URI subjectURI = subjectMaps.get(0);
-            startUnion();
+            if (subjectMaps.size() > 1){
+                startUnion();
+            }
             queryString.append("<" + subjectURI.stringValue() + "> ");
             sp.getPredicateVar().visit(this);
             sp.getObjectVar().visit(this);
+            if (subjectMaps.size() <= 1){
+                queryString.append(". ");
+            }
             for (int i = 1; i < subjectMaps.size(); i++){
                 subjectURI = subjectMaps.get(i);
                 nextUnion(" if");
@@ -108,25 +113,34 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
                 sp.getPredicateVar().visit(this);
                 object.visit(this);
             }
-            closeUnion();
+            if (subjectMaps.size() > 1){
+                closeUnion();
+            }
             inUnion = false;
             if (SHOW_DEBUG_IN_QUERY) queryString.append("# close union in writeStatementPattern ");
         } else {
             List<URI> objectMaps = getMappings(object, sp.getContextVar());
             if (objectMaps != null){
                 URI objectURI = objectMaps.get(0);
-                startUnion();
+                if (objectMaps.size() > 1){
+                    startUnion();
+                }
                 subject.visit(this);
-                queryString.append("<" + objectURI.stringValue() + "> ");
                 sp.getPredicateVar().visit(this);
-                for (int i = 1; i < subjectMaps.size(); i++){
+                queryString.append("<" + objectURI.stringValue() + "> ");
+                if (objectMaps.size() <= 1){
+                    queryString.append(". ");
+                 }
+                for (int i = 1; i < objectMaps.size(); i++){
                     objectURI = objectMaps.get(i);
                     nextUnion("else");
                     queryString.append("<" + objectURI.stringValue() + "> ");
                     sp.getPredicateVar().visit(this);
                     sp.getObjectVar().visit(this);
                 }
-                closeUnion();
+                if (objectMaps.size() > 1){
+                    closeUnion();
+                }
             } else {
                 super.writeStatementPattern(sp);
             }
@@ -182,7 +196,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
             Value value = var.getValue();
             if (value instanceof URI){
                 List<URI> maps = getMappings((URI)value, localContext);
-                if (maps.size() > 1) {
+                if (maps.size() > 0) {
                     return maps;
                 }
             }
@@ -202,8 +216,6 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
      * @throws QueryExpanderException Some expection thrown by the mapping service.
      */
     private List<URI> getMappings(URI uri, Var localContext) throws QueryExpanderException{
-        System.out.println(uri);
-        System.out.println(localContext);
         if (localContext == null || expansionStategy == ExpansionStategy.UNION_ALL){
             return mapper.getMatchesForURI(uri);            
         } else {
@@ -232,7 +244,7 @@ public class UnionExpansionVisitor extends QueryWriterModelVisitor{
         HashMap<URI,List<URI>> mappings = new HashMap<URI,List<URI>>();
         for (URI uri:uris){
             List<URI> uriMappings = getMappings(uri, localContext);
-            if (uriMappings.size() > 1){
+            if (uriMappings.size() > 0){
                 mappings.put(uri, uriMappings);
             } else {
             }

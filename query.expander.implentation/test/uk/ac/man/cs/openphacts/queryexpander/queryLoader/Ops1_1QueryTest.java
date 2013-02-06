@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import org.bridgedb.utils.TestUtils;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.ExpansionStategy;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;

@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-@Ignore
 public class ExampleTest extends TestUtils{
     
     @Test

@@ -4,6 +4,7 @@ import java.io.IOException;
 import org.bridgedb.IDMapperException;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.openrdf.OpenRDFException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;

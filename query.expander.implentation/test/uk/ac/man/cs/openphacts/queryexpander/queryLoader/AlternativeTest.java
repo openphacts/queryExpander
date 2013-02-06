@@ -3,6 +3,7 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import org.junit.Ignore;
 
 import org.junit.Test;
 
