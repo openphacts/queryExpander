@@ -15,7 +15,6 @@
 :conceptwiki_drugbank a void:Linkset ;
     void:subjectsTarget :conceptwiki ;
     void:objectsTarget :drugbank ;
-    void:subset :conceptwiki ;
     void:linkPredicate skos:exactMatch ;
     dcterms:creator <http://www.conceptwiki.org> .
 :conceptwiki a void:Dataset ;
