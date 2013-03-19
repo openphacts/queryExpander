@@ -21,7 +21,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.ws.WSLinksetService;
+import org.bridgedb.utils.BridgeDBException;
+import org.bridgedb.ws.uri.WSLinksetService;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -405,7 +406,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
      * Allows Super classes to add to the side bar
      */
     @Override
-    protected void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) throws IDMapperException{
+    protected void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) throws BridgeDBException{
         addSideBarQueryExpander(sb);
         super.addSideBarMiddle(sb, httpServletRequest);
     }
@@ -413,7 +414,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     /**
      * Allows Super classes to add to the side bar
      */
-    private void addSideBarQueryExpander(StringBuilder sb) throws IDMapperException{
+    private void addSideBarQueryExpander(StringBuilder sb) throws BridgeDBException{
         sb.append("<div class=\"menugroup\">Query Expander</div>");
         addSideBarItem(sb, "", "Home");
         addSideBarItem(sb, "api", "Query Expander API");
