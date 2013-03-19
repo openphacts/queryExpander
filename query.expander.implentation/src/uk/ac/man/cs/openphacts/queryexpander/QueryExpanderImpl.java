@@ -5,10 +5,13 @@
 package uk.ac.man.cs.openphacts.queryexpander;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.bridgedb.rdf.UriPattern;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Dataset;
@@ -125,7 +128,16 @@ public class QueryExpanderImpl implements QueryExpander{
 
     @Override
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpanderException {
-        return imsMapper.getURISpacesPerGraph();
+        Map<String, Set<UriPattern>> mappings = imsMapper.getURISpacesPerGraph();
+        Map<String, Set<String>> results = new  HashMap<String, Set<String>>();
+        for (String graph:mappings.keySet()){
+           Set<String> patternStrings = new HashSet<String>();
+           for (UriPattern pattern:mappings.get(graph)){
+               patternStrings.add(pattern.getUriPattern());
+           }
+           results.put(graph, patternStrings);   
+        }
+        return results;
     }
 
     @Override

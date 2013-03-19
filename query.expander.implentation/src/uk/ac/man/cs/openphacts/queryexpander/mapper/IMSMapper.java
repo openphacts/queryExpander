@@ -3,6 +3,7 @@ package uk.ac.man.cs.openphacts.queryexpander.mapper;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.bridgedb.rdf.UriPattern;
 import org.openrdf.model.URI;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 
@@ -40,5 +41,5 @@ public interface IMSMapper {
      */
     List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpanderException;
 
-    public Map<String, Set<String>> getURISpacesPerGraph();
+    public Map<String, Set<UriPattern>> getURISpacesPerGraph();
 }

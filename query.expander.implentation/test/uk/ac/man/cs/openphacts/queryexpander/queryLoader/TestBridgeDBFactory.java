@@ -1,14 +1,9 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
 import java.io.File;
-import org.bridgedb.DataSource;
-import org.bridgedb.mysql.MySQLSpecific;
-import org.bridgedb.sql.BridgeDbSqlException;
-import org.bridgedb.sql.SQLAccess;
-import org.bridgedb.sql.SQLUrlMapper;
-import org.bridgedb.sql.SqlFactory;
+import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.sql.TestSqlFactory;
-import org.bridgedb.url.URLMapper;
+import org.bridgedb.uri.UriMapper;
 import org.bridgedb.utils.StoreType;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
@@ -35,8 +30,8 @@ public class TestBridgeDBFactory {
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             TestSqlFactory.checkSQLAccess();
-            URLMapper urlMapper =new SQLUrlMapper(false, StoreType.TEST);
-            return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
+            UriMapper urlMapper =new SQLUriMapper(false, StoreType.TEST);
+            return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up File mapper ", ex);
         }

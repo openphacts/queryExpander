@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.bridgedb.url.URLMapper;
+import org.bridgedb.rdf.UriPattern;
+import org.bridgedb.uri.UriMapper;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
@@ -17,19 +18,20 @@ import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
  */
 public class BridgeDBMapper implements IMSMapper{
 
-    private HashMap<String,Set<String>> allowedNamespaces;
-    private URLMapper bridgeDB;
-    private final String[] EMPTY_STRING_ARRAY = new String[0];
+    private HashMap<String,Set<UriPattern>> allowedUriPatterns;
+    private UriMapper bridgeDB;
+    private final UriPattern[] EMPTY_URIPATTERNG_ARRAY = new UriPattern[0];
+    private static final String NO_PROFILE = null;
     
-    public BridgeDBMapper (HashMap<String,Set<String>> allowedNamespaces, URLMapper bridgeDB){
-        this.allowedNamespaces = allowedNamespaces;
+    public BridgeDBMapper (HashMap<String,Set<UriPattern>> allowedNamespaces, UriMapper bridgeDB){
+        this.allowedUriPatterns = allowedNamespaces;
         this.bridgeDB = bridgeDB;
     }
     
     @Override
     public List<URI> getMatchesForURI(URI uri) throws QueryExpanderException {
         try {
-            Set<String> stringResults = bridgeDB.mapURL(uri.stringValue());
+            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE);
             //Hack sort the results for testing
             TreeSet<String> sorted = new TreeSet(stringResults);
             ArrayList<URI> results = new ArrayList<URI>();
@@ -45,12 +47,12 @@ public class BridgeDBMapper implements IMSMapper{
     @Override
     public List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpanderException {
         try {
-            Set<String> specificNameSpaces =  allowedNamespaces.get(graph);
+            Set<UriPattern> specificNameSpaces =  allowedUriPatterns.get(graph);
             Set<String> stringResults;
             if (specificNameSpaces == null){
-                stringResults = bridgeDB.mapURL(uri.stringValue());
+                stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE);
             } else {
-                stringResults = bridgeDB.mapURL(uri.stringValue(), specificNameSpaces.toArray(EMPTY_STRING_ARRAY));
+                stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
             }
             if (stringResults == null){
                 throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);
@@ -68,8 +70,8 @@ public class BridgeDBMapper implements IMSMapper{
     }
 
     @Override
-    public Map<String, Set<String>> getURISpacesPerGraph() {
-        return allowedNamespaces;
+    public Map<String, Set<UriPattern>> getURISpacesPerGraph() {
+        return allowedUriPatterns;
     }
     
 }

@@ -32,15 +32,15 @@ public abstract class TestLoader {
         LinksetLoader linksetLoader = new LinksetLoader();
         linksetLoader.clearExistingData(StoreType.TEST);
         
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, 
                 ValidationType.LINKSMINIMAL);
 	}
 
