@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.bridgedb.rdf.UriPattern;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
@@ -60,8 +61,8 @@ public class DummyIMSMapper implements IMSMapper{
     }
 
     @Override
-    public Map<String, Set<String>> getURISpacesPerGraph() {
-        HashMap<String, Set<String>> URISpacesPerGraph = new HashMap<String, Set<String>>();
+    public Map<String, Set<UriPattern>> getURISpacesPerGraph() {
+        HashMap<String, Set<UriPattern>> URISpacesPerGraph = new HashMap<String, Set<UriPattern>>();
         return URISpacesPerGraph;
     }
     

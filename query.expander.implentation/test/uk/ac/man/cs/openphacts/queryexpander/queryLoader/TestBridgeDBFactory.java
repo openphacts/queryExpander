@@ -36,7 +36,7 @@ public class TestBridgeDBFactory {
         try {
             TestSqlFactory.checkSQLAccess();
             URLMapper urlMapper =new SQLUrlMapper(false, StoreType.TEST);
-            return new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
+            return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up File mapper ", ex);
         }
