@@ -32,14 +32,14 @@ public class SetupLoaderWithTestData {
         ConfigReader.logToConsole();
         LinksetLoader linksetLoader = new LinksetLoader();
         linksetLoader.clearExistingData(StoreType.LOAD);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.LOAD, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.LOAD, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.LOAD, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.LOAD, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.LOAD, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.LOAD, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.LOAD, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.LOAD, 
                 ValidationType.LINKSMINIMAL);
-        linksetLoader.loadFile("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.LOAD, 
+        linksetLoader.load("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.LOAD, 
                 ValidationType.LINKSMINIMAL);   }   
 }
