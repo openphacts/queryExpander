@@ -29,9 +29,9 @@ public class HardCodedGraphResolver {
         getAllowedUriPatterns().put("http://www.conceptwiki.org", patterns);
 
         patterns = new HashSet<UriPattern>();
-        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/target/");
+        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/target/t");
         patterns.add(pattern);
-        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/molecule/");
+        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/molecule/m");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://data.kasabi.com/dataset/chembl-rdf",  patterns);
 

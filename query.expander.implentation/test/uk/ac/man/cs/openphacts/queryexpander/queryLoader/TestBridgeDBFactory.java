@@ -30,7 +30,7 @@ public class TestBridgeDBFactory {
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             TestSqlFactory.checkSQLAccess();
-            UriMapper urlMapper =new SQLUriMapper(false, StoreType.TEST);
+            UriMapper urlMapper = SQLUriMapper.factory(false, StoreType.TEST);
             return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up File mapper ", ex);

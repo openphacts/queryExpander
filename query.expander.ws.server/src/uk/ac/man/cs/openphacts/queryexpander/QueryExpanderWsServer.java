@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.ws.uri.WSLinksetService;
+import org.bridgedb.ws.uri.WSOpsServer;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -35,7 +36,7 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
  *
  * @author Christian
  */
-public class QueryExpanderWsServer extends WSLinksetService{
+public class QueryExpanderWsServer extends WSOpsServer{
     
     private QueryExpander queryExpander;
     
@@ -425,7 +426,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
 
     @POST
     @Produces(MediaType.TEXT_HTML)
-    public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
+    public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws BridgeDBException {
         List<String> parameters = new ArrayList<String>();
         parameters.add("?s");
         return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com", httpServletRequest);
@@ -544,7 +545,7 @@ public class QueryExpanderWsServer extends WSLinksetService{
     public Response demo(@QueryParam("query") String query,
             @QueryParam("parameter") List<String> parameters,            
             @QueryParam("inputURI") String inputURI,
-            @Context HttpServletRequest httpServletRequest) throws IDMapperException{
+            @Context HttpServletRequest httpServletRequest) throws BridgeDBException{
         StringBuilder sb = topAndSide("Query Expander Demo Page.", httpServletRequest);
         sb.append(DEMO_EXPLAIN);
         addForm(sb, query, parameters, inputURI);

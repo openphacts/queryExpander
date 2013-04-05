@@ -22,7 +22,7 @@ public class BridgeDBFactory {
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
-            UriMapper urlMapper =new SQLUriMapper(false, StoreType.LIVE);
+            UriMapper urlMapper = SQLUriMapper.factory(false, StoreType.LIVE);
             logger.info(urlMapper.getOverallStatistics());
             return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
