@@ -21,7 +21,6 @@ public class BridgeDBMapper implements IMSMapper{
     private HashMap<String,Set<UriPattern>> allowedUriPatterns;
     private UriMapper bridgeDB;
     private final UriPattern[] EMPTY_URIPATTERNG_ARRAY = new UriPattern[0];
-    private static final String NO_PROFILE = null;
     
     public BridgeDBMapper (HashMap<String,Set<UriPattern>> allowedNamespaces, UriMapper bridgeDB){
         this.allowedUriPatterns = allowedNamespaces;
@@ -29,9 +28,9 @@ public class BridgeDBMapper implements IMSMapper{
     }
     
     @Override
-    public List<URI> getMatchesForURI(URI uri) throws QueryExpanderException {
+    public List<URI> getMatchesForURI(URI uri, String profileUri) throws QueryExpanderException {
         try {
-            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE);
+            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri);
             //Hack sort the results for testing
             TreeSet<String> sorted = new TreeSet(stringResults);
             ArrayList<URI> results = new ArrayList<URI>();
@@ -45,14 +44,14 @@ public class BridgeDBMapper implements IMSMapper{
     }
 
     @Override
-    public List<URI> getSpecificMatchesForURI(URI uri, String graph) throws QueryExpanderException {
+    public List<URI> getSpecificMatchesForURI(URI uri, String graph, String profileUri) throws QueryExpanderException {
         try {
             Set<UriPattern> specificNameSpaces =  allowedUriPatterns.get(graph);
             Set<String> stringResults;
             if (specificNameSpaces == null){
-                stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE);
+                stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri);
             } else {
-                stringResults = bridgeDB.mapUri(uri.stringValue(), NO_PROFILE, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
+                stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
             }
             if (stringResults == null){
                 throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);

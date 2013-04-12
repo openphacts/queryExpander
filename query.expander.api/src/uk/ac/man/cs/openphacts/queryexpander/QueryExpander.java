@@ -15,7 +15,7 @@ import java.util.Set;
 public interface QueryExpander {
     
     /**
-     * Expands the query using the loaed mappings.
+     * Expands the query using the loaded mappings.
      * 
      * <p>
      * For each graph where any of the parameters is found a Filter statement is added to check if this var is equals 
@@ -37,7 +37,7 @@ public interface QueryExpander {
      * @return Expanded query
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpansionException;
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri) throws QueryExpansionException;
 
     /**
      * Testing methods which allows test to add verbose output.
@@ -49,7 +49,7 @@ public interface QueryExpander {
      * @return
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri, boolean verbose) 
             throws QueryExpansionException;
     
     /**
@@ -65,7 +65,7 @@ public interface QueryExpander {
      * @deprecated 
      * @throws QueryExpansionException 
      */
-    public String expand(String originalQuery) 
+    public String expand(String originalQuery, String profileUri) 
             throws QueryExpansionException;
 
     /**
@@ -95,5 +95,5 @@ public interface QueryExpander {
      *            Includes the original URI unless that is not valid in the graph.
      * @throws QueryExpansionException 
      */
-    public List<String> mapURI(String inputURI, String graph) throws QueryExpansionException;
+    public List<String> mapURI(String inputURI, String graph, String profileUri) throws QueryExpansionException;
 }

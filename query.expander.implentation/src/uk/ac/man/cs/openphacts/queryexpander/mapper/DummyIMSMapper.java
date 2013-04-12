@@ -44,7 +44,7 @@ public class DummyIMSMapper implements IMSMapper{
     }
     
     @Override
-    public List<URI> getMatchesForURI(URI uri) {
+    public List<URI> getMatchesForURI(URI uri, String profileUri) {
         List<URI> mapped = uriMappings.get(uri);
         if (mapped == null){
             mapped = new ArrayList<URI>();
@@ -56,8 +56,8 @@ public class DummyIMSMapper implements IMSMapper{
     }
 
     @Override
-    public List<URI> getSpecificMatchesForURI(URI uri, String graph) {
-        return getMatchesForURI(uri);
+    public List<URI> getSpecificMatchesForURI(URI uri, String graph, String profileUri) {
+        return getMatchesForURI(uri, profileUri);
     }
 
     @Override

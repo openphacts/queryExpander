@@ -41,16 +41,16 @@ public class QueryExpanderImpl implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery, List<String> parameters, String inputURI) throws QueryExpanderException {
-        return expand(originalQuery, parameters, inputURI, false);
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri) throws QueryExpanderException {
+        return expand(originalQuery, parameters, inputURI, profileUri, false);
     }
         
     @Override
-    public String expand(String originalQuery) throws QueryExpanderException {
-        return expand(originalQuery, new ArrayList<String>(), null, false);
+    public String expand(String originalQuery, String profileUri) throws QueryExpanderException {
+        return expand(originalQuery, new ArrayList<String>(), null, profileUri, false);
     }
 
-    public String expand(String originalQuery, List<String> parameters, String inputURI, boolean verbose) 
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri, boolean verbose) 
             throws QueryExpanderException {
         logger.info("expand called with " + inputURI);
         logger.trace("expand called with " + originalQuery);
@@ -71,10 +71,10 @@ public class QueryExpanderImpl implements QueryExpander{
         }
         String newQuery;
         if (parameters.isEmpty()){
-            newQuery = QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES);
+            newQuery = QueryExpandAndWriteVisitor.convertToQueryString(tupleExpr, dataset, imsMapper, ALL_ATTRIBUTES, profileUri);
         } else {
             newQuery = QueryReplaceAndWriteVisitor.convertToQueryString(tupleExpr, dataset, parameters, InputAsURI,
-                    imsMapper, ALL_ATTRIBUTES);
+                    imsMapper, ALL_ATTRIBUTES, profileUri);
         }
         try {
             parsedQuery = parser.parseQuery(newQuery, null);
@@ -102,13 +102,13 @@ public class QueryExpanderImpl implements QueryExpander{
     }
 
     @Override
-    public List<String> mapURI(String inputURI, String graph) throws QueryExpanderException {
+    public List<String> mapURI(String inputURI, String graph, String profileUri) throws QueryExpanderException {
         URI uri = new URIImpl(inputURI);
         List<URI> mappings;
         if (graph != null && !graph.isEmpty()){
-            mappings =  imsMapper.getSpecificMatchesForURI(uri, graph);
+            mappings =  imsMapper.getSpecificMatchesForURI(uri, graph, profileUri);
         } else {
-           mappings =  imsMapper.getMatchesForURI(uri);
+           mappings =  imsMapper.getMatchesForURI(uri, profileUri);
         }
         ArrayList<String> results = new ArrayList<String>();
         for (URI mapping: mappings){

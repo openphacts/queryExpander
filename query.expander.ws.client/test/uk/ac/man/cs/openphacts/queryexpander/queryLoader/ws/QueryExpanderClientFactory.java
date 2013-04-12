@@ -20,7 +20,7 @@ public class QueryExpanderClientFactory {
         QueryExpanderWSClientGet webService = new QueryExpanderWSClientGet("http://localhost:8080/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
-            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null, null);
             System.out.println("QueryExpanderWSClient test successfull");
         } catch (Exception ex) {
             System.err.println(ex);
@@ -36,7 +36,7 @@ public class QueryExpanderClientFactory {
         QueryExpanderWSClientPost webService = new QueryExpanderWSClientPost("http://localhost:8080/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
-            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null, null);
             System.out.println("QueryExpanderWSClient test successfull");
         } catch (Exception ex) {
             System.err.println(ex);
@@ -52,7 +52,7 @@ public class QueryExpanderClientFactory {
         QueryExpanderWSClientGet webService = new QueryExpanderWSClientGet("http://openphacts.cs.man.ac.uk:9090/QueryExpander");
         System.out.println("Set up a QueryExpanderWSClient");
         try { 
-            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null);
+            webService.expand("select * { ?s ?o ?p}", new ArrayList<String>(), null, null);
             System.out.println("QueryExpanderWSClient test successfull");
         } catch (Exception ex) {
             System.err.println(ex);

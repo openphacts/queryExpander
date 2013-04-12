@@ -38,6 +38,8 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     private List<String> parameters;
     private URI inputURI;
     
+    private final String profileUri;
+    
     /**
      * Sets up the visitor for writing the query.
      * 
@@ -45,16 +47,17 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> parameters, URI inputURI, IMSMapper mapper){
+    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> parameters, URI inputURI, IMSMapper mapper, String profileUri){
         super(dataset);
         this.mapper = mapper;  
         this.parameters = parameters;
         this.inputURI = inputURI;
+        this.profileUri = profileUri;
     }
     
     @Override
     public QueryWriterModelVisitor clone(){
-        return new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper);
+        return new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, profileUri);
     }
     
     /**
@@ -70,13 +73,13 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      */
     private List<URI> getMappings(URI uri) throws QueryExpanderException{
         if (context == null){
-            return mapper.getMatchesForURI(uri);            
+            return mapper.getMatchesForURI(uri, profileUri);            
         } else {
             if (context.hasValue()){
-                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue(), profileUri);
                 return results;
             } else {
-                return mapper.getMatchesForURI(uri);   
+                return mapper.getMatchesForURI(uri, profileUri);   
             }
         }
     }
@@ -355,15 +358,15 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     @Override
     protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpanderException{
         QueryReplaceAndWriteVisitor writer = 
-                new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper);
+                new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, profileUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
     
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, List<String> placeholders, 
-            URI replacementVariable, IMSMapper mapper, 
-            List<String> requiredAttributes) throws QueryExpanderException{
-        QueryReplaceAndWriteVisitor writer = new QueryReplaceAndWriteVisitor(dataSet, placeholders,  replacementVariable, mapper);
+            URI replacementVariable, IMSMapper mapper, List<String> requiredAttributes, String profileUri) throws QueryExpanderException{
+        QueryReplaceAndWriteVisitor writer = 
+                new QueryReplaceAndWriteVisitor(dataSet, placeholders, replacementVariable, mapper, profileUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }

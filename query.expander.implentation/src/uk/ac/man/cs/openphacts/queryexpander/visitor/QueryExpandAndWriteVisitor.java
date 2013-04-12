@@ -38,6 +38,8 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
     //Counter to ensure that all the temporary variables have unique names.
     private int variableCounter =  0;
     
+    private final String profileUri;
+    
     /**
      * Sets up the visitor for writing the query.
      * 
@@ -45,14 +47,15 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper){
+    QueryExpandAndWriteVisitor (Dataset dataset, IMSMapper mapper, String profileUri){
         super(dataset);
-        this.mapper = mapper;    
+        this.mapper = mapper;  
+        this.profileUri = profileUri;
     }
     
     @Override
     public QueryWriterModelVisitor clone(){
-        return new QueryExpandAndWriteVisitor(originalDataSet, mapper);
+        return new QueryExpandAndWriteVisitor(originalDataSet, mapper, profileUri);
     }
     
     /**
@@ -68,13 +71,13 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
      */
     private List<URI> getMappings(URI uri) throws QueryExpanderException{
         if (context == null){
-            return mapper.getMatchesForURI(uri);            
+            return mapper.getMatchesForURI(uri, profileUri);            
         } else {
             if (context.hasValue()){
-                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue());
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue(), profileUri);
                 return results;
             } else {
-                return mapper.getMatchesForURI(uri);   
+                return mapper.getMatchesForURI(uri, profileUri);   
             }
         }
     }
@@ -384,14 +387,14 @@ public class QueryExpandAndWriteVisitor extends QueryWriterModelVisitor{
 
     @Override
     protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpanderException{
-        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(originalDataSet, mapper);
+        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(originalDataSet, mapper, profileUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
 
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, IMSMapper mapper, 
-            List<String> requiredAttributes) throws QueryExpanderException{
-        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(dataSet, mapper);
+            List<String> requiredAttributes, String profileUri) throws QueryExpanderException{
+        QueryExpandAndWriteVisitor writer = new QueryExpandAndWriteVisitor(dataSet, mapper, profileUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }

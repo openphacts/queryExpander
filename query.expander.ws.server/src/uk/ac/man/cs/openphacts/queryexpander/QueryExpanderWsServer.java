@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.utils.BridgeDBException;
+import org.bridgedb.ws.WsUriConstants;
 import org.bridgedb.ws.uri.WSLinksetService;
 import org.bridgedb.ws.uri.WSOpsServer;
 import org.openrdf.model.URI;
@@ -441,17 +442,18 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/expand") 
-    public Response expandHtml(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI,
-            @QueryParam("format") String format,
+    public Response expandHtml(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.FORMAT) String format,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
         try{
             parameters = scrubInput(query, parameters, inputURI);
             if ("xml".equals(format)){
                 return xmlRedirect(query, parameters, inputURI);
             }
-            String result = queryExpander.expand(query, parameters, inputURI);
+            String result = queryExpander.expand(query, parameters, inputURI, profileUri);
             //Find out how big to make the result box
             StringBuilder sb = topAndSide("Query Expander Results", httpServletRequest);
             addTextArea(sb, "Expanded Query.", result);
@@ -467,12 +469,13 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/expand") 
-    public Response expandHtmlGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI,
-            @QueryParam("format") String format,
+    public Response expandHtmlGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.FORMAT) String format,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
-        return expandHtml(query, parameters, inputURI, format, httpServletRequest);
+        return expandHtml(query, parameters, inputURI, format, profileUri, httpServletRequest);
     }
 
     private void addTextArea(StringBuilder sb, String title, String text){
@@ -542,9 +545,9 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/demo") 
-    public Response demo(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI,
+    public Response demo(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @Context HttpServletRequest httpServletRequest) throws BridgeDBException{
         StringBuilder sb = topAndSide("Query Expander Demo Page.", httpServletRequest);
         sb.append(DEMO_EXPLAIN);
@@ -556,9 +559,9 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/demo") 
-    public Response demoGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters,            
-            @QueryParam("inputURI") String inputURI,
+    public Response demoGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
         return demo(query, parameters, inputURI, httpServletRequest);
     }
@@ -580,6 +583,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
         if (inputURI != null){
             sb.append(inputURI);
         }
+        //TODO add Parameter
         sb.append(FORM_END);        
     }
     
@@ -674,41 +678,45 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
-    public ExpanderBean expandXML(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
+    public ExpanderBean expandXML(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
         parameters = scrubInput(query, parameters, inputURI);
         ExpanderBean result = new ExpanderBean();
         result.setOrginalQuery(query);
-        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI));
+        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI, profileUri));
         return result;
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expand") 
-    public ExpanderBean expandXMLGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI);
+    public ExpanderBean expandXMLGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, profileUri);
     }
     
     @POST
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
-    public ExpanderBean expandAsXML(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI);
+    public ExpanderBean expandAsXML(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, profileUri);
     }
         
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/expandXML") 
-    public ExpanderBean expandAsXMLGet(@QueryParam("query") String query,
-            @QueryParam("parameter") List<String> parameters ,            
-            @QueryParam("inputURI") String inputURI) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI);
+    public ExpanderBean expandAsXMLGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
+            @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
+            @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, profileUri);
     }
         
     @POST
@@ -774,12 +782,13 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/mapURI") 
-    public Response mapURIasHtml(@QueryParam("inputURI") String inputURI,
-        @QueryParam("graph") String graph,
+    public Response mapURIasHtml(@QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+        @QueryParam(QueryExpanderConstants.GRAPH) String graph,
+        @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
         @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
         StringBuilder sb = topAndSide("URI Mappings available per Graph (Query Context)",  httpServletRequest);
         if (inputURI != null && !inputURI.isEmpty()) {
-            List<String> mappings = queryExpander.mapURI(inputURI, graph);
+            List<String> mappings = queryExpander.mapURI(inputURI, graph, profileUri);
             sb.append("<h2>URI Mappings for ");
             sb.append(inputURI);
             sb.append("</h2>\n"); 
@@ -805,9 +814,10 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/mapURI") 
-    public Response mapURIasHtmlGet(@QueryParam("inputURI") String inputURI,
-        @QueryParam("graph") String graph,
+    public Response mapURIasHtmlGet(@QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
+        @QueryParam(QueryExpanderConstants.GRAPH) String graph,
+        @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
         @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
-            return mapURIasHtml(inputURI, graph, httpServletRequest);
+            return mapURIasHtml(inputURI, graph, profileUri, httpServletRequest);
     }    
 }

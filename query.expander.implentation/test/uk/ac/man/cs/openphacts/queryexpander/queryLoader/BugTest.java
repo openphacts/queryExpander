@@ -1,18 +1,15 @@
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 
+import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bridgedb.utils.TestUtils;
-import org.junit.Ignore;
-import java.util.List;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
-import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
-import java.util.Set;
-import org.bridgedb.utils.ConfigReader;
-import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.IMSMapper;
-import static org.junit.Assert.*;
 
 /*
  * To change this template, choose Tools | Templates
@@ -27,6 +24,8 @@ public class BugTest extends TestUtils{
     
     static final Logger logger = Logger.getLogger(BugTest.class);
 
+    private final String NO_PROFILE = null;
+           
     @Test
     public void testBugTest() throws Exception{
         //ConfigReader.logToConsole();
@@ -41,7 +40,7 @@ public class BugTest extends TestUtils{
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_PROFILE, false);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)));
         }
     }
