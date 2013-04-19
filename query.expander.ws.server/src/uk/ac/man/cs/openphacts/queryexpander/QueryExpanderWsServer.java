@@ -21,7 +21,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.rdf.RdfConfig;
 import org.bridgedb.utils.BridgeDBException;
+import org.bridgedb.ws.WsUriConstants;
 import org.bridgedb.ws.uri.WSOpsServer;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
@@ -238,7 +240,11 @@ public class QueryExpanderWsServer extends WSOpsServer{
             + "         <li>Selects the IMS mapping lens to be used.</li>"
             + "         <li>This allows the for different lenses to be applied.</li>"
             + "         <li>Should be the URi of one of the lenss supported by the IMS.</li>"
-            + "         <li>SIf not lens is provided the default lens will be used..</li>"
+            + "         <li>If no lens is provided the default lens will be used."
+            + "         </li>To See a list and description of all lenses visit.</li>"
+            + "         <ul>"
+            + "             <li><a href=\"" + RdfConfig.getTheBaseURI() + WsUriConstants.LENS + "\">" + WsUriConstants.LENS + "</a></li>"    
+            + "         </ul>"
             + "     </ul>"
             + "     <dt><a name=\"" + QueryExpanderConstants.GRAPH +  "\">" + QueryExpanderConstants.GRAPH +  "</a></dt>"
             + "     <ul>"
