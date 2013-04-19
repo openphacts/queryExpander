@@ -24,7 +24,7 @@ public class BugTest extends TestUtils{
     
     static final Logger logger = Logger.getLogger(BugTest.class);
 
-    private final String NO_PROFILE = null;
+    private final String NO_LENS = null;
            
     @Test
     public void testBugTest() throws Exception{
@@ -40,7 +40,7 @@ public class BugTest extends TestUtils{
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_PROFILE, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_LENS, false);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)));
         }
     }

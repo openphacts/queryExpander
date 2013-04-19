@@ -28,9 +28,9 @@ public class BridgeDBMapper implements IMSMapper{
     }
     
     @Override
-    public List<URI> getMatchesForURI(URI uri, String profileUri) throws QueryExpanderException {
+    public List<URI> getMatchesForURI(URI uri, String lensUri) throws QueryExpanderException {
         try {
-            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri);
+            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri);
             //Hack sort the results for testing
             TreeSet<String> sorted = new TreeSet(stringResults);
             ArrayList<URI> results = new ArrayList<URI>();
@@ -44,14 +44,14 @@ public class BridgeDBMapper implements IMSMapper{
     }
 
     @Override
-    public List<URI> getSpecificMatchesForURI(URI uri, String graph, String profileUri) throws QueryExpanderException {
+    public List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) throws QueryExpanderException {
         try {
             Set<UriPattern> specificNameSpaces =  allowedUriPatterns.get(graph);
             Set<String> stringResults;
             if (specificNameSpaces == null){
-                stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri);
+                stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri);
             } else {
-                stringResults = bridgeDB.mapUri(uri.stringValue(), profileUri, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
+                stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
             }
             if (stringResults == null){
                 throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);

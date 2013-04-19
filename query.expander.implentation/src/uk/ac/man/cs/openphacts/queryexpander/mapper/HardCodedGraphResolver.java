@@ -22,33 +22,33 @@ public class HardCodedGraphResolver {
         HashSet<UriPattern> patterns;
         
         patterns = new HashSet<UriPattern>();
-        UriPattern pattern = UriPattern.byNameSpace("http://www.conceptwiki.org/concept/");
+        UriPattern pattern = UriPattern.byPrefixOrNameSpace("http://www.conceptwiki.org/concept/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://larkc.eu#Fixedcontext", patterns);
 
         getAllowedUriPatterns().put("http://www.conceptwiki.org", patterns);
 
         patterns = new HashSet<UriPattern>();
-        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/target/t");
+        pattern = UriPattern.byPrefixOrNameSpace("http://data.kasabi.com/dataset/chembl-rdf/target/");
         patterns.add(pattern);
-        pattern = UriPattern.byNameSpace("http://data.kasabi.com/dataset/chembl-rdf/molecule/m");
+        pattern = UriPattern.byPrefixOrNameSpace("http://data.kasabi.com/dataset/chembl-rdf/molecule/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://data.kasabi.com/dataset/chembl-rdf",  patterns);
 
         patterns = new HashSet<UriPattern>();
-        pattern = UriPattern.byNameSpace("http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/");
+        pattern = UriPattern.byPrefixOrNameSpace("http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/");
         patterns.add(pattern);
-        pattern = UriPattern.byNameSpace("http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/");
+        pattern = UriPattern.byPrefixOrNameSpace("http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://linkedlifedata.com/resource/drugbank",  patterns);
 
         patterns = new HashSet<UriPattern>();
-        pattern = UriPattern.byNameSpace("http://purl.uniprot.org/uniprot/");
+        pattern = UriPattern.byPrefixOrNameSpace("http://purl.uniprot.org/uniprot/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://purl.uniprot.org",  patterns);
 
         patterns = new HashSet<UriPattern>();
-        pattern = UriPattern.byNameSpace("http://rdf.chemspider.com/");
+        pattern = UriPattern.byPrefixOrNameSpace("http://rdf.chemspider.com/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://www.chemspider.com",  patterns);
     }

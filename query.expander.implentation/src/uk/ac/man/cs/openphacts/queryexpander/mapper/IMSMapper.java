@@ -22,7 +22,7 @@ public interface IMSMapper {
      * @param uri A URI to Map.
      * @return (Possibly empty) List of URIs or even a null.
      */
-    List<URI> getMatchesForURI(URI uri, String profileUri) throws QueryExpanderException;
+    List<URI> getMatchesForURI(URI uri, String lensUri) throws QueryExpanderException;
 
     /**
      * Maps an URI to a list of URI.
@@ -39,7 +39,7 @@ public interface IMSMapper {
      *    There is no guarantee that every URI in the List will be in the GRAPH, 
      *    only that it Maps and there is not enough available information to say it can not be in the GRAPH.
      */
-    List<URI> getSpecificMatchesForURI(URI uri, String graph, String profileUri) throws QueryExpanderException;
+    List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) throws QueryExpanderException;
 
     public Map<String, Set<UriPattern>> getURISpacesPerGraph();
 }

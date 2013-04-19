@@ -18,7 +18,7 @@ public abstract class Ops1_1QueryTest extends TestUtils {
     
     protected QueryExpander queryExpander;
                
-    private final String NO_PROFILE = null;
+    private final String NO_LENS = null;
             
     @Test
     public void testAllNoMapping() throws Exception{
@@ -33,7 +33,7 @@ public abstract class Ops1_1QueryTest extends TestUtils {
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_PROFILE, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_LENS, false);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
         }

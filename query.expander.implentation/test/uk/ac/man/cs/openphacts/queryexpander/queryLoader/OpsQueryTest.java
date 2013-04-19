@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
  */
 public class OpsQueryTest extends TestUtils{
     
-    private final String NO_PROFILE = null;
+    private final String NO_LENS = null;
             
     @Test
     public void testAllNoMapping() throws Exception{
@@ -40,7 +40,7 @@ public class OpsQueryTest extends TestUtils{
             List<String> parameters = loader.getParameters(queryKey);
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
-            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_PROFILE, false);
+            String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_LENS, false);
             //ystem.out.println(newQuery);
             assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)));
         }

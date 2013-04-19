@@ -30,6 +30,6 @@ public class QueryExpanderConstants {
     public static final String INPUT_URI = "inputURI";
     public static final String QUERY = "query";
     public static final String PARAMETER = "parameter";
-    public static final String PROFILE_URI = "profileUri"; //#
+    public static final String LENS_URI = "lensUri"; //#
  
 }

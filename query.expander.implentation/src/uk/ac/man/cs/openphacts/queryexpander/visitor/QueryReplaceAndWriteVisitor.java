@@ -38,7 +38,7 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     private List<String> parameters;
     private URI inputURI;
     
-    private final String profileUri;
+    private final String lensUri;
     
     /**
      * Sets up the visitor for writing the query.
@@ -47,17 +47,17 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      * @param mapper The service that will offers replacement URIs for each (none predicate) URI found in the query.
      * @param contexts List of Contexts retrieved using the ContextListerVisitor.
      */
-    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> parameters, URI inputURI, IMSMapper mapper, String profileUri){
+    QueryReplaceAndWriteVisitor (Dataset dataset, List<String> parameters, URI inputURI, IMSMapper mapper, String lensUri){
         super(dataset);
         this.mapper = mapper;  
         this.parameters = parameters;
         this.inputURI = inputURI;
-        this.profileUri = profileUri;
+        this.lensUri = lensUri;
     }
     
     @Override
     public QueryWriterModelVisitor clone(){
-        return new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, profileUri);
+        return new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, lensUri);
     }
     
     /**
@@ -73,13 +73,13 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
      */
     private List<URI> getMappings(URI uri) throws QueryExpanderException{
         if (context == null){
-            return mapper.getMatchesForURI(uri, profileUri);            
+            return mapper.getMatchesForURI(uri, lensUri);            
         } else {
             if (context.hasValue()){
-                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue(), profileUri);
+                List<URI> results = mapper.getSpecificMatchesForURI(uri, context.getValue().stringValue(), lensUri);
                 return results;
             } else {
-                return mapper.getMatchesForURI(uri, profileUri);   
+                return mapper.getMatchesForURI(uri, lensUri);   
             }
         }
     }
@@ -358,15 +358,15 @@ public class QueryReplaceAndWriteVisitor extends QueryWriterModelVisitor{
     @Override
     protected String writeSubQuery(TupleExpr tupleExpr) throws QueryExpanderException{
         QueryReplaceAndWriteVisitor writer = 
-                new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, profileUri);
+                new QueryReplaceAndWriteVisitor(originalDataSet, parameters, inputURI, mapper, lensUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }
     
     public static String convertToQueryString(TupleExpr tupleExpr, Dataset dataSet, List<String> placeholders, 
-            URI replacementVariable, IMSMapper mapper, List<String> requiredAttributes, String profileUri) throws QueryExpanderException{
+            URI replacementVariable, IMSMapper mapper, List<String> requiredAttributes, String lensUri) throws QueryExpanderException{
         QueryReplaceAndWriteVisitor writer = 
-                new QueryReplaceAndWriteVisitor(dataSet, placeholders, replacementVariable, mapper, profileUri);
+                new QueryReplaceAndWriteVisitor(dataSet, placeholders, replacementVariable, mapper, lensUri);
         tupleExpr.visit(writer);
         return writer.getQuery();
     }

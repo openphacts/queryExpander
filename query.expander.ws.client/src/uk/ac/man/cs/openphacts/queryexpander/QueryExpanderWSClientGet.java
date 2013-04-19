@@ -36,7 +36,7 @@ public class QueryExpanderWSClientGet implements QueryExpander{
     }
     
     @Override
-    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri) throws QueryExpansionException {
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String lensUri) throws QueryExpansionException {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
         params.add(QueryExpanderConstants.QUERY, originalQuery);
         for (String parameter:parameters){
@@ -45,8 +45,8 @@ public class QueryExpanderWSClientGet implements QueryExpander{
         if (inputURI != null && !inputURI.isEmpty()) {
             params.add(QueryExpanderConstants.INPUT_URI, inputURI);
         }
-        if (profileUri != null && !profileUri.isEmpty()){
-            params.add(QueryExpanderConstants.PROFILE_URI, profileUri);
+        if (lensUri != null && !lensUri.isEmpty()){
+            params.add(QueryExpanderConstants.LENS_URI, lensUri);
         }
         ExpanderBean bean = 
                 webResource.path("expand")
@@ -57,19 +57,19 @@ public class QueryExpanderWSClientGet implements QueryExpander{
     }
 
     @Override
-    public String expand(String originalQuery, List<String> parameters, String inputURI, String profileUri, boolean verbose) throws QueryExpansionException {
-        return expand(originalQuery, parameters, inputURI, profileUri);
+    public String expand(String originalQuery, List<String> parameters, String inputURI, String lensUri, boolean verbose) throws QueryExpansionException {
+        return expand(originalQuery, parameters, inputURI, lensUri);
     }
     
     /**
      * @deprecated 
      */
     @Override
-    public String expand(String originalQuery, String profileUri) throws QueryExpansionException {
+    public String expand(String originalQuery, String lensUri) throws QueryExpansionException {
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
         params.add(QueryExpanderConstants.QUERY, originalQuery);
-        if (profileUri != null && !profileUri.isEmpty()){
-            params.add(QueryExpanderConstants.PROFILE_URI, profileUri);
+        if (lensUri != null && !lensUri.isEmpty()){
+            params.add(QueryExpanderConstants.LENS_URI, lensUri);
         }
         ExpanderBean bean = 
                 webResource.path("expand")
@@ -94,7 +94,7 @@ public class QueryExpanderWSClientGet implements QueryExpander{
 
     @Override
     /** Currently not implemented but can be if required */
-    public List<String> mapURI(String inputURI, String graph, String profileUri) throws QueryExpansionException {
+    public List<String> mapURI(String inputURI, String graph, String lensUri) throws QueryExpansionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

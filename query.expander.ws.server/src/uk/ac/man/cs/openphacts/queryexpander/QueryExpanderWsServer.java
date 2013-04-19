@@ -119,7 +119,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
             + "         </ul>"
             + "         <li>Optional arguement:</li>"
             + "         <ul>"
-            + "             <li><a href=\"#" + QueryExpanderConstants.PROFILE_URI +  "\">" + QueryExpanderConstants.PROFILE_URI +  "</a></li>"
+            + "             <li><a href=\"#" + QueryExpanderConstants.LENS_URI +  "\">" + QueryExpanderConstants.LENS_URI +  "</a></li>"
             + "         </ul>"
             + "     </ul>\n"
             + "<h2><a name=\"getURISpacesPerGraph\">\"getURISpacesPerGraph\"</a> method.</h2>"
@@ -149,7 +149,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
             + "     </ul>"
             + "     <li>Optional arguement:</li>"
             + "     <ul>"
-            + "         <li><a href=\"#" + QueryExpanderConstants.PROFILE_URI +  "\">" + QueryExpanderConstants.PROFILE_URI +  "</a></li>"
+            + "         <li><a href=\"#" + QueryExpanderConstants.LENS_URI +  "\">" + QueryExpanderConstants.LENS_URI +  "</a></li>"
             + "         <li><a href=\"#format\">format</a></li>"
             + "     </ul>"
             + "     <li>For examples of expand select Home or Examples pages on the menu on your left.</li>"
@@ -191,7 +191,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
             + "             <li><a href=\"#" + QueryExpanderConstants.INPUT_URI +  "\">" + QueryExpanderConstants.INPUT_URI +  "</a></li>"
             + "             <ul><li>If no " + QueryExpanderConstants.INPUT_URI +  " is provided this just brings up an input form.</li></ul>"
             + "             <li><a href=\"#" + QueryExpanderConstants.GRAPH +  "\">" + QueryExpanderConstants.GRAPH +  "</a></li>"
-            + "             <li><a href=\"#" + QueryExpanderConstants.PROFILE_URI +  "\">" + QueryExpanderConstants.PROFILE_URI +  "</a></li>"
+            + "             <li><a href=\"#" + QueryExpanderConstants.LENS_URI +  "\">" + QueryExpanderConstants.LENS_URI +  "</a></li>"
             + "         </ul>"
             + "         <li> Currently not supported bu WSClient. (ask if required)</li>"
             + "     </ul>\n"
@@ -233,12 +233,12 @@ public class QueryExpanderWsServer extends WSOpsServer{
             + "             <li>If not know to the IMS mapper, just the original URI will be used."
             + "         </ul>"
             + "     </ul>"
-            + "     <dt><a name=\"" + QueryExpanderConstants.PROFILE_URI +  "\">" + QueryExpanderConstants.PROFILE_URI +  "</a></dt>"
+            + "     <dt><a name=\"" + QueryExpanderConstants.LENS_URI +  "\">" + QueryExpanderConstants.LENS_URI +  "</a></dt>"
             + "     <ul>"
-            + "         <li>Selects the IMS mapping profile to be used.</li>"
+            + "         <li>Selects the IMS mapping lens to be used.</li>"
             + "         <li>This allows the for different lenses to be applied.</li>"
-            + "         <li>Should be the URi of one of the profiles supported by the IMS.</li>"
-            + "         <li>SIf not profile is provided the default profile will be used..</li>"
+            + "         <li>Should be the URi of one of the lenss supported by the IMS.</li>"
+            + "         <li>SIf not lens is provided the default lens will be used..</li>"
             + "     </ul>"
             + "     <dt><a name=\"" + QueryExpanderConstants.GRAPH +  "\">" + QueryExpanderConstants.GRAPH +  "</a></dt>"
             + "     <ul>"
@@ -299,14 +299,14 @@ public class QueryExpanderWsServer extends WSOpsServer{
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @QueryParam(QueryExpanderConstants.FORMAT) String format,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
         try{
             parameters = scrubInput(query, parameters, inputURI);
             if ("xml".equals(format)){
                 return xmlRedirect(query, parameters, inputURI);
             }
-            String result = queryExpander.expand(query, parameters, inputURI, profileUri);
+            String result = queryExpander.expand(query, parameters, inputURI, lensUri);
             //Find out how big to make the result box
             StringBuilder sb = topAndSide("Query Expander Results", httpServletRequest);
             addTextArea(sb, "Expanded Query.", result);
@@ -326,9 +326,9 @@ public class QueryExpanderWsServer extends WSOpsServer{
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @QueryParam(QueryExpanderConstants.FORMAT) String format,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri,
             @Context HttpServletRequest httpServletRequest) throws IDMapperException{
-        return expandHtml(query, parameters, inputURI, format, profileUri, httpServletRequest);
+        return expandHtml(query, parameters, inputURI, format, lensUri, httpServletRequest);
     }
 
     private void addTextArea(StringBuilder sb, String title, String text){
@@ -437,7 +437,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
             sb.append(inputURI);
         }
         sb.append("\"/>");
-        generateProfileSelector(sb);
+        generateLensSelector(sb);
         //TODO add Parameter
         sb.append(FORM_END);        
     }
@@ -536,11 +536,11 @@ public class QueryExpanderWsServer extends WSOpsServer{
     public ExpanderBean expandXML(@QueryParam(QueryExpanderConstants.QUERY) String query,
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri) throws QueryExpansionException{
         parameters = scrubInput(query, parameters, inputURI);
         ExpanderBean result = new ExpanderBean();
         result.setOrginalQuery(query);
-        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI, profileUri));
+        result.setExpandedQuery(queryExpander.expand(query, parameters, inputURI, lensUri));
         return result;
     }
 
@@ -550,8 +550,8 @@ public class QueryExpanderWsServer extends WSOpsServer{
     public ExpanderBean expandXMLGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI, profileUri);
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, lensUri);
     }
     
     @POST
@@ -560,8 +560,8 @@ public class QueryExpanderWsServer extends WSOpsServer{
     public ExpanderBean expandAsXML(@QueryParam(QueryExpanderConstants.QUERY) String query,
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI, profileUri);
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, lensUri);
     }
         
     @GET
@@ -570,8 +570,8 @@ public class QueryExpanderWsServer extends WSOpsServer{
     public ExpanderBean expandAsXMLGet(@QueryParam(QueryExpanderConstants.QUERY) String query,
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters ,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
-            @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri) throws QueryExpansionException{
-        return expandXML(query, parameters, inputURI, profileUri);
+            @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri) throws QueryExpansionException{
+        return expandXML(query, parameters, inputURI, lensUri);
     }
         
     @POST
@@ -639,11 +639,11 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @Path("/mapURI") 
     public Response mapURIasHtml(@QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
         @QueryParam(QueryExpanderConstants.GRAPH) String graph,
-        @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
+        @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri,
         @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
         StringBuilder sb = topAndSide("URI Mappings available per Graph (Query Context)",  httpServletRequest);
         if (inputURI != null && !inputURI.isEmpty()) {
-            List<String> mappings = queryExpander.mapURI(inputURI, graph, profileUri);
+            List<String> mappings = queryExpander.mapURI(inputURI, graph, lensUri);
             sb.append("<h2>URI Mappings for ");
             sb.append(inputURI);
             sb.append("</h2>\n"); 
@@ -671,8 +671,8 @@ public class QueryExpanderWsServer extends WSOpsServer{
     @Path("/mapURI") 
     public Response mapURIasHtmlGet(@QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
         @QueryParam(QueryExpanderConstants.GRAPH) String graph,
-        @QueryParam(QueryExpanderConstants.PROFILE_URI) String profileUri,
+        @QueryParam(QueryExpanderConstants.LENS_URI) String lensUri,
         @Context HttpServletRequest httpServletRequest) throws QueryExpansionException, IDMapperException{
-            return mapURIasHtml(inputURI, graph, profileUri, httpServletRequest);
+            return mapURIasHtml(inputURI, graph, lensUri, httpServletRequest);
     }    
 }
