@@ -47,46 +47,6 @@ public class QueryExpanderWsServer extends WSOpsServer{
         queryExpander = new QueryExpanderImpl(imsMapper);
     }
     
-    @Override
-    public String getDefaultResourceName(){
-        return "QueryExpander";
-    }
-    
-    private final String DEMO_EXPLAIN = "<p>Use this demo to test the expansion of any query.</p>"
-            + "<p>This demo and the underlying service depends on the information held by the Query Expander, including the "
-            + "     <a href=\"/OPS-IMS/getMappingInfo\">mappings</a> and the specific "
-            + "     <a href=\"/QueryExpander/URISpacesPerGraph\">URISpaces per Graph</a>."
-            + "</p>";
-    private final String FORM_START = "<form method=\"get\" action=\"/QueryExpander/expand\">"
-            + " <p>Output Format:"
-            + "     <select size=\"1\" name=\"format\">"
-            + "         <option value=\"html\">HTML page</option>"
-            + "         <option value=\"xml\">XML/JASON</option>"
-            + " 	</select>"
-            + " </p>"
-            + " <p><textarea rows=\"15\" name=\"query\" style=\"width:100%; background-color: #EEEEFF;\">";
-    private final String FORM_PARAMETERS = "</textarea></p>"
-            + " <p>Parameters to Expand. White space seperated. "
-            + "    (see <a href=\"/QueryExpander/api#parameter\">API</a>)</p>"
-            + " <p><input type=\"text\" name=\"parameter\" style=\"width:100%\" value=\"";
-    private final String FORM_INPUTURI = "\"/></p>"
-            + " <p>Input URI (URI to be looked up in Identity Mapping Service, Mapping results to be used in Expanded Query)"
-            + "    (see <a href=\"/QueryExpander/api#inputURI\">API</a>)</p>"
-            + " <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"  value=\"";
-    private final String FORM_END = "</p>"
-            + " <p><input type=\"submit\" value=\"Expand!\"></input> "
-            + "    Note: If the new page does not open click on the address and press enter</p>"
-            + "</form>";
-    private final String URI_MAPPING_FORM = "<form method=\"get\" action=\"/QueryExpander/mapURI\">"
-            + " <p>Input URI (URI to be looked up in Identity Mapping Service.)"
-            + "     (see <a href=\"/QueryExpander/api#inputURI\">API</a>)</p>"
-            + " <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"/></p>"
-            + " <p>Graph/Context (Graph value to limit the returned URIs)"
-            + "     (see <a href=\"/QueryExpander/api#graph\">API</a>)</p>"
-            + " <p><input type=\"text\" name=\"graph\" style=\"width:100%\"/></p>"
-            + " <p><input type=\"submit\" value=\"Expand!\"></input> "
-            + "    Note: If the new page does not open click on the address and press enter</p>"
-            + "</form>";
   private final String MAIN_END = "			</td>"
             + "		</tr>"
             + "	</table>"
@@ -268,20 +228,20 @@ public class QueryExpanderWsServer extends WSOpsServer{
      */
     @Override
     protected void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) throws BridgeDBException{
-        addSideBarQueryExpander(sb);
+        addSideBarQueryExpander(sb, httpServletRequest);
         super.addSideBarMiddle(sb, httpServletRequest);
     }
     
     /**
      * Allows Super classes to add to the side bar
      */
-    private void addSideBarQueryExpander(StringBuilder sb) throws BridgeDBException{
+    private void addSideBarQueryExpander(StringBuilder sb, HttpServletRequest httpServletRequest) throws BridgeDBException{
         sb.append("<div class=\"menugroup\">Query Expander</div>");
-        addSideBarItem(sb, "", "Home");
-        addSideBarItem(sb, "api", "Query Expander API");
-        addSideBarItem(sb, "examples", "Examples");
-        addSideBarItem(sb, "URISpacesPerGraph", "URISpaces per Graph");
-        addSideBarItem(sb, "mapURI", "Check Mapping for an URI");
+        addSideBarItem(sb, "", "Home", httpServletRequest);
+        addSideBarItem(sb, "api", "Query Expander API", httpServletRequest);
+        addSideBarItem(sb, "examples", "Examples", httpServletRequest);
+        addSideBarItem(sb, "URISpacesPerGraph", "URISpaces per Graph", httpServletRequest);
+        addSideBarItem(sb, "mapURI", "Check Mapping for an URI", httpServletRequest);
     }
 
     @POST
@@ -317,7 +277,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
             StringBuilder sb = topAndSide("Query Expander Results", httpServletRequest);
             addTextArea(sb, "Expanded Query.", result);
             sb.append("<h2>Input Parameters.</h2>");
-            addForm(sb, query, parameters, inputURI);
+            addForm(sb, query, parameters, inputURI, httpServletRequest);
             sb.append(END);
             return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
         } catch (Exception e){
@@ -396,7 +356,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
         StringBuilder sb = topAndSide("Error Expanding Query", httpServletRequest);
         addTextArea(sb, "Error", error);
 		sb.append("<h2>Input Parameters.</h2>");
-        addForm(sb, query, parameters, inputURI);
+        addForm(sb, query, parameters, inputURI, httpServletRequest);
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
@@ -409,8 +369,13 @@ public class QueryExpanderWsServer extends WSOpsServer{
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @Context HttpServletRequest httpServletRequest) throws BridgeDBException{
         StringBuilder sb = topAndSide("Query Expander Demo Page.", httpServletRequest);
-        sb.append(DEMO_EXPLAIN);
-        addForm(sb, query, parameters, inputURI);
+        sb.append("<p>Use this demo to test the expansion of any query.</p>");
+        sb.append("<p>This demo and the underlying service depends on the information held by the Query Expander, including the ");
+        sb.append("<a href=\"");
+        sb.append(httpServletRequest.getContextPath());
+        sb.append("/URISpacesPerGraph\">URISpaces per Graph</a>.");
+        sb.append("</p>");
+        addForm(sb, query, parameters, inputURI, httpServletRequest);
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
@@ -425,12 +390,27 @@ public class QueryExpanderWsServer extends WSOpsServer{
         return demo(query, parameters, inputURI, httpServletRequest);
     }
     
-    private void addForm(StringBuilder sb, String query, List<String> parameters, String inputURI) throws BridgeDBException{
-        sb.append(FORM_START);
+    private void addForm(StringBuilder sb, String query, List<String> parameters, String inputURI, 
+            HttpServletRequest httpServletRequest) throws BridgeDBException{    
+        sb.append("<form method=\"get\" action=\"");
+        sb.append(httpServletRequest.getContextPath());
+        sb.append("/expand\">");
+        sb.append(" <p>Output Format:");
+        sb.append("     <select size=\"1\" name=\"format\">");
+        sb.append("         <option value=\"html\">HTML page</option>");
+        sb.append("         <option value=\"xml\">XML/JASON</option>");
+        sb.append(" 	</select>");
+        sb.append(" </p>");
+        sb.append(" <p><textarea rows=\"15\" name=\"query\" style=\"width:100%; background-color: #EEEEFF;\">");
         if (query != null) {
             sb.append(query);
         }
-        sb.append(FORM_PARAMETERS);
+        sb.append("</textarea></p>");
+        sb.append(" <p>Parameters to Expand. White space seperated. ");
+        sb.append("    (see <a href=\"");
+        sb.append(     httpServletRequest.getContextPath());
+        sb.append("   /api#parameter\">API</a>)</p>");
+        sb.append(" <p><input type=\"text\" name=\"parameter\" style=\"width:100%\" value=\"");
         if (parameters != null && !parameters.isEmpty()){
             sb.append(parameters.get(0));
             for (int i = 1; i < parameters.size(); i++){
@@ -438,14 +418,22 @@ public class QueryExpanderWsServer extends WSOpsServer{
                 sb.append(parameters.get(i));
             }
         }
-        sb.append(FORM_INPUTURI);
+        sb.append("\"/></p>");
+        sb.append(" <p>Input URI (URI to be looked up in Identity Mapping Service, Mapping results to be used in Expanded Query)");
+        sb.append(    "(see <a href=\"");
+        sb.append(     httpServletRequest.getContextPath());
+        sb.append(    "/api#inputURI\">API</a>)</p>");
+        sb.append(" <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"  value=\"");
         if (inputURI != null){
             sb.append(inputURI);
         }
         sb.append("\"/>");
         generateLensSelector(sb);
         //TODO add Parameter
-        sb.append(FORM_END);        
+        sb.append("</p>");
+        sb.append(" <p><input type=\"submit\" value=\"Expand!\"></input> ");
+        sb.append("    Note: If the new page does not open click on the address and press enter</p>");
+        sb.append("</form>");
     }
     
     private Response xmlRedirect(String query, List<String> parameters, String inputURI) throws URISyntaxException {
@@ -667,7 +655,28 @@ public class QueryExpanderWsServer extends WSOpsServer{
             }
             sb.append("</ul>");
         }
-        sb.append(URI_MAPPING_FORM);
+        sb.append("<form method=\"get\" action=\"");
+        sb.append(httpServletRequest.getContextPath());
+        sb.append("/mapURI\">");
+        sb.append(" <p>Input URI (URI to be looked up in Identity Mapping Service.)");
+        sb.append(  "(see <a href=\"");
+        sb.append(      httpServletRequest.getContextPath());
+        sb.append(      "/api#inputURI\">API</a>)</p>");
+         sb.append(  "<form method=\"get\" action=\"");
+        sb.append(      httpServletRequest.getContextPath());
+        sb.append(      "/mapURI\">");
+        sb.append(" <p><input type=\"text\" name=\"inputURI\" style=\"width:100%\"/></p>");
+        sb.append(" <p>Graph/Context (Graph value to limit the returned URIs)");
+        sb.append(  "(see <a href=\"");
+        sb.append(      httpServletRequest.getContextPath());
+        sb.append(      "/api#graph\">API</a>)</p>");
+        sb.append(  "<form method=\"get\" action=\"");
+        sb.append(      httpServletRequest.getContextPath());
+        sb.append(      "/mapURI\">");
+        sb.append(" <p><input type=\"text\" name=\"graph\" style=\"width:100%\"/></p>");
+        sb.append(" <p><input type=\"submit\" value=\"Expand!\"></input> ");
+        sb.append("    Note: If the new page does not open click on the address and press enter</p>");
+        sb.append("</form>");
         sb.append(END);
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
