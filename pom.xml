@@ -3,12 +3,13 @@
     
     <groupId>uk.ac.man.cs.openphacts</groupId>
     <artifactId>query.expander</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <!--Note version jump to keep version same as BridgeDB-->
+    <version>2.0.0</version>
     <packaging>pom</packaging>
     <name>IMS SPARQL query.expander bundle</name>
 
     <properties>
-        <bridbgedb.version>2.0.0-SNAPSHOT</bridbgedb.version>
+        <bridbgedb.version>2.0.0</bridbgedb.version>
         <cxf.version>2.4.3</cxf.version>
         <hamcrest.version>1.2</hamcrest.version>
         <junit.version>4.4</junit.version>

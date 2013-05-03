@@ -2,34 +2,13 @@ This project holds the Stand alone Query Expander.
 
 It may be moved into BridgeDB in which case this repository will be closed.
 
-This project depend on the BridgeDb project.
-
-To run it needs 
-  	org.bridgedb
-  	org.bridgedb.sql
-  	org.bridgedb.uri.sql
-
-To load in data you need
- 	org.bridgedb.linksets
-
-For the Links to the BridgeDB info sites you need
-  	org.bridgedb.ws.core
-  	org.bridgedb.uri.ws.core
-  	org.bridgedb.ws.server
-  	org.bridgedb.uri.ws.server
-  	     (bridgeDb.war is not required except to run the none ops client tests with are repeated in ops anyway)
-  	org.bridgedb.ws.service
-  	org.bridgedb.uri.ws.service
-And the OPS-IMS.war in tomcat
-
-To create transative mappings you also nee:
-	org.bridgedb.tools.transitive
-	
+This project depends on the BridgeDb project.
+Instructions for configuration can be found in bridgeDb readme
+https://github.com/openphacts/BridgeDb
 
 To run the query expander the easiest way is via the webservice:
 	Drop QueryExpander.war into Tomcat
-	yourtomcatAddres/QueryExpander
-	
+
 To run QueryExpander without a WS
 	HardCodedGraphResolver resolver = new HardCodedGraphResolver();
 	SQLAccess sqlAccess = SqlFactory.createSQLAccess();
