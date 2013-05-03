@@ -6,6 +6,7 @@ package uk.ac.man.cs.openphacts.queryexpander;
 
 import org.apache.log4j.Logger;
 import org.bridgedb.sql.SQLUriMapper;
+import org.bridgedb.uri.Lens;
 import org.bridgedb.uri.UriMapper;
 import org.bridgedb.utils.StoreType;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -23,7 +24,7 @@ public class BridgeDBFactory {
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
             UriMapper urlMapper = SQLUriMapper.factory(false, StoreType.LIVE);
-            logger.info(urlMapper.getOverallStatistics());
+            logger.info(urlMapper.getOverallStatistics(Lens.getAllLens()));
             return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up BridgeDB mapper ", ex);
