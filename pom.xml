@@ -3,11 +3,16 @@
     
     <groupId>uk.ac.man.cs.openphacts</groupId>
     <artifactId>query.expander</artifactId>
-    <version>2.1.0</version>
     <packaging>pom</packaging>
     <name>IMS SPARQL query.expander bundle</name>
 
-    <properties>
+    <parent>
+        <artifactId>bridgedb-bundle</artifactId>
+        <groupId>org.bridgedb</groupId>
+        <version>2.1.0</version>
+    </parent>
+  
+    <!--properties>
         <bridbgedb.version>2.1.0</bridbgedb.version>
         <cxf.version>2.4.3</cxf.version>
         <hamcrest.version>1.2</hamcrest.version>
@@ -16,7 +21,7 @@
         <mysql.version>5.1.12</mysql.version>
         <sesame.version>2.6.3</sesame.version>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
-    </properties>
+    </properties-->
 
     <modules>
         <module>query.expander.api</module>

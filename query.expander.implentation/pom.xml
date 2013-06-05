@@ -23,32 +23,8 @@
         </dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb</artifactId>
-			<version>${bridbgedb.version}</version>
-            <scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.utils</artifactId>
-			<version>${bridbgedb.version}</version>
-            <scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.linksets</artifactId>
-			<version>${bridbgedb.version}</version>
-            <scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.sql</artifactId>
-			<version>${bridbgedb.version}</version>
-            <scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.uri.sql</artifactId>
-			<version>${bridbgedb.version}</version>
+			<artifactId>org.bridgedb.uri.loader</artifactId>
+			<version>${project.version}</version>
             <scope>compile</scope>
 		</dependency>
         <dependency>
@@ -70,28 +46,28 @@
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb</artifactId>
-			<version>${bridbgedb.version}</version>
+			<version>${project.version}</version>
             <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.utils</artifactId>
-			<version>${bridbgedb.version}</version>
+			<version>${project.version}</version>
             <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.sql</artifactId>
-			<version>${bridbgedb.version}</version>
+			<version>${project.version}</version>
             <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.linksets</artifactId>
-			<version>${bridbgedb.version}</version>
+			<artifactId>org.bridgedb.uri.sql</artifactId>
+			<version>${project.version}</version>
             <type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

@@ -5,17 +5,17 @@
 
 package uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.linkset.LinksetLoader;
-import org.bridgedb.tools.metadata.validator.ValidationType;
-import org.bridgedb.sql.TestSqlFactory;
-import org.bridgedb.utils.Reporter;
+import org.bridgedb.loader.LinksetListener;
+import org.bridgedb.sql.SQLUriMapper;
+import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.StoreType;
-import org.bridgedb.utils.TestUtils;
-import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.URIImpl;
 
 /**
  *
@@ -24,24 +24,27 @@ import org.openrdf.OpenRDFException;
 public abstract class TestLoader {
 
     static final Logger logger = Logger.getLogger(TestLoader.class);
+ 
+    private static LinksetListener instance;
+    static final String MAIN_JUSTIFCATION = "http://www.w3.org/2000/01/rdf-schema#isDefinedBy";
+    static final String LENS_JUSTIFCATION = "http://www.bridgedb.org/test#testJustification";
+    static final URI LINK_PREDICATE = new URIImpl("http://www.w3.org/2004/02/skos/core#exactMatch");
+     
+    private static void loadFile(String fileName) throws BridgeDBException{
+        File file = new File(fileName);
+        instance.parse(file, LINK_PREDICATE, MAIN_JUSTIFCATION);
+    }
 
+    //It is recommended to use the IMS method rather than this one.
     public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException  {
-        //Check database is running and settup correctly or kill the test.
-        TestSqlFactory.checkSQLAccess();
+        SQLUriMapper uriListener = SQLUriMapper.factory(true, StoreType.TEST);
+        instance = new LinksetListener(uriListener);
 
-        LinksetLoader linksetLoader = new LinksetLoader();
-        linksetLoader.clearExistingData(StoreType.TEST);
-        
-        linksetLoader.load("../query.expander.implentation/test-data/cw-cs.ttl", StoreType.TEST, 
-                ValidationType.LINKSMINIMAL);
-        linksetLoader.load("../query.expander.implentation/test-data/cw-cm.ttl", StoreType.TEST, 
-                ValidationType.LINKSMINIMAL);
-        linksetLoader.load("../query.expander.implentation/test-data/cw-dd.ttl", StoreType.TEST, 
-                ValidationType.LINKSMINIMAL);
-        linksetLoader.load("../query.expander.implentation/test-data/cw-ct.ttl", StoreType.TEST, 
-                ValidationType.LINKSMINIMAL);
-        linksetLoader.load("../query.expander.implentation/test-data/cw-dt.ttl", StoreType.TEST, 
-                ValidationType.LINKSMINIMAL);
-	}
+        loadFile("../query.expander.implentation/test-data/cw-cs.ttl");
+        loadFile("../query.expander.implentation/test-data/cw-cm.ttl");
+        loadFile("../query.expander.implentation/test-data/cw-dd.ttl");
+        loadFile("../query.expander.implentation/test-data/cw-ct.ttl");
+        loadFile("../query.expander.implentation/test-data/cw-dt.ttl");     
+    }
 
 }

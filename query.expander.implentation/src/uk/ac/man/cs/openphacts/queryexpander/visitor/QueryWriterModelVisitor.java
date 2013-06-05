@@ -132,6 +132,8 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
     //This names temp variables to the functions that should go in their place 
     Map<String, String> extensionMappings;
     
+    HashMap<String, ValueExpr> mappedExstensionElements = new HashMap<String, ValueExpr>();
+    
     private boolean whereOpen = false;
     
     private boolean inConstruct = false;
@@ -491,11 +493,28 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
         if (whereOpen){
             queryString.append(" BIND");
         }
-        queryString.append(" (");
-        ee.getExpr().visit(this);
-        queryString.append(" as ?");
-        queryString.append(ee.getName());        
-        queryString.append(") ");
+        boolean includeAs = true;
+        boolean notInMappedExstensionElements = true;
+        if (ee.getExpr() instanceof Var){
+            Var var = (Var)ee.getExpr();
+            if (var.getName().equals(name)){
+                includeAs = false;
+ //               if (mappedExstensionElements.containsKey(name)){
+ //                   notInMappedExstensionElements = false;
+ //               }
+            }
+        }
+        if (includeAs){
+            queryString.append(" (");
+ //       }
+ //       if (notInMappedExstensionElements){
+            ee.getExpr().visit(this);
+ //       }
+ //       if (includeAs){
+            queryString.append(" as ?");
+            queryString.append(ee.getName());        
+            queryString.append(") ");
+        }
         if (whereOpen){
             queryString.append(" . ");
         }
@@ -985,14 +1004,15 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
 
     private void writeConstruct(Projection prjctn) throws QueryExpanderException{
         queryString.append("CONSTRUCT {");
-        HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctn.getArg());
-        meet (prjctn.getProjectionElemList(), mappedExstensionElements);
+        mappedExstensionElements = mapExensionElements(prjctn.getArg());
+        meet (prjctn.getProjectionElemList());
         queryString.append("} ");
         if (SHOW_DEBUG_IN_QUERY) queryString.append("#writeConstruct 1");
         newLine();
         contexts = ContextListerVisitor.getContexts(prjctn.getArg());
         prjctn.getArg().visit(this);
         closeWhereIfRequired();
+        mappedExstensionElements.clear();
     }
     
 /*                switch (workoutQueryType(prjctn.getProjectionElemList())){
@@ -1024,6 +1044,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
         if (this.namesInExtensions.isEmpty()){
             this.extensionMappings =  new HashMap<String,String>();
         } else {
+            Set<String> doubleNames = findDoubles(namesInExtensions);
             //This mapes to sub functions.
             this.extensionMappings = ExtensionMapperVisitor.getMappings(prjctn.getArg());
         }
@@ -1047,6 +1068,19 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
         this.inSelect = false;
      }
 
+    private Set<String> findDoubles(List<String> strings){
+        HashSet<String> first = new HashSet<String> ();
+        HashSet<String> doubles = new HashSet<String>();
+        for (String string:strings){
+            if (first.contains(string)){
+                doubles.add(string);
+            } else {
+                first.add(string);
+            }
+        }
+        return doubles;
+    }
+    
     /**
      * Add the Where's } unless it has already been done.
      * 
@@ -1078,7 +1112,12 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
     
     private void printDataset(){
         if (originalDataSet == null) return;
-        queryString.append(originalDataSet);
+        //OpenRDF 2.6.4 accepted USING 2.7.1 no longer does
+        String using = originalDataSet.toString();
+        //OpenRDF 2.6.4 accepted USING 2.7.1 no longer does
+        //But DataSource.toString still used USING
+        String from = using.replace("USING", "FROM");
+        queryString.append(from);
     }
     
     @Override
@@ -1118,11 +1157,11 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
      * @param mappedExstensionElements
      * @throws QueryExpanderException 
      */
-    private void meet(List<ProjectionElemList> pels, HashMap<String, ValueExpr> mappedExstensionElements) 
+    private void meet(List<ProjectionElemList> pels) //, HashMap<String, ValueExpr> mappedExstensionElements) 
             throws QueryExpanderException {
         for (ProjectionElemList pel:pels){
             newLine();
-            meet(pel, mappedExstensionElements);
+            meet(pel);
             queryString.append(" . ");
         }
     }
@@ -1133,7 +1172,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
      * @param pel
      * @param mappedExstensionElements
      * @throws QueryExpanderException 
-     */
+     * /
     private void meet(ProjectionElemList pel, HashMap<String, ValueExpr> mappedExstensionElements) 
             throws QueryExpanderException {
         List<ProjectionElem> elements = pel.getElements();
@@ -1141,42 +1180,33 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
             meet(element, mappedExstensionElements);
             queryString.append(" ");
         }
-    }
+    }*/
 
     @Override
     public void meet(ProjectionElem pe) throws QueryExpanderException {
         String sourceName = pe.getSourceName();
-        //if (requiredAttributes != null){
-        //    if (!(requiredAttributes.contains(sourceName))){
-        //         eliminatedAttributes.add(sourceName);
-        //        //requiredAttributes are written by so not written here..
-        //    }
-        //} else {
-         if (!namesInExtensions.contains(sourceName)){
-            queryString.append(" ?");
-            queryString.append(sourceName);
-        }
-        //}
-    }
-
-    /**
-     * Used by the Reduce (Construction query) to add looked ahead ExtensionElems
-     * 
-     * @param pe
-     * @param mappedExstensionElements
-     * @throws QueryExpanderException 
-     */
-    private void meet(ProjectionElem pe, HashMap<String, ValueExpr> mappedExstensionElements) 
-            throws QueryExpanderException {
-        String name = pe.getSourceName();
-        ValueExpr mapped = mappedExstensionElements.get(name);
+        ValueExpr mapped = mappedExstensionElements.get(sourceName);
         if (mapped == null){
-            queryString.append(" ?");
-            queryString.append(pe.getSourceName());
+            boolean write = false;
+            if (pe.getSourceName().equals(pe.getTargetName())){
+                write = true;
+            } else if ((pe.getTargetName().equals("subject"))){
+                write = true;
+            } else if ((pe.getTargetName().equals("predicate"))){
+                write = true;
+            } else if ((pe.getTargetName().equals("object"))){
+                write = true;
+            } 
+            if (write){
+                if (namesInExtensions == null || !namesInExtensions.contains(sourceName)){
+                    queryString.append(" ?");
+                    queryString.append(sourceName);
+                }
+            }
         } else if (mapped instanceof BNodeGenerator) {
-            writeAnon(name);
+            writeAnon(sourceName);
         } else {
-            mapped.visit(this);
+           mapped.visit(this);
         }
     }
 
@@ -1216,9 +1246,9 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
             MultiProjection mp = (MultiProjection)arg;
             TupleExpr prjctnArg = mp.getArg();
             queryString.append("CONSTRUCT {");
-            HashMap<String, ValueExpr> mappedExstensionElements = mapExensionElements(prjctnArg);   
+            mappedExstensionElements = mapExensionElements(prjctnArg);   
             contexts = ContextListerVisitor.getContexts(mp);
-            meet (mp.getProjections(), mappedExstensionElements);
+            meet (mp.getProjections());
             queryString.append("} ");
             this.inConstruct = true;
             if (SHOW_DEBUG_IN_QUERY) queryString.append("#Reduced MultiProjection1");
@@ -1229,6 +1259,7 @@ public class QueryWriterModelVisitor implements QueryModelVisitor<QueryExpanderE
             }
             mp.getArg().visit(this);
             closeWhereIfRequired();
+            mappedExstensionElements.clear();
         } else {
             throw new QueryExpanderException("Reduced with non Projection/ MultiProjection child not supported yet.");
         }

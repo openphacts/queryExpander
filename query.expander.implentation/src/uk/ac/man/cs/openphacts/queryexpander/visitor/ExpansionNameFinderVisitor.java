@@ -7,6 +7,7 @@ import org.openrdf.query.algebra.LeftJoin;
 import org.openrdf.query.algebra.Projection;
 import org.openrdf.query.algebra.StatementPattern;
 import org.openrdf.query.algebra.TupleExpr;
+import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
@@ -20,6 +21,13 @@ public class ExpansionNameFinderVisitor extends QueryModelVisitorBase<QueryExpan
     
     @Override
     public void meet(ExtensionElem ee) throws QueryExpanderException {
+        ValueExpr value = ee.getExpr();
+        if (value instanceof Var){
+           Var var = (Var)value;
+           if (var.getName().equals(ee.getName())){
+               return;
+           }
+        }
         foundNames.add(ee.getName());
     }
     

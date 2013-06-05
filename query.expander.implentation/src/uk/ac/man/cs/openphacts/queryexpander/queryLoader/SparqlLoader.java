@@ -16,7 +16,7 @@ public class SparqlLoader extends QueryCaseLoader{
         loadSparql2_3_3();
         loadSparql2_4();
         loadSparql2_5a();  //CONCAT(?G, " ", ?S) AS ?name
-        loadSparql2_5b(); //BIND(CONCAT(?G, " ", ?S) AS ?name)
+//        loadSparql2_5b(); //BIND(CONCAT(?G, " ", ?S) AS ?name)
         loadSparql3_1a();
         loadSparql3_1b();
         loadSparql3_2();
@@ -68,10 +68,10 @@ public class SparqlLoader extends QueryCaseLoader{
         loadSparql9_3b();
         loadSparql9_3c();
         loadSparql9_3d();
-        loadSparql10_1a1();
-        loadSparql10_1a2();
-        loadSparql10_1a3();
-        loadSparql10_1a4();
+//        loadSparql10_1a1();
+//        loadSparql10_1a2();
+//        loadSparql10_1a3();
+//        loadSparql10_1a4();
         loadSparql10_1b();
         loadSparql10_2a();
         loadSparql10_2b();
@@ -2032,6 +2032,15 @@ public class SparqlLoader extends QueryCaseLoader{
                 + "         foaf:mbox  ?mbox2 .\n"
                 + "         FILTER (sameTerm(?mbox1, ?mbox2) && !sameTerm(?name1, ?name2))\n"
                 + "      } ";                
+        queryCase.noReplaceQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name1 ?name2\n"
+                + "WHERE { "
+                + "     FILTER (sameTerm(?mbox1, ?mbox2) && !sameTerm(?name1, ?name2))\n"
+                + "     ?x foaf:name  ?name1 ;\n"
+                + "     foaf:mbox  ?mbox1 .\n"
+                + "     ?y foaf:name  ?name2 ;\n"
+                + "     foaf:mbox  ?mbox2 .\n"
+                + "}";                
         queries.put(queryCase.key, queryCase);
    }
 
@@ -2049,6 +2058,18 @@ public class SparqlLoader extends QueryCaseLoader{
                 + "        ?b  :weight       ?bWeight .\n"
                 + "        ?b  :displacement ?bDisp .\n"
                 + "        FILTER ( sameTerm(?aWeight, ?bWeight) && !sameTerm(?aDisp, ?bDisp)) \n"
+                + "}";                
+        queryCase.noReplaceQuery = "PREFIX  :      <http://example.org/WMterms#>\n"
+                + "PREFIX  t:     <http://example.org/types#>\n"
+                + "SELECT ?aLabel1 ?bLabel\n"
+                + "WHERE { "
+                + "     FILTER ( sameTerm(?aWeight, ?bWeight) && !sameTerm(?aDisp, ?bDisp)) \n"
+                + "     ?a  :label        ?aLabel .\n"
+                + "     ?a  :weight       ?aWeight .\n"
+                + "     ?a  :displacement ?aDisp .\n"
+                + "     ?b  :label        ?bLabel .\n"
+                + "     ?b  :weight       ?bWeight .\n"
+                + "     ?b  :displacement ?bDisp .\n"
                 + "}";                
         queries.put(queryCase.key, queryCase);
    }

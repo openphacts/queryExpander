@@ -2,6 +2,9 @@ package uk.ac.man.cs.openphacts.queryexpander.visitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.algebra.Add;
@@ -80,6 +83,7 @@ import org.openrdf.query.algebra.Sum;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.Union;
 import org.openrdf.query.algebra.ValueConstant;
+import org.openrdf.query.algebra.ValueExpr;
 import org.openrdf.query.algebra.Var;
 import org.openrdf.query.algebra.ZeroLengthPath;
 import org.openrdf.query.algebra.helpers.QueryModelVisitorBase;
@@ -242,7 +246,14 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpanderEx
 
     @Override
     public void meet(FunctionCall fc) throws QueryExpanderException {
-        throw new UnsupportedOperationException("Not supported yet.");
+       extension.append("CONCAT(");
+        List<ValueExpr> arguements = fc.getArgs();
+        arguements.get(0).visit(this);
+        for (int i = 1; i < arguements.size(); i++){
+            extension.append(", ");
+            arguements.get(i).visit(this);
+        }
+        extension.append("CONCAT(");
     }
 
     @Override
@@ -464,7 +475,7 @@ public class ExtensionMapperVisitor implements QueryModelVisitor<QueryExpanderEx
 
     @Override
     public void meet(Slice slice) throws QueryExpanderException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        slice.getArg().visit(this);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bridgedb.rdf.UriPattern;
+import org.bridgedb.utils.Reporter;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.Dataset;
@@ -79,9 +80,10 @@ public class QueryExpanderImpl implements QueryExpander{
         try {
             parsedQuery = parser.parseQuery(newQuery, null);
         } catch (MalformedQueryException ex) {
-            logger.error("originalQuery was " + originalQuery);
-            logger.error("parameters were " + parameters);
-            logger.error("inputURI was " + inputURI);
+            Reporter.error("originalQuery was " + originalQuery);
+            Reporter.error("tupleExpr was:\n" + tupleExpr);
+            Reporter.error("parameters were " + parameters);
+            Reporter.error("newQuery \n" + newQuery);
             throw new QueryExpanderException("OOPS! Unable to parse the result query \n" + newQuery, ex);
         }
         return newQuery;

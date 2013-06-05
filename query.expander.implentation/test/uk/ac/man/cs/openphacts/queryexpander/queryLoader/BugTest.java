@@ -3,8 +3,10 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.bridgedb.utils.Reporter;
 import org.bridgedb.utils.TestUtils;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
@@ -41,7 +43,12 @@ public class BugTest extends TestUtils{
             String inputURI = loader.getInsertURI(queryKey);
             //ystem.out.println(originalQuery);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_LENS, false);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey)));
+            if (!QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey))){
+                Reporter.println(targetQuery);
+                Reporter.error("Does not match");                
+                Reporter.println(newQuery);
+                assertTrue(false);
+            }
         }
     }
 

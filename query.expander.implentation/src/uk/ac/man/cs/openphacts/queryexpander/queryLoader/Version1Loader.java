@@ -321,6 +321,15 @@ public class Version1Loader extends QueryCaseLoader{
                 + "}\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
                 + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?first \n"
+                + "WHERE\n"
+                + "{  <http://input.com#1> foaf:name ?name .\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "    Optional {\n"
+                + "       <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "    }\n"
+                + "}";
         queries.put(queryCase.key, queryCase);
     }
    
@@ -393,12 +402,22 @@ public class Version1Loader extends QueryCaseLoader{
         queryCase.originalQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
                 + "SELECT ?name ?mbox ?email ?first \n"
                 + "WHERE\n"
-                + "  { <http://input.com#1> foaf:name ?name .\n"
-                + "Optional {\n"
-                + "    <http://input.com#1> foaf:mbox ?mbox . \n"
-                + "    <http://input.com#1> foaf:email ?email . \n"
-                + "}\n"
+                + "{   <http://input.com#1> foaf:name ?name .\n"
+                + "    Optional {\n"
+                + "       <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "       <http://input.com#1> foaf:email ?email . \n"
+                + "    }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
+                + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first \n"
+                + "WHERE\n"
+                + "  { <http://input.com#1> foaf:name ?name .\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "    Optional {\n"
+                + "       <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "       <http://input.com#1> foaf:email ?email . \n"
+                + "    }\n"
                 + "}";
         queries.put(queryCase.key, queryCase);
     }
@@ -486,6 +505,19 @@ public class Version1Loader extends QueryCaseLoader{
                 + "    }   }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
                 + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first \n\n"
+                + "WHERE {\n"
+                + "    <http://input.com#1> foaf:name ?name . \n\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "    Optional { \n\n"
+                + "        GRAPH <http://foo.com> {\n"
+                + "            <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "        }\n"
+                + "        GRAPH <http://bar.com> {\n"
+                + "            <http://input.com#1> foaf:email ?email . \n"
+                + "    }   }\n"
+                + "}";
         queries.put(queryCase.key, queryCase);
     }
    
@@ -504,6 +536,18 @@ public class Version1Loader extends QueryCaseLoader{
                 + "        <http://input.com#1> foaf:email ?email . \n"
                 + "    }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
+                + "}";
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first \n\n"
+                + "WHERE {\n"
+                + "    <http://input.com#1> foaf:name ?name .\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "    Optional {\n"
+                + "        GRAPH <http://foo.com> {\n"
+                + "            <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "        }\n"
+                + "        <http://input.com#1> foaf:email ?email . \n"
+                + "    }\n"
                 + "}";
         queries.put(queryCase.key, queryCase);
     }
@@ -544,7 +588,20 @@ public class Version1Loader extends QueryCaseLoader{
                 + "    }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
                 + "}";
-        queries.put(queryCase.key, queryCase);
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/>\n"
+                + "SELECT ?name ?mbox ?email ?first ?second \n\n"
+                + "WHERE {\n"
+                + "    <http://input.com#1> foaf:name ?name .\n"
+                + "    GRAPH <http://foo.com> {\n"
+                + "        <http://input.com#1> foaf:mbox ?mbox . \n"
+                + "        <http://input.com#1> foaf:second ?second . \n"
+                + "        Optional {\n"
+                + "            <http://input.com#1> foaf:email ?email . \n"
+                + "        }\n"
+                + "    }\n"
+                + "    <http://input.com#1> foaf:first ?first .\n"
+                + "}";
+         queries.put(queryCase.key, queryCase);
     }
    
    private void loadNone_GraphOptionalOptional_None() {
@@ -603,10 +660,10 @@ public class Version1Loader extends QueryCaseLoader{
                 + "WHERE {\n"
                 + "    <http://input.com#1> foaf:name ?name .\n"
                 + "    GRAPH <http://foo.com> {\n"
+                + "        <http://input.com#1> foaf:email ?email . \n"
                 + "        Optional {\n"
                 + "           <http://input.com#1> foaf:mbox ?mbox . #test \n\n"
                 + "        }\n"
-                + "        <http://input.com#1> foaf:email ?email . \n"
                 + "    }\n"
                 + "    <http://input.com#1> foaf:first ?first .\n"
                 + "}";
