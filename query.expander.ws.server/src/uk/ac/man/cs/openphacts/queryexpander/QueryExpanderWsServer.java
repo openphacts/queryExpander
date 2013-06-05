@@ -24,7 +24,7 @@ import org.bridgedb.IDMapperException;
 import org.bridgedb.rdf.RdfConfig;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.ws.WsUriConstants;
-import org.bridgedb.ws.uri.WSOpsServer;
+import org.bridgedb.ws.uri.WSApiShower;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -37,7 +37,7 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
  *
  * @author Christian
  */
-public class QueryExpanderWsServer extends WSOpsServer{
+public class QueryExpanderWsServer extends WSApiShower{
     
     private QueryExpander queryExpander;
     
@@ -227,7 +227,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
      * Allows Super classes to add to the side bar
      */
     @Override
-    protected void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) throws BridgeDBException{
+    public void addSideBarMiddle(StringBuilder sb, HttpServletRequest httpServletRequest) {
         addSideBarQueryExpander(sb, httpServletRequest);
         super.addSideBarMiddle(sb, httpServletRequest);
     }
@@ -235,7 +235,7 @@ public class QueryExpanderWsServer extends WSOpsServer{
     /**
      * Allows Super classes to add to the side bar
      */
-    private void addSideBarQueryExpander(StringBuilder sb, HttpServletRequest httpServletRequest) throws BridgeDBException{
+    private void addSideBarQueryExpander(StringBuilder sb, HttpServletRequest httpServletRequest){
         sb.append("<div class=\"menugroup\">Query Expander</div>");
         addSideBarItem(sb, "", "Home", httpServletRequest);
         addSideBarItem(sb, "api", "Query Expander API", httpServletRequest);
