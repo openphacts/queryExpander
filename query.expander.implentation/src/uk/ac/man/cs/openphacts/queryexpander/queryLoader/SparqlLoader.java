@@ -16,7 +16,7 @@ public class SparqlLoader extends QueryCaseLoader{
         loadSparql2_3_3();
         loadSparql2_4();
         loadSparql2_5a();  //CONCAT(?G, " ", ?S) AS ?name
-//        loadSparql2_5b(); //BIND(CONCAT(?G, " ", ?S) AS ?name)
+        loadSparql2_5b(); //BIND(CONCAT(?G, " ", ?S) AS ?name)
         loadSparql3_1a();
         loadSparql3_1b();
         loadSparql3_2();
@@ -68,10 +68,10 @@ public class SparqlLoader extends QueryCaseLoader{
         loadSparql9_3b();
         loadSparql9_3c();
         loadSparql9_3d();
-//        loadSparql10_1a1();
-//        loadSparql10_1a2();
-//        loadSparql10_1a3();
-//        loadSparql10_1a4();
+        loadSparql10_1a1();
+        loadSparql10_1a2();
+        loadSparql10_1a3();
+        loadSparql10_1a4();
         loadSparql10_1b();
         loadSparql10_2a();
         loadSparql10_2b();
@@ -294,6 +294,12 @@ public class SparqlLoader extends QueryCaseLoader{
                 + "      foaf:surname ?S \n"
                 + "   BIND(CONCAT(?G, \" \", ?S) AS ?name)\n"
                 + "}";                
+        queryCase.noReplaceQuery = "PREFIX foaf:   <http://xmlns.com/foaf/0.1/> \n"
+                + "SELECT (CONCAT(?G, \" \", ?S) AS ?name) \n"
+                + "WHERE  { \n"
+                + "   ?P foaf:givenName ?G ; \n"
+                + "      foaf:surname ?S \n"
+               + "}";                
         queries.put(queryCase.key, queryCase);
    }
 
@@ -1011,6 +1017,11 @@ public class SparqlLoader extends QueryCaseLoader{
                 + "SELECT  ?price \n"
                 + "{  BIND (?p * ?discount AS ?price)\n"
                 + "}";                
+        queryCase.originalQuery = "PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX  ns:  <http://example.org/ns#>\n"
+                + "SELECT  (?p * ?discount AS ?price) \n"
+                + "{\n"
+                + "}";                
         queries.put(queryCase.key, queryCase);
    }
 
@@ -1022,6 +1033,11 @@ public class SparqlLoader extends QueryCaseLoader{
                 + "PREFIX  ns:  <http://example.org/ns#>\n"
                 + "SELECT  ?price\n"
                 + "{  BIND (?p*(1-?discount) AS ?price)\n"
+                + "}";                
+        queryCase.originalQuery = "PREFIX  dc:  <http://purl.org/dc/elements/1.1/>\n"
+                + "PREFIX  ns:  <http://example.org/ns#>\n"
+                + "SELECT  (?p*(1-?discount) AS ?price)\n"
+                + "{ \n"
                 + "}";                
         queries.put(queryCase.key, queryCase);
    }
