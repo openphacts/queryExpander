@@ -19,8 +19,8 @@
 package uk.ac.man.cs.openphacts.queryexpander.tester;
 import java.io.File;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.loader.LinksetListener;
 import org.bridgedb.sql.SQLUriMapper;
+import org.bridgedb.uri.loader.LinksetListener;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;
 import org.bridgedb.utils.StoreType;
