@@ -51,6 +51,14 @@ public class HardCodedGraphResolver {
         pattern = UriPattern.byPrefixOrNameSpace("http://rdf.chemspider.com/");
         patterns.add(pattern);
         getAllowedUriPatterns().put("http://www.chemspider.com",  patterns);
+        
+        patterns = new HashSet<UriPattern>();
+        pattern = UriPattern.byPrefixOrNameSpace("http://rdf.ebi.ac.uk/resource/chembl/target/");
+        patterns.add(pattern);
+        pattern = UriPattern.byPrefixOrNameSpace("http://rdf.ebi.ac.uk/resource/chembl/molecule/");
+        patterns.add(pattern);
+        getAllowedUriPatterns().put("http://www.ebi.ac.uk/chembl",  patterns);
+        
     }
 
     /**
