@@ -428,7 +428,7 @@ public class QueryExpanderWsServer extends WSOtherservices{
             sb.append(inputURI);
         }
         sb.append("\"/>");
-        generateLensSelector(sb);
+        generateLensSelector(sb, httpServletRequest);
         //TODO add Parameter
         sb.append("</p>");
         sb.append(" <p><input type=\"submit\" value=\"Expand!\"></input> ");
