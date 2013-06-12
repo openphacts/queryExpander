@@ -24,7 +24,7 @@ import org.bridgedb.IDMapperException;
 import org.bridgedb.rdf.RdfConfig;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.ws.WsUriConstants;
-import org.bridgedb.ws.uri.WSApiShower;
+import org.bridgedb.ws.uri.WSOtherservices;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -37,7 +37,7 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
  *
  * @author Christian
  */
-public class QueryExpanderWsServer extends WSApiShower{
+public class QueryExpanderWsServer extends WSOtherservices{
     
     private QueryExpander queryExpander;
     

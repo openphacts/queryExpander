@@ -32,7 +32,9 @@ public abstract class Version2Test extends TestUtils{
             //ystem.out.println(parameters);
             String newQuery = queryExpander.expand(originalQuery, parameters, inputURI, NO_LENS, false);
             //ystem.out.println(newQuery);
-            assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
+            if (!QueryUtils.sameTupleExpr(targetQuery, newQuery, false, loader.getQueryName(queryKey))){
+                assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true, loader.getQueryName(queryKey)));
+            }
         }
     }
  
