@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.rdf.RdfConfig;
+import org.bridgedb.uri.Lens;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.ws.WsUriConstants;
 import org.bridgedb.ws.uri.WSOtherservices;
@@ -203,7 +204,7 @@ public class QueryExpanderWsServer extends WSOtherservices{
             + "         <li>If no lens is provided the default lens will be used."
             + "         </li>To See a list and description of all lenses visit.</li>"
             + "         <ul>"
-            + "             <li><a href=\"" + RdfConfig.getTheBaseURI() + WsUriConstants.LENS + "\">" + WsUriConstants.LENS + "</a></li>"    
+            + "             <li><a href=\"" + RdfConfig.getTheBaseURI() + Lens.METHOD_NAME + "\">" + Lens.METHOD_NAME + "</a></li>"    
             + "         </ul>"
             + "     </ul>"
             + "     <dt><a name=\"" + QueryExpanderConstants.GRAPH +  "\">" + QueryExpanderConstants.GRAPH +  "</a></dt>"
