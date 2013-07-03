@@ -23,7 +23,6 @@ import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.uri.loader.LinksetListener;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;
-import org.bridgedb.utils.StoreType;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 
@@ -45,7 +44,8 @@ public class SetupLoaderWithTestData {
     //It is recommended to use the IMS method rather than this one.
     public static void main(String[] args) throws IDMapperException {
         ConfigReader.logToConsole();
-        SQLUriMapper uriListener = SQLUriMapper.factory(true, StoreType.TEST);
+        ConfigReader.useTest();
+        SQLUriMapper uriListener = SQLUriMapper.createNew();
         instance = new LinksetListener(uriListener);
 
         loadFile("../query.expander.implentation/test-data/cw-cs.ttl");

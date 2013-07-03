@@ -4,7 +4,7 @@ import java.io.File;
 import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.uri.UriMapper;
-import org.bridgedb.utils.StoreType;
+import org.bridgedb.utils.ConfigReader;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -29,8 +29,9 @@ public class TestBridgeDBFactory {
     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
         HardCodedGraphResolver resolver = new HardCodedGraphResolver();
         try {
+            ConfigReader.useTest();
             TestSqlFactory.checkSQLAccess();
-            UriMapper urlMapper = SQLUriMapper.factory(false, StoreType.TEST);
+            UriMapper urlMapper = SQLUriMapper.getExisting();
             return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up File mapper ", ex);
