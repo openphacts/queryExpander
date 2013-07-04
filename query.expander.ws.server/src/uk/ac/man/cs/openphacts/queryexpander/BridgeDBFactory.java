@@ -8,8 +8,9 @@ import org.apache.log4j.Logger;
 import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.uri.Lens;
 import org.bridgedb.uri.UriMapper;
+import org.bridgedb.utils.BridgeDBException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 
 /**
  *
@@ -19,8 +20,8 @@ public class BridgeDBFactory {
     
     static final Logger logger = Logger.getLogger(BridgeDBFactory.class);
     
-     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
-        HardCodedGraphResolver resolver = new HardCodedGraphResolver();
+     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
+        GraphResolver resolver = new GraphResolver();
         try {
             UriMapper urlMapper = SQLUriMapper.getExisting();
             logger.info(urlMapper.getOverallStatistics(Lens.getAllLens()));

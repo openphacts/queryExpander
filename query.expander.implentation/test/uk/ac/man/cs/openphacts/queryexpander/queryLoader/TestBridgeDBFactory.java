@@ -4,11 +4,12 @@ import java.io.File;
 import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.uri.UriMapper;
+import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.man.cs.openphacts.queryexpander.mapper.HardCodedGraphResolver;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 
 /**
  *
@@ -26,8 +27,8 @@ public class TestBridgeDBFactory {
             "http://rdf.chemspider.com/"};
 
     
-    public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException{
-        HardCodedGraphResolver resolver = new HardCodedGraphResolver();
+    public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
+        GraphResolver resolver = new GraphResolver();
         try {
             ConfigReader.useTest();
             TestSqlFactory.checkSQLAccess();

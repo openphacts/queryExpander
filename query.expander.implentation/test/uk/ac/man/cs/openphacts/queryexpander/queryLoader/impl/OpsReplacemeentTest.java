@@ -2,6 +2,7 @@ package uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl;
 
 import java.io.IOException;
 import org.bridgedb.IDMapperException;
+import org.bridgedb.utils.BridgeDBException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
@@ -27,7 +28,7 @@ public class OpsReplacemeentTest extends uk.ac.man.cs.openphacts.queryexpander.q
     }
             
     @Before
-    public void setupMapper() throws QueryExpanderException{
+    public void setupMapper() throws QueryExpanderException, BridgeDBException{
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         queryExpander = new QueryExpanderImpl(imsMapper);
     }
