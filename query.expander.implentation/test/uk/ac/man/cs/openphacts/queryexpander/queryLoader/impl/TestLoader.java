@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.sql.SQLUriMapper;
+import org.bridgedb.uri.Lens;
 import org.bridgedb.uri.loader.LinksetListener;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;
@@ -26,13 +27,11 @@ public abstract class TestLoader {
     static final Logger logger = Logger.getLogger(TestLoader.class);
  
     private static LinksetListener instance;
-    static final String MAIN_JUSTIFCATION = "http://www.w3.org/2000/01/rdf-schema#isDefinedBy";
-    static final String LENS_JUSTIFCATION = "http://www.bridgedb.org/test#testJustification";
     static final URI LINK_PREDICATE = new URIImpl("http://www.w3.org/2004/02/skos/core#exactMatch");
      
     private static void loadFile(String fileName) throws BridgeDBException{
         File file = new File(fileName);
-        instance.parse(file, LINK_PREDICATE, MAIN_JUSTIFCATION);
+        instance.parse(file, LINK_PREDICATE, Lens.getDefaultJustifictaionString());
     }
 
     //It is recommended to use the IMS method rather than this one.
