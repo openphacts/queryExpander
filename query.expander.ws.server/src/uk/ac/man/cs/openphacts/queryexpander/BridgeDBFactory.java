@@ -21,7 +21,7 @@ public class BridgeDBFactory {
     static final Logger logger = Logger.getLogger(BridgeDBFactory.class);
     
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
-        GraphResolver resolver = new GraphResolver();
+        GraphResolver resolver = GraphResolver.getInstance();
         try {
             UriMapper urlMapper = SQLUriMapper.getExisting();
             logger.info(urlMapper.getOverallStatistics(Lens.getAllLens()));

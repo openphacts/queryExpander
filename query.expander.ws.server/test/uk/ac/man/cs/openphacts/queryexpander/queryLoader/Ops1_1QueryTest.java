@@ -16,6 +16,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /*
@@ -38,6 +39,7 @@ public class Ops1_1QueryTest extends TestUtils {
             
     @Test
     public void testAllWithMapping() throws Exception{
+        GraphResolver.addTestMappings();
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
          

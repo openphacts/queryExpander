@@ -28,7 +28,7 @@ public class TestBridgeDBFactory {
 
     
     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
-        GraphResolver resolver = new GraphResolver();
+        GraphResolver resolver = GraphResolver.getInstance();
         try {
             ConfigReader.useTest();
             TestSqlFactory.checkSQLAccess();

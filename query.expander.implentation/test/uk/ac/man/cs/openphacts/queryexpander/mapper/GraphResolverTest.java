@@ -45,7 +45,7 @@ public class GraphResolverTest {
     @Test
     public void testGetAllowedUriPatterns() throws BridgeDBException {
         Reporter.println("getAllowedUriPatterns");
-        GraphResolver instance = new GraphResolver();
+        GraphResolver instance = GraphResolver.getInstance();
         HashMap expResult = null;
         HashMap result = instance.getAllowedUriPatterns();
         System.out.println(result);

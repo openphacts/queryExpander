@@ -9,6 +9,7 @@ import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpansionException;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 
 /**
  *
@@ -22,6 +23,7 @@ public abstract class Ops1_1QueryTest extends TestUtils {
             
     @Test
     public void testAllNoMapping() throws Exception{
+        GraphResolver.addTestMappings();
         Ops1_1QueryLoader loader = new Ops1_1QueryLoader();
         Set<String> queryKeys = loader.keySet();
          

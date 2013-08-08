@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 
 /*
  * To change this template, choose Tools | Templates
@@ -25,6 +26,7 @@ public abstract class OpsReplacemeentTest  extends TestUtils {
             
     @Test
     public void testAllNoMapping() throws Exception{
+        GraphResolver.addTestMappings();
         QueryCaseLoader loader = new OpsReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         for (String queryKey:queryKeys){

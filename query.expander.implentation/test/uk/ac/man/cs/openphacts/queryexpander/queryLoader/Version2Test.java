@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.ac.man.cs.openphacts.queryexpander.QueryExpander;
 import uk.ac.man.cs.openphacts.queryexpander.QueryUtils;
+import uk.ac.man.cs.openphacts.queryexpander.mapper.GraphResolver;
 
 /**
  *
@@ -20,6 +21,7 @@ public abstract class Version2Test extends TestUtils{
 
     @Test
     public void testAllNoMapping() throws Exception{
+        GraphResolver.addTestMappings();
         Version2Loader loader = new Version2Loader();
         Set<String> queryKeys = loader.keySet();
         for (String queryKey:queryKeys){
