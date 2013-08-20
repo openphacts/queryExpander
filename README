@@ -3,8 +3,46 @@ This project holds the Stand alone Query Expander.
 It may be moved into BridgeDB in which case this repository will be closed.
 
 This project depends on the BridgeDb project.
-Instructions for configuration can be found in bridgeDb readme
-https://github.com/openphacts/BridgeDb
+BridgeDB: https://github.com/openphacts/BridgeDb
+
+While to run the QueryExpander only depends on BridgeDB
+Loading Data depends on the OpenPhacts Identity Mapping Service https://github.com/openphacts/IdentityMappingService
+Which in term depends on Validator https://github.com/openphacts/Validator
+
+Instructions for configuration can be found in  
+{$IdentityMappingService}README.md 
+Please check that AND the other readme and property files that links too.
+The Query Expander and Data loader will NOT work if these configurations are incorrect!
+
+Query Expander Properties files
+===============================
+graph.properties
+(plus those described in {$IdentityMappingService}README.md and the other readme files that points to)
+local.properties (Shared with other project Query Expander Depends on)
+
+===
+Properties File Location:
+BridgeDB code used to locate Query Expander properties files so
+See: {$bridgeDB}README.txt Properties File Location:
+
+===
+local.properties
+BridgeDB code used to add local properties to Query Expander properties.
+See: {$bridgeDB}README.txt local.properties
+===
+
+graph.properties
+Location: {$QueryExpander}/query.expander.implentation/resources/graph.properties
+This file specifies the mapping between RDF context/graph and the URI patterns in each 
+This allows the Query Expander to reduce the number of URI that are added.
+
+===
+Data Loading
+
+See {$IdentityMappingService}README.md Data Loading section
+Remember this depends on the correct configurations! 
+
+====
 
 To run the query expander the easiest way is via the webservice:
 	Drop QueryExpander.war into Tomcat
@@ -19,19 +57,3 @@ To run QueryExpander without a WS
 To run using the WS and a client see:
     QueryExpanderClientFactory
     returned QueryExpanderWSClient implements the same QueryExpander interface
-    
-=== UGLY hard code stuff that needs to be removed in the future ====
-
-HardCodedGraphResolver 
-    Provides a mapping between Larkc graphs/Contexts and the UriSpaces of the id that are found with it.
-    If an unkown graph is use the query will be valid but with extra urls in it.
-    
-UriSpaceMapper (in package org.bridgedb.uri.sql)
-    Maps between UriSpaces and the DataSources.
-    Only taken into consideration when the database is reset by loading using the "new" parameter.
-    After that the current fix is to hack the SQL database.
-    Urgently needs replacing with indentifiers.org methods.
-
-    
-    
-    
