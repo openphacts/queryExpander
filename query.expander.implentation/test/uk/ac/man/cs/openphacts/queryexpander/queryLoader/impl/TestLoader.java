@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.sql.SQLUriMapper;
+import org.bridgedb.sql.TestSqlFactory;
 import org.bridgedb.uri.Lens;
 import org.bridgedb.uri.loader.LinksetListener;
 import org.bridgedb.utils.BridgeDBException;
@@ -37,6 +38,7 @@ public abstract class TestLoader {
     //It is recommended to use the IMS method rather than this one.
     public static void LoadTestData() throws IDMapperException, IOException, OpenRDFException  {
         ConfigReader.useTest();
+        TestSqlFactory.checkSQLAccess();
         SQLUriMapper uriListener = SQLUriMapper.createNew();
         instance = new LinksetListener(uriListener);
 
