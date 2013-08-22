@@ -45,7 +45,7 @@
 			<scope>compile</scope>
 		</dependency>
  		<dependency>
-			<groupId>uk.ac.manchester.cs.openphacts</groupId>
+			<groupId>uk.ac.manchester.cs.openphacts.ims</groupId>
 			<artifactId>ws.server</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
