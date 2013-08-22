@@ -17,6 +17,6 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
     
-    <bean id="expanderImpl" class="uk.ac.man.cs.openphacts.queryexpander.QueryExpanderWsServer" />
+    <bean id="expanderImpl" class="uk.ac.manchester.cs.openphacts.queryexpander.ws.server.QueryExpanderWsServer" />
 
 </beans>
