@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.uri.Lens;
 import org.bridgedb.utils.BridgeDBException;
-import org.bridgedb.ws.uri.WSOtherservices;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.man.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
@@ -31,12 +30,13 @@ import uk.ac.man.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.OpsReplacementLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.QueryCaseLoader;
 import uk.ac.man.cs.openphacts.queryexpander.queryLoader.SparqlLoader;
+import uk.ac.manchester.cs.openphacts.ims.ws.server.WsImsServer;
 
 /**
  *
  * @author Christian
  */
-public class QueryExpanderWsServer extends WSOtherservices{
+public class QueryExpanderWsServer extends WsImsServer{
     
     private QueryExpander queryExpander;
     
@@ -248,7 +248,7 @@ public class QueryExpanderWsServer extends WSOtherservices{
     public Response welcomeMessage(@Context HttpServletRequest httpServletRequest) throws BridgeDBException {
         List<String> parameters = new ArrayList<String>();
         parameters.add("?s");
-        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com", httpServletRequest);
+        return demo("SELECT  ?s ?p ?o\nWHERE {\n\t?s ?p ?o.\n}", parameters, "http://www.example.com/123", httpServletRequest);
     }
    
     @GET
