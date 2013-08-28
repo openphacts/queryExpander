@@ -4,7 +4,7 @@
  */
 package uk.ac.manchester.cs.openphacts.queryexpander.mapper;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.GraphResolver;
+import org.bridgedb.uri.GraphResolver;
 import java.util.HashMap;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.Reporter;

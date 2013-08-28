@@ -18,7 +18,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.openrdf.OpenRDFException;
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.GraphResolver;
+import org.bridgedb.uri.GraphResolver;
 import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /*

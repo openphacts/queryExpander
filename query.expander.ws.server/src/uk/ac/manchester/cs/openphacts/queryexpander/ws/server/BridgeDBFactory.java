@@ -11,7 +11,7 @@ import org.bridgedb.uri.Lens;
 import org.bridgedb.uri.UriMapper;
 import org.bridgedb.utils.BridgeDBException;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.GraphResolver;
+import org.bridgedb.uri.GraphResolver;
 
 /**
  *

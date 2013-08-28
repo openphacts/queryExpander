@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.GraphResolver;
+import org.bridgedb.uri.GraphResolver;
 
 /**
  *

@@ -9,7 +9,7 @@ import org.bridgedb.utils.ConfigReader;
 import org.junit.Test;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.GraphResolver;
+import org.bridgedb.uri.GraphResolver;
 
 /**
  *
