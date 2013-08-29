@@ -25,18 +25,13 @@ public class TestBridgeDBFactory {
             "http://www4.wiwiss.fu-berlin.de/drugbank/resource/targets/",
             "http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugs/",
             "http://rdf.chemspider.com/"};
-
     
     public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
-        GraphResolver resolver = GraphResolver.getInstance();
-        try {
-            ConfigReader.useTest();
-            TestSqlFactory.checkSQLAccess();
-            UriMapper urlMapper = SQLUriMapper.getExisting();
-            return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
-        } catch (Exception ex) {
-            throw new QueryExpanderException("Error setting up File mapper ", ex);
-        }
+        ConfigReader.useTest();
+        TestSqlFactory.checkSQLAccess();
+        UriMapper urlMapper = SQLUriMapper.getExisting();
+        GraphResolver.addTestMappings();
+        return new BridgeDBMapper (urlMapper);
     }
     	
     @Test

@@ -59,11 +59,5 @@ public class DummyIMSMapper implements IMSMapper{
     public List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) {
         return getMatchesForURI(uri, lensUri);
     }
-
-    @Override
-    public Map<String, Set<UriPattern>> getURISpacesPerGraph() {
-        HashMap<String, Set<UriPattern>> URISpacesPerGraph = new HashMap<String, Set<UriPattern>>();
-        return URISpacesPerGraph;
-    }
-    
+   
 }

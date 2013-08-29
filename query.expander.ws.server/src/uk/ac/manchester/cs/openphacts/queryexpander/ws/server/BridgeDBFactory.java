@@ -22,11 +22,10 @@ public class BridgeDBFactory {
     static final Logger logger = Logger.getLogger(BridgeDBFactory.class);
     
      public static BridgeDBMapper getBridgeDBMapper() throws QueryExpanderException, BridgeDBException{
-        GraphResolver resolver = GraphResolver.getInstance();
         try {
             UriMapper urlMapper = SQLUriMapper.getExisting();
             logger.info(urlMapper.getOverallStatistics(Lens.getAllLens()));
-            return new BridgeDBMapper (resolver.getAllowedUriPatterns(), urlMapper);
+            return new BridgeDBMapper (urlMapper);
         } catch (Exception ex) {
             throw new QueryExpanderException("Error setting up BridgeDB mapper ", ex);
         }

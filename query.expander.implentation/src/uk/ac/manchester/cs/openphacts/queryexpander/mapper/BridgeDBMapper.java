@@ -18,41 +18,22 @@ import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderException;
  */
 public class BridgeDBMapper implements IMSMapper{
 
-    private HashMap<String,Set<UriPattern>> allowedUriPatterns;
     private UriMapper bridgeDB;
-    private final UriPattern[] EMPTY_URIPATTERNG_ARRAY = new UriPattern[0];
     
-    public BridgeDBMapper (HashMap<String,Set<UriPattern>> allowedNamespaces, UriMapper bridgeDB){
-        this.allowedUriPatterns = allowedNamespaces;
+    public BridgeDBMapper (UriMapper bridgeDB){
         this.bridgeDB = bridgeDB;
     }
     
     @Override
     public List<URI> getMatchesForURI(URI uri, String lensUri) throws QueryExpanderException {
-        try {
-            Set<String> stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri);
-            //Hack sort the results for testing
-            TreeSet<String> sorted = new TreeSet(stringResults);
-            ArrayList<URI> results = new ArrayList<URI>();
-            for (String stringResult:sorted){
-                results.add(new URIImpl(stringResult));
-            }
-            return results;
-        } catch (Exception ex) {
-            throw new QueryExpanderException("Unable to map " + uri , ex);
-        }
+        return getSpecificMatchesForURI(uri, null, lensUri);
     }
 
     @Override
     public List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) throws QueryExpanderException {
         try {
-            Set<UriPattern> specificNameSpaces =  allowedUriPatterns.get(graph);
             Set<String> stringResults;
-            if (specificNameSpaces == null){
-                stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri);
-            } else {
-                stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri, specificNameSpaces.toArray(EMPTY_URIPATTERNG_ARRAY));
-            }
+            stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri, graph);
             if (stringResults == null){
                 throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);
             }
@@ -67,10 +48,5 @@ public class BridgeDBMapper implements IMSMapper{
             throw new QueryExpanderException("Unable to map " + uri , ex);
         }
     }
-
-    @Override
-    public Map<String, Set<UriPattern>> getURISpacesPerGraph() {
-        return allowedUriPatterns;
-    }
-    
+   
 }

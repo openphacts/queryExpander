@@ -41,5 +41,5 @@ public interface IMSMapper {
      */
     List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) throws QueryExpanderException;
 
-    public Map<String, Set<UriPattern>> getURISpacesPerGraph();
+//    public Map<String, Set<UriPattern>> getURISpacesPerGraph();
 }

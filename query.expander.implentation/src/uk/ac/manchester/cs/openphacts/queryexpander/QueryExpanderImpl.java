@@ -11,8 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.bridgedb.rdf.UriPattern;
+import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.Reporter;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
@@ -92,7 +95,12 @@ public class QueryExpanderImpl implements QueryExpander{
 
     @Override
     public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpanderException {
-        Map<String, Set<UriPattern>> mappings = imsMapper.getURISpacesPerGraph();
+        Map<String, Set<UriPattern>> mappings;
+        try {
+            mappings = GraphResolver.getInstance().getAllowedUriPatterns();
+        } catch (BridgeDBException ex) {
+            throw new QueryExpanderException("Unable to get URISpacesPerGraph", ex);
+        }
         Map<String, Set<String>> results = new  HashMap<String, Set<String>>();
         for (String graph:mappings.keySet()){
            Set<String> patternStrings = new HashSet<String>();
