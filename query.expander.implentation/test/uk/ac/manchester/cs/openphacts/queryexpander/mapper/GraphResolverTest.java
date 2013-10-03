@@ -4,16 +4,16 @@
  */
 package uk.ac.manchester.cs.openphacts.queryexpander.mapper;
 
+import java.util.Map;
 import org.bridgedb.uri.GraphResolver;
-import java.util.HashMap;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.Reporter;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -47,8 +47,7 @@ public class GraphResolverTest {
     public void testGetAllowedUriPatterns() throws BridgeDBException {
         Reporter.println("getAllowedUriPatterns");
         GraphResolver instance = GraphResolver.getInstance();
-        HashMap result = instance.getAllowedUriPatterns();
-        System.out.println(result);
+        Map result = instance.getAllowedUriPatterns();
         assertFalse(result.isEmpty());
     }
 }
