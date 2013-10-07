@@ -4,10 +4,8 @@ It may be moved into BridgeDB in which case this repository will be closed.
 
 This project depends on the BridgeDb project.
 BridgeDB: https://github.com/openphacts/BridgeDb
-
-While to run the QueryExpander only depends on BridgeDB
-Loading Data depends on the OpenPhacts Identity Mapping Service https://github.com/openphacts/IdentityMappingService
-Which in term depends on Validator https://github.com/openphacts/Validator
+Validator https://github.com/openphacts/Validator
+OpenPhacts Identity Mapping Service https://github.com/openphacts/IdentityMappingService
 
 Instructions for configuration can be found in  
 {$IdentityMappingService}README.md 
@@ -16,11 +14,6 @@ The Query Expander and Data loader will NOT work if these configurations are inc
 
 Query Expander Properties files
 ===============================
-graph.properties
-(plus those described in {$IdentityMappingService}README.md and the other readme files that points to)
-local.properties (Shared with other project Query Expander Depends on)
-
-===
 Properties File Location:
 BridgeDB code used to locate Query Expander properties files so
 See: {$bridgeDB}README.txt Properties File Location:
@@ -31,12 +24,6 @@ BridgeDB code used to add local properties to Query Expander properties.
 See: {$bridgeDB}README.txt local.properties
 ===
 
-graph.properties
-Location: {$QueryExpander}/query.expander.implentation/resources/graph.properties
-This file specifies the mapping between RDF context/graph and the URI patterns in each 
-This allows the Query Expander to reduce the number of URI that are added.
-
-===
 Data Loading
 
 See {$IdentityMappingService}README.md Data Loading section
