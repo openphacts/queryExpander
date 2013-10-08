@@ -5,7 +5,7 @@
     <artifactId>query.expander.bundle</artifactId>
     <packaging>pom</packaging>
     <name>IMS SPARQL query.expander bundle</name>
-    <version>2.1.0</version>
+    <version>2.1.1-SNAPSHOT</version>
 
      <properties>
         <cxf.version>2.4.3</cxf.version>
