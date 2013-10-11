@@ -43,7 +43,7 @@ public class OpsQueryLoader extends QueryCaseLoader{
                 + "PREFIX dc: <http://purl.org/dc/elements/1.1/> \n"
                 + "SELECT DISTINCT ?concept_label ?concept_url ?concept_uuid ?concept_alt_label ?tag_uuid \n"
                 + "WHERE { \n"
-                + "  GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + "  GRAPH <http://www.conceptwiki.org> {\n"
                 + "    ?concept_url ext:conceptwiki_search_by_tag \"substring_value\";\n"
                 + "                 ext:semantic_type <http://www.conceptwiki.org/concept/87c08f16-3710-47fc-8ed7-33a1e426891d> ;\n"
                 + "                 skos:prefLabel ?concept_label ; \n"

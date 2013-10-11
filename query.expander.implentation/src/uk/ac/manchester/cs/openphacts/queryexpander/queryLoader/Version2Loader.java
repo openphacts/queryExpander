@@ -102,7 +102,7 @@ public class Version2Loader extends QueryCaseLoader{
                 + "	?drugbankURI drugbank:molecularWeight ?molecularWeight .\n"
                 + "}\n"
                 + "WHERE {\n"
-                + " GRAPH <http://larkc.eu#Fixedcontext> {\n"
+                + " GRAPH <http://www.conceptwiki.org> {\n"
                 + "		?concepWikiURI skos:prefLabel ?target_name.\n"
                 + "	}\n"
                 + "	{ \n"
@@ -123,7 +123,7 @@ public class Version2Loader extends QueryCaseLoader{
                 "	?drugbankURI drugbank:molecularWeight ?molecularWeight .\n" +
                 "}\n" +
                 "WHERE {\n" +
-                " GRAPH <http://larkc.eu#Fixedcontext> {\n" +
+                " GRAPH <http://www.conceptwiki.org> {\n" +
                 "		?concepWikiURI skos:prefLabel ?target_name.\n" +
                 "     FILTER (?concepWikiURI = <http://www.conceptwiki.org/concept/notThere>)\n" +
                 "	}\n" +
