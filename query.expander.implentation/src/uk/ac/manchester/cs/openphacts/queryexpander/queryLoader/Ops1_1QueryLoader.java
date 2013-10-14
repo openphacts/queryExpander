@@ -585,6 +585,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "            ?replacedURI1 = <http://identifiers.org/chemspider/187440> ||\n"
                 + "            ?replacedURI1 = <http://identifiers.org/drugbank/DB00398> ||\n"
                 + "            ?replacedURI1 = <http://linkedchemistry.info/chembl/molecule/m276734> || \n"
+                + "            ?replacedURI1 = <http://ops.conceptwiki.org/concept/index/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> || \n"
                 + "            ?replacedURI1 = <http://rdf.chemspider.com/187440> || \n"
                 + "            ?replacedURI1 = <http://www.chemspider.com/187440> || \n"
                 + "            ?replacedURI1 = <http://www.chemspider.com/Chemical-Structure.187440.html>|| \n"

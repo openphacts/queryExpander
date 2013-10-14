@@ -37,6 +37,7 @@ public class Version2Loader extends QueryCaseLoader{
                 + "       || ?x = <http://identifiers.org/chemspider/187440> \n"
                 + "       || ?x = <http://identifiers.org/drugbank/DB00398> \n"
                 + "       || ?x = <http://linkedchemistry.info/chembl/molecule/m276734> \n"
+                + "       || ?x = <http://ops.conceptwiki.org/concept/index/38932552-111f-4a4e-a46a-4ed1d7bdf9d5> \n"
                 + "       || ?x = <http://rdf.chemspider.com/187440> \n"
                 + "       || ?x = <http://www.chemspider.com/187440> \n"
                 + "       || ?x = <http://www.chemspider.com/Chemical-Structure.187440.html>"
