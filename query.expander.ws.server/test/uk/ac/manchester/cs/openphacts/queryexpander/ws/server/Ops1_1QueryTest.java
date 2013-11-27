@@ -1,24 +1,22 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.ws.server;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.TestBridgeDBFactory;
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import java.io.IOException;
-import org.junit.Ignore;
 import java.util.Date;
 import java.util.List;
-import uk.ac.manchester.cs.openphacts.queryexpander.ws.server.BridgeDBFactory;
-import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
-import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderImpl;
-import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import java.util.Set;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.utils.TestUtils;
-import org.junit.Test;
+import org.bridgedb.uri.GraphResolver;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openrdf.OpenRDFException;
-import org.bridgedb.uri.GraphResolver;
+import uk.ac.manchester.cs.datadesc.validator.rdftools.Reporter;
+import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderImpl;
+import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
+import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
+import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
+import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.TestBridgeDBFactory;
 import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
 
 /*
@@ -30,7 +28,7 @@ import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.impl.TestLoader;
  *
  * @author Christian
  */
-public class Ops1_1QueryTest extends TestUtils {
+public class Ops1_1QueryTest {
 
     private final String NO_LENS = null;
 
@@ -48,7 +46,7 @@ public class Ops1_1QueryTest extends TestUtils {
         BridgeDBMapper imsMapper = TestBridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            report("Testing " + loader.getQueryName(queryKey));
+            Reporter.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getServerReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);
@@ -71,7 +69,7 @@ public class Ops1_1QueryTest extends TestUtils {
          
         BridgeDBMapper imsMapper = BridgeDBFactory.getBridgeDBMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
-        report("speed test");
+        Reporter.println("speed test");
         for (String queryKey:queryKeys){
             //ystem.out.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
@@ -83,6 +81,6 @@ public class Ops1_1QueryTest extends TestUtils {
             //ystem.out.println(newQuery);
             //assertTrue(QueryUtils.sameTupleExpr(targetQuery, newQuery, true));
         }
-        report("Test took " + (new Date().getTime() - start.getTime()));
+        Reporter.println("Test took " + (new Date().getTime() - start.getTime()));
     }
 }

@@ -1,17 +1,14 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.Version1Loader;
-import org.bridgedb.utils.TestUtils;
 import java.util.List;
-import org.junit.Ignore;
+import java.util.Set;
+import org.bridgedb.utils.Reporter;
+import static org.junit.Assert.*;
+import org.junit.Test;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderImpl;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
-import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
-import java.util.Set;
-import org.junit.Test;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.DummyIMSMapper;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.IMSMapper;
-import static org.junit.Assert.*;
 
 /*
  * To change this template, choose Tools | Templates
@@ -22,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * @author Christian
  */
-public class Version1Test extends TestUtils{
+public class Version1Test {
     
     private final String NO_LENS = null;
 
@@ -33,7 +30,7 @@ public class Version1Test extends TestUtils{
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            report("Testing " + loader.getQueryName(queryKey));
+            Reporter.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);

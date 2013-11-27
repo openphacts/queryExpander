@@ -6,6 +6,9 @@ package uk.ac.manchester.cs.openphacts.queryexpander.mapper;
 
 import org.bridgedb.uri.GraphResolver;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import org.bridgedb.uri.RegexUriPattern;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.Reporter;
 import org.junit.After;
@@ -47,7 +50,7 @@ public class GraphResolverTest {
     public void testGetAllowedUriPatterns() throws BridgeDBException {
         Reporter.println("getAllowedUriPatterns");
         GraphResolver instance = GraphResolver.getInstance();
-        HashMap result = instance.getAllowedUriPatterns();
+        Map<String, Set<RegexUriPattern>> result = instance.getAllowedUriPatterns();
         System.out.println(result);
         assertFalse(result.isEmpty());
     }
