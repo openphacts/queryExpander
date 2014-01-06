@@ -1,22 +1,21 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.bridgedb.utils.TestUtils;
+import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.utils.Reporter;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpansionException;
-import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
-import org.bridgedb.uri.GraphResolver;
 
 /**
  *
  * @author Christian
  */
-public abstract class Ops1_1QueryTest extends TestUtils {
+public abstract class Ops1_1QueryTest {
     
     protected QueryExpander queryExpander;
                
@@ -29,7 +28,7 @@ public abstract class Ops1_1QueryTest extends TestUtils {
         Set<String> queryKeys = loader.keySet();
          
         for (String queryKey:queryKeys){
-            report("Testing " + loader.getQueryName(queryKey));
+            Reporter.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery;
             targetQuery = loader.getTextReplaceQuery(queryKey);

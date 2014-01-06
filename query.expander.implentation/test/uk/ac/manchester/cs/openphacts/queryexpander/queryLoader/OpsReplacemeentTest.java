@@ -1,15 +1,13 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.QueryCaseLoader;
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.OpsReplacementLoader;
 import java.util.List;
 import java.util.Set;
-import org.bridgedb.utils.TestUtils;
+import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.utils.Reporter;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryUtils;
-import org.bridgedb.uri.GraphResolver;
+import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 
 /*
  * To change this template, choose Tools | Templates
@@ -20,7 +18,7 @@ import org.bridgedb.uri.GraphResolver;
  *
  * @author Christian
  */
-public abstract class OpsReplacemeentTest  extends TestUtils {
+public abstract class OpsReplacemeentTest {
     
     protected QueryExpander queryExpander;
    
@@ -32,7 +30,7 @@ public abstract class OpsReplacemeentTest  extends TestUtils {
         QueryCaseLoader loader = new OpsReplacementLoader();
         Set<String> queryKeys = loader.keySet();
         for (String queryKey:queryKeys){
-            report("Testing " + loader.getQueryName(queryKey));
+            Reporter.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getTextReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);

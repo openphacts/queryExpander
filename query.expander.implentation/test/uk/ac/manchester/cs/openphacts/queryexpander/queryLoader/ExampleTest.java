@@ -1,9 +1,8 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 
-import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.ExampleLoader;
 import java.util.List;
 import java.util.Set;
-import org.bridgedb.utils.TestUtils;
+import org.bridgedb.utils.Reporter;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,7 +21,7 @@ import uk.ac.manchester.cs.openphacts.queryexpander.mapper.IMSMapper;
  * @author Christian
  */
 @Ignore
-public class ExampleTest extends TestUtils{
+public class ExampleTest {
     
     private final String NO_LENS = null;
             
@@ -33,7 +32,7 @@ public class ExampleTest extends TestUtils{
         IMSMapper imsMapper = new DummyIMSMapper();
         QueryExpanderImpl queryExpander = new QueryExpanderImpl(imsMapper);
         for (String queryKey:queryKeys){
-            report("Testing " + loader.getQueryName(queryKey));
+            Reporter.println("Testing " + loader.getQueryName(queryKey));
             String originalQuery = loader.getOriginalQuery(queryKey);
             String targetQuery = loader.getNoReplaceQuery(queryKey);
             List<String> parameters = loader.getParameters(queryKey);
