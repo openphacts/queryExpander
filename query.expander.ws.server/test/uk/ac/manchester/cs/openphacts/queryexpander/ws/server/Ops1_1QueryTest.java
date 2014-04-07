@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.bridgedb.IDMapperException;
-import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.uri.tools.GraphResolver;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

@@ -1,13 +1,10 @@
 package uk.ac.manchester.cs.openphacts.queryexpander.mapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.bridgedb.rdf.UriPattern;
-import org.bridgedb.uri.UriMapper;
+import org.bridgedb.uri.api.UriMapper;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderException;

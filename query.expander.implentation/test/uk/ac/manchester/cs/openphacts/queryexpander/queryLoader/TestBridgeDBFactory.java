@@ -3,13 +3,13 @@ package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 import java.io.File;
 import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.sql.TestSqlFactory;
-import org.bridgedb.uri.UriMapper;
+import org.bridgedb.uri.api.UriMapper;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;
 import org.junit.Test;
 import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderException;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
-import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.uri.tools.GraphResolver;
 
 /**
  *
