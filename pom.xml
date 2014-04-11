@@ -71,13 +71,13 @@
        </plugins>
     </build>
 
-    <repositories>
+    <!--repositories>
         <repository>
             <id>aduna-repo</id>
             <name>Aduna repository</name>
             <url>http://repo.aduna-software.org/maven2/releases/</url>
         </repository>
-    </repositories>
+    </repositories-->
     <pluginRepositories>
         <pluginRepository> 
             <id>onejar-maven-plugin.googlecode.com</id>

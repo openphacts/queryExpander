@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.sql.SQLUriMapper;
 import org.bridgedb.sql.TestSqlFactory;
-import org.bridgedb.uri.Lens;
+import org.bridgedb.uri.lens.Lens;
 import org.bridgedb.uri.loader.LinksetListener;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.ConfigReader;

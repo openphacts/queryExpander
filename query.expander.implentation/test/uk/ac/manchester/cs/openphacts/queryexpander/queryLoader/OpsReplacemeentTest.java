@@ -2,7 +2,7 @@ package uk.ac.manchester.cs.openphacts.queryexpander.queryLoader;
 
 import java.util.List;
 import java.util.Set;
-import org.bridgedb.uri.GraphResolver;
+import org.bridgedb.uri.tools.GraphResolver;
 import org.bridgedb.utils.Reporter;
 import static org.junit.Assert.*;
 import org.junit.Test;

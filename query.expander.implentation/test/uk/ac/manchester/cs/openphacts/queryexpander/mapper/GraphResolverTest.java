@@ -4,10 +4,10 @@
  */
 package uk.ac.manchester.cs.openphacts.queryexpander.mapper;
 
-import org.bridgedb.uri.GraphResolver;
 import java.util.Map;
 import java.util.Set;
-import org.bridgedb.uri.RegexUriPattern;
+import org.bridgedb.uri.tools.GraphResolver;
+import org.bridgedb.uri.tools.RegexUriPattern;
 import org.bridgedb.utils.BridgeDBException;
 import org.bridgedb.utils.Reporter;
 import org.junit.After;
