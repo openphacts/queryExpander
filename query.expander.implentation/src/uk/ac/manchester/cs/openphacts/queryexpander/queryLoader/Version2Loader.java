@@ -34,6 +34,7 @@ public class Version2Loader extends QueryCaseLoader{
                 + "  FILTER (?x = <http://bio2rdf.org/drugbank:DB00398> \n"
                 + "       || ?x = <http://chem2bio2rdf.org/chembl/resource/chembl_compounds/276734> \n"
                 + "       || ?x = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> \n"
+                + "       || ?x = <http://drugbank.ca/drugs/DB00398> \n"
                 + "       || ?x = <http://identifiers.org/chemspider/187440> \n"
                 + "       || ?x = <http://identifiers.org/drugbank/DB00398> \n"
                 + "       || ?x = <http://info.identifiers.org/chemspider/187440> \n"

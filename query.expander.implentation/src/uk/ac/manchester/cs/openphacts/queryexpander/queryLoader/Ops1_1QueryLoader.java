@@ -582,6 +582,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
                 + "    FiLTER (?replacedURI1 = <http://bio2rdf.org/drugbank:DB00398> || \n"
                 + "            ?replacedURI1 = <http://chem2bio2rdf.org/chembl/resource/chembl_compounds/276734> || \n"
                 + "            ?replacedURI1 = <http://data.kasabi.com/dataset/chembl-rdf/molecule/m276734> || \n"
+                + "            ?replacedURI1 = <http://drugbank.ca/drugs/DB00398> || \n"
                 + "            ?replacedURI1 = <http://identifiers.org/chemspider/187440> ||\n"
                 + "            ?replacedURI1 = <http://identifiers.org/drugbank/DB00398> ||\n"
                 + "            ?replacedURI1 = <http://info.identifiers.org/chemspider/187440> ||\n"
