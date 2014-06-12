@@ -32,7 +32,7 @@ public abstract class TestLoader {
      
     private static void loadFile(String fileName) throws BridgeDBException{
         File file = new File(fileName);
-        instance.parse(file, LINK_PREDICATE, Lens.getDefaultJustifictaionString());
+        instance.parse(file, LINK_PREDICATE, Lens.getDefaultJustifictaionString(), true);
     }
 
     //It is recommended to use the IMS method rather than this one.

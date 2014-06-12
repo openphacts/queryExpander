@@ -38,7 +38,7 @@ public class SetupLoaderWithTestData {
      
     private static void loadFile(String fileName) throws BridgeDBException{
         File file = new File(fileName);
-        instance.parse(file, LINK_PREDICATE, MAIN_JUSTIFCATION);
+        instance.parse(file, LINK_PREDICATE, MAIN_JUSTIFCATION, true);
     }
 
     //It is recommended to use the IMS method rather than this one.
