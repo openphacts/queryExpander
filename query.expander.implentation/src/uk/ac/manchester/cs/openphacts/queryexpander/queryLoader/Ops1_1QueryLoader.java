@@ -15,7 +15,7 @@ public class Ops1_1QueryLoader extends QueryCaseLoader{
        loadCoumpoundInfo();
        loadProteinInfo();
        loadProteinPharmacology_count();
-       loadMarchCompound();
+       //loadMarchCompound();
    } 
    
    private void loadTargetPharma() {
