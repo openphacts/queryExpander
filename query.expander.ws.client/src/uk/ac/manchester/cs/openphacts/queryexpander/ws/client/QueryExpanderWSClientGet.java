@@ -6,7 +6,6 @@ package uk.ac.manchester.cs.openphacts.queryexpander.ws.client;
 
 import uk.ac.manchester.cs.openphacts.queryexpander.api.ExpanderBean;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpanderConstants;
-import uk.ac.manchester.cs.openphacts.queryexpander.api.URISpacesInGraphBean;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpansionException;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import com.sun.jersey.api.client.Client;
@@ -82,19 +81,6 @@ public class QueryExpanderWSClientGet implements QueryExpander{
                 .accept(MediaType.APPLICATION_XML_TYPE)
                 .get(new GenericType<ExpanderBean>() {});
         return bean.getExpandedQuery();
-    }
-
-    @Override
-    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException {
-        List<URISpacesInGraphBean> beans = 
-                webResource.path("URISpacesPerGraph")
-                .accept(MediaType.APPLICATION_XML_TYPE)
-                .get(new GenericType<List<URISpacesInGraphBean>>() {});
-        HashMap<String, Set<String>> results = new HashMap<String, Set<String>>();
-        for (URISpacesInGraphBean bean:beans){
-            results.put(bean.getGraph(), bean.getURISpace());
-        }
-        return results;
     }
 
     @Override

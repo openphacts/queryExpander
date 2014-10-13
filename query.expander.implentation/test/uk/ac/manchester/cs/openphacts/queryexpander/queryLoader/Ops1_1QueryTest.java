@@ -43,13 +43,4 @@ public abstract class Ops1_1QueryTest {
         }
     }
 
-    @Test
-    public void testURISpacesInGraph() throws QueryExpansionException{
-        Map<String, Set<String>> result = queryExpander.getURISpacesPerGraph();
-        assertFalse(result.isEmpty());
-        for (String graph:result.keySet()){
-            Set<String> URISpaces = result.get(graph);
-            assertFalse(URISpaces.isEmpty());        
-        }
-    }
 }

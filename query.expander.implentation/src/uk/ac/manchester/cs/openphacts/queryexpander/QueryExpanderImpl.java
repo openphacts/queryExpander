@@ -58,8 +58,10 @@ public class QueryExpanderImpl implements QueryExpander{
 
     public String expand(String originalQuery, List<String> parameters, String inputURI, String lensUri, boolean verbose) 
             throws QueryExpanderException {
-        logger.info("expand called with " + inputURI);
-        logger.trace("expand called with " + originalQuery);
+        if (logger.isDebugEnabled()){
+            logger.debug("expand called with " + inputURI);
+            logger.debug("expand called with " + originalQuery);
+        }
         inputURI = checkURI(inputURI);
         if (verbose) logger.info(originalQuery);
         ParsedQuery parsedQuery; 
@@ -92,25 +94,6 @@ public class QueryExpanderImpl implements QueryExpander{
             throw new QueryExpanderException("OOPS! Unable to parse the result query \n" + newQuery, ex);
         }
         return newQuery;
-    }
-
-    @Override
-    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpanderException {
-        Map<String, Set<RegexUriPattern>> mappings;
-        try {
-            mappings = GraphResolver.getInstance().getAllowedUriPatterns();
-        } catch (BridgeDBException ex) {
-            throw new QueryExpanderException("Unable to get URISpacesPerGraph", ex);
-        }
-        Map<String, Set<String>> results = new  HashMap<String, Set<String>>();
-        for (String graph:mappings.keySet()){
-           Set<String> patternStrings = new HashSet<String>();
-           for (RegexUriPattern pattern:mappings.get(graph)){
-               patternStrings.add(pattern.getUriPattern());
-           }
-           results.put(graph, patternStrings);   
-        }
-        return results;
     }
 
     @Override

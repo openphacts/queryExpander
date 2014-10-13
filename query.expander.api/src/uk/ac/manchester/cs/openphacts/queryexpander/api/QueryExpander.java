@@ -69,17 +69,6 @@ public interface QueryExpander {
             throws QueryExpansionException;
 
     /**
-     * Support function that asks the underlying mapping service which URISpace(s) it will include in each graph.
-     * 
-     * The map will be empty if the underlying mapping service does not support Mapping by graph.
-     * 
-     * If the query includes any gtraph not in this map (URISpace to graph)  all mapped URI will be used every time.
-     * @return Map of known URISpaces in each graph.
-     * @throws QueryExpansionException 
-     */
-    public Map<String, Set<String>> getURISpacesPerGraph() throws QueryExpansionException;
-    
-    /**
      * Support function to show how a URI would map.
      * 
      * It is not required that all implementations implement this method.

@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.bridgedb.IDMapperException;
 import org.bridgedb.uri.lens.Lens;
+import org.bridgedb.uri.ws.WsUriConstants;
 import org.bridgedb.utils.BridgeDBException;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;
@@ -32,7 +33,7 @@ import uk.ac.manchester.cs.openphacts.queryexpander.api.ExpanderBean;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpander;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpanderConstants;
 import uk.ac.manchester.cs.openphacts.queryexpander.api.QueryExpansionException;
-import uk.ac.manchester.cs.openphacts.queryexpander.api.URISpacesInGraphBean;
+import org.bridgedb.uri.ws.bean.URISpacesInGraphBean;
 import uk.ac.manchester.cs.openphacts.queryexpander.mapper.BridgeDBMapper;
 import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.Ops1_1QueryLoader;
 import uk.ac.manchester.cs.openphacts.queryexpander.queryLoader.OpsReplacementLoader;
@@ -246,8 +247,7 @@ public class QueryExpanderWsServer extends WsImsServer{
         addSideBarItem(sb, "", "Home", httpServletRequest);
         addSideBarItem(sb, "api", "Query Expander API", httpServletRequest);
         addSideBarItem(sb, "examples", "Examples", httpServletRequest);
-        addSideBarItem(sb, "URISpacesPerGraph", "URISpaces per Graph", httpServletRequest);
-        addSideBarItem(sb, "mapURI", "Check Mapping for an URI", httpServletRequest);
+        addSideBarItem(sb, WsUriConstants.BRIDGEDB_HOME, "Check Mapping for an URI", httpServletRequest);
     }
 
     @POST
@@ -574,64 +574,4 @@ public class QueryExpanderWsServer extends WsImsServer{
         return expandXML(query, parameters, inputURI, lensUri);
     }
         
-    @POST
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/URISpacesPerGraph") 
-    public List<URISpacesInGraphBean> URISpacesPerGraphAsXML() throws QueryExpansionException{
-        Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
-        ArrayList<URISpacesInGraphBean> results = new ArrayList<URISpacesInGraphBean>();
-        for (String graph:URISpacesPerGraph.keySet()){
-           results.add(new URISpacesInGraphBean(graph, URISpacesPerGraph.get(graph)));
-        }
-        return results;
-    }
-    
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/URISpacesPerGraph") 
-    public List<URISpacesInGraphBean> URISpacesPerGraphAsXMLGet() throws QueryExpansionException{
-        return URISpacesPerGraphAsXML();
-    }
-
-    @POST
-    @Produces(MediaType.TEXT_HTML)
-    @Path("/URISpacesPerGraph") 
-    public Response URISpacesPerGraphAsHtml(@Context HttpServletRequest httpServletRequest) 
-            throws QueryExpansionException, IDMapperException{
-        Map<String, Set<String>> URISpacesPerGraph = queryExpander.getURISpacesPerGraph();
-        
-        StringBuilder sb = topAndSide("URI Spaces per Graph (Query Context)", httpServletRequest);
-        sb.append("<h2>URISpaces Per Graph</H2>\n"); 
-        sb.append("<p>");
-        sb.append("<table border=\"1\">");
-        sb.append("<tr>");
-        sb.append("<th>Graph</th>");
-        sb.append("<th>NameSpace</th>");
-        sb.append("</tr>");
-        for (String graph:URISpacesPerGraph.keySet()){
-             for (String URISpace:URISpacesPerGraph.get(graph)){
-                sb.append("<tr>");
-                sb.append("<td>");
-                sb.append(graph);
-                sb.append("</td>");
-                sb.append("<td>");
-                sb.append(URISpace);
-                sb.append("</td>");
-                sb.append("</tr>");
-             }
-            sb.append("<tr>");
-            sb.append("</tr>");
-        }
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
-    }
-    
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    @Path("/URISpacesPerGraph") 
-    public Response URISpacesPerGraphAsHtmlGet(@Context HttpServletRequest httpServletRequest) 
-            throws QueryExpansionException, IDMapperException {
-       return URISpacesPerGraphAsHtml(httpServletRequest); 
-    }
-
 }
