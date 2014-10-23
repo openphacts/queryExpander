@@ -16,6 +16,7 @@ import uk.ac.manchester.cs.openphacts.queryexpander.QueryExpanderException;
 public class BridgeDBMapper implements IMSMapper{
 
     private UriMapper bridgeDB;
+    private static final List<String> NO_TARGET_PATTERNS = null;
     
     public BridgeDBMapper (UriMapper bridgeDB){
         this.bridgeDB = bridgeDB;
@@ -30,7 +31,7 @@ public class BridgeDBMapper implements IMSMapper{
     public List<URI> getSpecificMatchesForURI(URI uri, String graph, String lensUri) throws QueryExpanderException {
         try {
             Set<String> stringResults;
-            stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri, graph);
+            stringResults = bridgeDB.mapUri(uri.stringValue(), lensUri, graph, NO_TARGET_PATTERNS);
             if (stringResults == null){
                 throw new QueryExpanderException("null results returned for " + uri + " and graph " + graph);
             }
