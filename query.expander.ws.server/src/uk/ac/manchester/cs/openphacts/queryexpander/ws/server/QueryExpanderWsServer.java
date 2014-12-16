@@ -54,15 +54,7 @@ public class QueryExpanderWsServer extends WsImsServer{
         queryExpander = new QueryExpanderImpl(imsMapper);
     }
     
-  private final String MAIN_END = "			</td>"
-            + "		</tr>"
-            + "	</table>"
-            + "	<div style=\"border-top: 1px solid #D5D5FF; padding: .5em; font-size: 80%;\">"
-            + "		This site is run by <a href=\"https://wiki.openphacts.org/index.php/User:Christian\">Christian Brenninkmeijer</a>."
-            + "	</div>";
-    private final String BODY_END = "</body>"
-            + "</html>";
-    private final String END = MAIN_END + BODY_END;
+    //private final String END = MAIN_END + BODY_END;
     private final String API = "<h1>QueryExpander Java Interface</h1>\n"
             + " <ul> "
             + "     <li>Prefered method of calling the query expander.</li>"
@@ -280,12 +272,12 @@ public class QueryExpanderWsServer extends WsImsServer{
             }
             String result = queryExpander.expand(query, parameters, inputURI, lensUri);
             //Find out how big to make the result box
-            StringBuilder sb = topAndSide("Query Expander Results", httpServletRequest);
+            StringBuilder sb = new StringBuilder();
             addTextArea(sb, "Expanded Query.", result);
             sb.append("<h2>Input Parameters.</h2>");
             addForm(sb, query, parameters, inputURI, httpServletRequest);
-            sb.append(END);
-            return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+            String fullPage = this.createHtmlPage("Query Expander Results", sb.toString(), httpServletRequest);
+            return Response.ok(fullPage, MediaType.TEXT_HTML).build();       
         } catch (Exception e){
             return showError(e.getMessage(), query, parameters, inputURI, httpServletRequest);                
         }
@@ -359,12 +351,12 @@ public class QueryExpanderWsServer extends WsImsServer{
         for (int i=0; i < error.length(); i++) {
             if (error.charAt(i) == '\n') lines++;
         }
-        StringBuilder sb = topAndSide("Error Expanding Query", httpServletRequest);
+        StringBuilder sb = new StringBuilder();
         addTextArea(sb, "Error", error);
 		sb.append("<h2>Input Parameters.</h2>");
         addForm(sb, query, parameters, inputURI, httpServletRequest);
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+        String fullPage = this.createHtmlPage("Error Expanding Query", sb.toString(), httpServletRequest);
+        return Response.ok(fullPage, MediaType.TEXT_HTML).build();       
     }
 
     @POST
@@ -374,7 +366,7 @@ public class QueryExpanderWsServer extends WsImsServer{
             @QueryParam(QueryExpanderConstants.PARAMETER) List<String> parameters,            
             @QueryParam(QueryExpanderConstants.INPUT_URI) String inputURI,
             @Context HttpServletRequest httpServletRequest) throws BridgeDBException{
-        StringBuilder sb = topAndSide("Query Expander Demo Page.", httpServletRequest);
+        StringBuilder sb = new StringBuilder();
         sb.append("<p>Use this demo to test the expansion of any query.</p>");
         sb.append("<p>This demo and the underlying service depends on the information held by the Query Expander, including the ");
         sb.append("<a href=\"");
@@ -382,8 +374,8 @@ public class QueryExpanderWsServer extends WsImsServer{
         sb.append("/URISpacesPerGraph\">URISpaces per Graph</a>.");
         sb.append("</p>");
         addForm(sb, query, parameters, inputURI, httpServletRequest);
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+        String fullPage = this.createHtmlPage("Query Expander Demo Page.", sb.toString(), httpServletRequest);
+        return Response.ok(fullPage, MediaType.TEXT_HTML).build();       
     }
 
     @GET
@@ -465,8 +457,7 @@ public class QueryExpanderWsServer extends WsImsServer{
     @Produces(MediaType.TEXT_HTML)
     @Path("/examples") 
     public Response examples(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
-        StringBuilder sb = topAndSide("Example Queries Index", httpServletRequest);
-
+        StringBuilder sb = new StringBuilder();
         sb.append("<p>Click on any Group to expand or contract it.</p>\n");  
         sb.append("<p>Click on any Query Title to load it into the demo page</p>\n");  
         sb.append("<H2 onclick=\"toggleItem('linkedData')\" style=\"color:blue;\"> <u>LinkdedData Queries used in Open Phacts</u></H2>\n");
@@ -475,8 +466,8 @@ public class QueryExpanderWsServer extends WsImsServer{
         loaderExamples(sb, new Ops1_1QueryLoader(), "ops");
         sb.append("<H2 onclick=\"toggleItem('sparql')\" style=\"color:blue;\"> <u>Queries found in Sparql 1.1 specifications</u></H2>\n");
         loaderExamples(sb, new SparqlLoader(), "sparql");
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+        String fullPage = this.createHtmlPage("Example Queries Index", sb.toString(), httpServletRequest);
+        return Response.ok(fullPage, MediaType.TEXT_HTML).build();       
     }
 
     @GET
@@ -490,10 +481,10 @@ public class QueryExpanderWsServer extends WsImsServer{
     @Produces(MediaType.TEXT_HTML)
     @Path("/api") 
     public Response api(@Context HttpServletRequest httpServletRequest) throws IDMapperException {
-        StringBuilder sb = topAndSide("Query Expander API", httpServletRequest);
+        StringBuilder sb = new StringBuilder();
         sb.append(API);  
-        sb.append(END);
-        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+        String fullPage = this.createHtmlPage("Query Expander API", sb.toString(), httpServletRequest);
+        return Response.ok(fullPage, MediaType.TEXT_HTML).build();       
     }
 
     @GET
