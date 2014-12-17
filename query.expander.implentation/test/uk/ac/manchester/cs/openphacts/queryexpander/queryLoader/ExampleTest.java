@@ -20,7 +20,6 @@ import uk.ac.manchester.cs.openphacts.queryexpander.mapper.IMSMapper;
  *
  * @author Christian
  */
-@Ignore
 public class ExampleTest {
     
     private final String NO_LENS = null;
