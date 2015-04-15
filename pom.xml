@@ -23,7 +23,7 @@
 
     <modules>
         <module>query.expander.api</module>
-        <module>query.expander.implentation</module>
+        <module>query.expander.implementation</module>
         <module>query.expander.ws.server</module>
         <module>query.expander.ws.client</module>
     </modules>

@@ -9,9 +9,9 @@
     </parent>
 
     <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
-    <artifactId>query.expander.implentation</artifactId>
+    <artifactId>query.expander.implementation</artifactId>
     <packaging>jar</packaging>
-    <name>IMS SPARQL Query Expander Implentation</name>
+    <name>IMS SPARQL Query Expander Implementation</name>
 
 
     <dependencies>

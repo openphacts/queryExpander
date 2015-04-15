@@ -42,13 +42,13 @@
         </dependency>
         <dependency>
             <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
-            <artifactId>query.expander.implentation</artifactId>
+            <artifactId>query.expander.implementation</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
-            <artifactId>query.expander.implentation</artifactId>
+            <artifactId>query.expander.implementation</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

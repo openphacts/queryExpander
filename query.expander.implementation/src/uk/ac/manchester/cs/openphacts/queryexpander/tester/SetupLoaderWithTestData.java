@@ -48,9 +48,9 @@ public class SetupLoaderWithTestData {
         SQLUriMapper uriListener = SQLUriMapper.createNew();
         instance = new LinksetListener(uriListener);
 
-        loadFile("../query.expander.implentation/test-data/cw-cs.ttl");
-        loadFile("../query.expander.implentation/test-data/cw-cm.ttl");
-        loadFile("../query.expander.implentation/test-data/cw-dd.ttl");
-        loadFile("../query.expander.implentation/test-data/cw-ct.ttl");
-        loadFile("../query.expander.implentation/test-data/cw-dt.ttl");   }   
+        loadFile("../query.expander.implementation/test-data/cw-cs.ttl");
+        loadFile("../query.expander.implementation/test-data/cw-cm.ttl");
+        loadFile("../query.expander.implementation/test-data/cw-dd.ttl");
+        loadFile("../query.expander.implementation/test-data/cw-ct.ttl");
+        loadFile("../query.expander.implementation/test-data/cw-dt.ttl");   }   
 }
