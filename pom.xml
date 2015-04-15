@@ -6,7 +6,7 @@
     <artifactId>query.expander.bundle</artifactId>
     <packaging>pom</packaging>
     <name>IMS SPARQL Query Expander</name>
-    <version>2.0.2</version>
+    <version>2.0.3-SNAPSHOT</version>
 
      <properties>
        <ims.version>2.0.1</ims.version>
