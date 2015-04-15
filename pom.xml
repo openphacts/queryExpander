@@ -74,17 +74,45 @@
        </plugins>
     </build>
 
-    <!--repositories>
+    <repositories>
+    <!--
         <repository>
             <id>aduna-repo</id>
             <name>Aduna repository</name>
             <url>http://repo.aduna-software.org/maven2/releases/</url>
         </repository>
-    </repositories-->
-    <pluginRepositories>
+-->
+    <repository>
+        <id>myGrid ops</id>
+        <name>myGrid Open PHACTS repository</name>
+        <url>http://repository.mygrid.org.uk/artifactory/ops</url>
+        <releases>
+          <enabled>true</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+    </repository>
+  </repositories>
+    
+  <pluginRepositories>
         <pluginRepository> 
             <id>onejar-maven-plugin.googlecode.com</id>
             <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
         </pluginRepository>
-    </pluginRepositories>
+  </pluginRepositories>
+  <scm>
+    <connection>scm:git:https://github.com/openphacts/queryExpander.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/openphacts/queryExpander.git</developerConnection>
+    <url>https://github.com/openphacts/queryExpander/</url>
+    <tag>HEAD</tag>
+  </scm>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
 </project>
