@@ -4,7 +4,7 @@
     <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
     <artifactId>query.expander.bundle</artifactId>
     <packaging>pom</packaging>
-    <name>IMS SPARQL query.expander bundle</name>
+    <name>IMS SPARQL Query Expander</name>
     <version>2.0.0-SNAPSHOT</version>
 
      <properties>
