@@ -39,7 +39,7 @@ The simplest way to achieve this is to `--link` to a [mysql docker image](https:
 which we will call `mysql-for-ims` and ask it to create the `ims` database for us. (You can replace `$(pwgen)` with 
 your desired mySQL root password, e.g. `-e MYSQL_ROOT_PASSWORD=fish`).
 
-    docker run --name mysql-for-ims -e MYSQL_ROOT_PASSWORD=$(pwgen) \
+    docker run --name mysql-for-ims2 -e MYSQL_ROOT_PASSWORD=$(pwgen) \
       -e MYSQL_DATABASE=ims -e MYSQL_USER=ims -e MYSQL_PASSWORD=ims -d mysql
 
 Next you need to load it either with the latest [Open PHACTS IMS mysql
@@ -47,5 +47,10 @@ dump](http://data.openphacts.org/1.5/ims/)
 or load it manually from configured linksets. Below we'll use the mySQL dump as it 
 requires the least setup (although it is less flexible.)
 
-    docker run -it --link mysql-for-ims:mysql --rm mysql sh -c \
-      'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+    mkdir /tmp/$$ ; cd /tmp/$$
+    wget http://data.openphacts.org/dev/ims/ims-1.5-20150414.sql.gz.sha1
+    wget http://data.openphacts.org/dev/ims/ims-1.5-20150414.sql.gz
+    sha1sum -c ims*.sha1
+    gunzip -c ims*.gz | docker run -it --link mysql-for-ims2:mysql --rm mysql sh -c \
+      'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' 
+      
