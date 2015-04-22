@@ -12,7 +12,12 @@ This document will call this service "IMS" even though it includes all of the ab
 
 To run the IMS, and expose it on port `8081`, use:
 
-    docker run --name ims --link mysql-for-ims:mysql -p 8081:8080 -d openphacts/ops/identitymappingservice
+    docker run --name ims --link mysql-for-ims:mysql -p 8081:8080 -d openphacts/identitymappingservice
+
+To expose the AJP port `8009`, which is useful for 
+[proxying from the Apache HTTP server](https://httpd.apache.org/docs/2.2/mod/mod_proxy_ajp.html), add:
+
+    -p 8009:8009 
 
 You can check the Tomcat logs using:
 
@@ -54,3 +59,6 @@ requires the least setup (although it is less flexible.)
     (echo 'use ims;'; gunzip -c ims-*.gz) | docker run -i --link mysql-for-ims:mysql --rm \
       mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
       
+Loading should take from 30 minutes to an hours, depending on the disk. No
+output will be produced while loading.
+
