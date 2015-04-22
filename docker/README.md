@@ -25,7 +25,7 @@ The server is initialized when the logs say something along the line of:
     20-Apr-2015 10:41:44.645 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["ajp-nio-8009"]
     20-Apr-2015 10:41:44.649 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in 29838 ms
 
-At this point you can access the IMS service at [http://localhost:8081/](http://localhost:8081/) (or equivalent host/port).
+At this point you can access the IMS service at [http://localhost:8081/QueryExpander/](http://localhost:8081/QueryExpander/) (or equivalent host/port).
 
 ## Data loading
 
