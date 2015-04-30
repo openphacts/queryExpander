@@ -64,14 +64,15 @@ output will be produced while loading.
 
 ### Custom data loading
 
-To load your own linksets, you will need to provide a `load.xml`, 
-either on the web (`http://..`) or on a local file system as seen
-from the Docker container (`file:///`).
+To load your own linksets instead (or in addition to) the 
+official Open PHACTS linksets, you can use the `loader` command line
+and provide a `load.xml` file, either on the web (`http://..`) or on a local
+file system as seen from the Docker container (`file:///`).
 
 The example below assumes you have `load.xml` in the directory `/home/johndoe/data5`, 
 which we'll expose to /staging inside the container:
 
-    docker run --link mysql-for-ims:mysql -v /home/johndoe/data5:/staging ims loader file:///staging/load.xml
+    docker run --link mysql-for-ims:mysql -v /home/johndoe/data5:/staging openphacts/identitymappingservice loader file:///staging/load.xml
 
 As an example of `load.xml`, see http://data.openphacts.org/1.5/ims/linksets/load.xml
 
