@@ -62,3 +62,18 @@ requires the least setup (although it is less flexible.)
 Loading should take from 30 minutes to an hours, depending on the disk. No
 output will be produced while loading.
 
+### Custom data loading
+
+To load your own linksets, you will need to generate a `load.xml`, 
+either on the web or on a local file system.
+
+The example below assumes you have `load.xml` in the directory `/home/johndoe/data5`:
+
+    docker run --link mysql-for-ims:mysql -v /home/johndoe/data5:/staging ims loader file:///staging/load.xml
+
+As an example of `load.xml`, see http://data.openphacts.org/1.5/ims/linksets/load.xml
+
+Note that if you don't include the `<clearAll />` operation, the content of the
+database is preserved, this can be used for incremental loading from multiple
+load files.
+
