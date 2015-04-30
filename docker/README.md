@@ -64,10 +64,12 @@ output will be produced while loading.
 
 ### Custom data loading
 
-To load your own linksets, you will need to generate a `load.xml`, 
-either on the web or on a local file system.
+To load your own linksets, you will need to provide a `load.xml`, 
+either on the web (`http://..`) or on a local file system as seen
+from the Docker container (`file:///`).
 
-The example below assumes you have `load.xml` in the directory `/home/johndoe/data5`:
+The example below assumes you have `load.xml` in the directory `/home/johndoe/data5`, 
+which we'll expose to /staging inside the container:
 
     docker run --link mysql-for-ims:mysql -v /home/johndoe/data5:/staging ims loader file:///staging/load.xml
 
