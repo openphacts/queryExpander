@@ -9,8 +9,8 @@
     <version>2.0.3-SNAPSHOT</version>
 
      <properties>
-       <ims.version>2.0.2-SNAPSHOT</ims.version>
-       <bridgedb.version>2.0.2-SNAPSHOT</bridgedb.version>
+       <ims.version>2.0.2</ims.version>
+       <bridgedb.version>2.0.2.openphacts</bridgedb.version>
         <cxf.version>2.4.3</cxf.version>
         <hamcrest.version>1.2</hamcrest.version>
         <jersey.version>1.10</jersey.version>
