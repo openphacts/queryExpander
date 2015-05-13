@@ -74,9 +74,29 @@ which we'll expose to /staging inside the container:
 
     docker run --link mysql-for-ims:mysql -v /home/johndoe/data5:/staging openphacts/identitymappingservice loader file:///staging/load.xml
 
-As an example of `load.xml`, see http://data.openphacts.org/1.5/ims/linksets/load.xml
+During loading, log output should be produced for each linkset.    
+
+As an example of `load.xml`, see
+[http://data.openphacts.org/1.5/ims/linksets/load.xml](http://data.openphacts.org/1.5/ims/linksets/load.xml).
+Remote URLs can alternatively be loaded directly (and thus don't need a
+`/staging` volume):
+
+    docker run --link mysql-for-ims:mysql openphacts/identitymappingservice loader http://data.openphacts.org/1.5/ims/linksets/load.xml
+
+Note that loading of the 1.5 load.xml takes about 3 hours. 
 
 Note that if you don't include the `<clearAll />` operation, the content of the
 database is preserved, this can be used for incremental loading from multiple
 load files.
+
+#### Producing new SQL dump
+
+After *custom data loading* (see above) you might want to produce a new mySQL
+dump for faster loading/distribution. This is how the official IMS dump is 
+produced:
+
+    docker run -it --link mysql-for-ims:mysql --rm  mysql sh -c 'exec mysqldump ims --skip-add-locks --no-autocommit \
+      -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot \
+      -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' | gzip > ims-1.5-2015-05-12.sql.gz
+    sha1sum ims-1.5-2015-05-12.sql.gz > ims-1.5-2015-05-12.sql.gz.gz
 
