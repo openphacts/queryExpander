@@ -53,8 +53,8 @@ or load it manually from configured linksets. Below we'll use the mySQL dump as 
 requires the least setup (although it is less flexible.)
 
     mkdir /tmp/$$ ; cd /tmp/$$
-    wget http://data.openphacts.org/dev/ims/ims-1.5-20150420.sql.gz.sha1
-    wget http://data.openphacts.org/dev/ims/ims-1.5-20150420.sql.gz
+    wget http://data.openphacts.org/1.5/ims/ims-1.5-20150519.sql.gz.sha1
+    wget http://data.openphacts.org/1.5/ims/ims-1.5-20150519.sql.gz
     sha1sum -c ims*.sha1
     (echo 'use ims;'; gunzip -c ims-*.gz) | docker run -i --link mysql-for-ims:mysql --rm \
       mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
@@ -95,8 +95,10 @@ After *custom data loading* (see above) you might want to produce a new mySQL
 dump for faster loading/distribution. This is how the official IMS dump is 
 produced:
 
-    docker run -it --link mysql-for-ims:mysql --rm  mysql sh -c 'exec mysqldump ims --skip-add-locks --no-autocommit \
+    docker run -it --link mysql-for-ims:mysql --rm  mysql sh -c \
+      'exec mysqldump ims --skip-add-locks --no-autocommit \
       -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot \
-      -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' | gzip > ims-1.5-2015-05-12.sql.gz
-    sha1sum ims-1.5-2015-05-12.sql.gz > ims-1.5-2015-05-12.sql.gz.gz
+      -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" 2>/dev/null' > mysql-for-ims-1.5-20150519.sql
+    gzip mysql-for-ims-1.5-20150519.sql
+    sha1sum ims-1.5-20150519.sql.gz > ims-1.5-20150519.sql.gz.gz
 
