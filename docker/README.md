@@ -41,10 +41,9 @@ database `ims` with username `ims` and password `ims`.
 and rebuilding this image.)
 
 The simplest way to achieve this is to `--link` to a [mysql docker image](https://registry.hub.docker.com/_/mysql/),
-which we will call `mysql-for-ims` and ask it to create the `ims` database for us. (You can replace `$(pwgen)` with 
-your desired mySQL root password, e.g. `-e MYSQL_ROOT_PASSWORD=fish`).
+which we will call `mysql-for-ims` and ask it to create the `ims` database for us. 
 
-    docker run --name mysql-for-ims -e MYSQL_ROOT_PASSWORD=$(pwgen) \
+    docker run --name mysql-for-ims -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
       -e MYSQL_DATABASE=ims -e MYSQL_USER=ims -e MYSQL_PASSWORD=ims -d mysql
 
 Next you need to load it either with the latest [Open PHACTS IMS mysql
