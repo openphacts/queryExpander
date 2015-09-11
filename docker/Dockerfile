@@ -1,6 +1,6 @@
 FROM tomcat:7-jre7
 #ENV WAR_URL https://github.com/openphacts/queryExpander/releases/download/2.0.3/query.expander.ws.server-2.0.3.war
-ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4-SNAPSHOT/query.expander.ws.server-2.0.4-20150821.130238-32.war
+ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4-SNAPSHOT/query.expander.ws.server-2.0.4-20150821.134308-34.war
 #ENV LOADER_URL https://github.com/openphacts/IdentityMappingService/releases/download/2.0.2/loader-2.0.2.one-jar.jar
 ENV LOADER_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/ims/loader/2.0.3-SNAPSHOT/loader-2.0.3-20150821.133312-18-onejar.jar
 RUN rm -rf webapps/*
