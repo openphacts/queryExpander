@@ -10,7 +10,7 @@
 
      <properties>
        <ims.version>2.0.3-SNAPSHOT</ims.version>
-       <bridgedb.version>2.1.0-SNAPSHOT</bridgedb.version>
+       <bridgedb.version>2.1.2.openphacts</bridgedb.version>
         <cxf.version>2.4.3</cxf.version>
         <hamcrest.version>1.2</hamcrest.version>
         <jersey.version>1.10</jersey.version>
