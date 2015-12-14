@@ -2,8 +2,8 @@ FROM tomcat:7-jre7
 
 ## source
 
-#ENV WAR_URL https://github.com/openphacts/queryExpander/releases/download/2.0.3/query.expander.ws.server-2.0.3.war
-ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4/query.expander.ws.server-2.0.4.war
+ENV WAR_URL https://github.com/openphacts/queryExpander/releases/download/2.0.4/query.expander.ws.server-2.0.4.war
+#ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4/query.expander.ws.server-2.0.4.war
 ENV WAR_SHA1 1c35338ae32bf2c546dde1a6bb06e0d1e845eb29
 
 ENV LOADER_URL https://github.com/openphacts/IdentityMappingService/releases/download/2.0.3/loader-2.0.3-onejar.jar
