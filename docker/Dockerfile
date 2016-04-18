@@ -3,12 +3,12 @@ FROM tomcat:7-jre7
 ## source
 
 #ENV WAR_URL https://github.com/openphacts/queryExpander/releases/download/2.0.4/query.expander.ws.server-2.0.4.war
-ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4-SNAPSHOT/query.expander.ws.server-2.0.4-20160309.115438-61.war
-ENV WAR_SHA1 408262101ca0dfd3c7aad2668d32e85904b828de
+ENV WAR_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/queryexpander/query.expander.ws.server/2.0.4-SNAPSHOT/query.expander.ws.server-2.0.4-20160418.132739-73.war
+ENV WAR_SHA1 8b33276042a51a78b0e3ae1ae751df88cc4b7af8
 
 #ENV LOADER_URL https://github.com/openphacts/IdentityMappingService/releases/download/2.0.3/loader-2.0.3-onejar.jar
-ENV LOADER_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/ims/loader/2.0.3-SNAPSHOT/loader-2.0.3-20160309.115318-34-onejar.jar
-ENV LOADER_SHA1 fc260753bdcfea138af7d185a5ba52952c0a60ff
+ENV LOADER_URL http://repository.mygrid.org.uk/artifactory/ops/uk/ac/manchester/cs/openphacts/ims/loader/2.0.3-SNAPSHOT/loader-2.0.3-20160418.132654-46-onejar.jar
+ENV LOADER_SHA1 a446826a840df17ff3707c2f4886fb4b3c8c16ec
 
 # clean
 RUN rm -rf webapps/*
