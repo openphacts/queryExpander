@@ -9,7 +9,7 @@
     <parent>
         <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
         <artifactId>query.expander.bundle</artifactId>
-        <version>2.0.5</version>
+        <version>2.0.6-SNAPSHOT</version>
     </parent>
 
    <build>
@@ -27,12 +27,12 @@
         <dependency>
             <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
             <artifactId>query.expander.implementation</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
             <artifactId>query.expander.implementation</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.6-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
