@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>uk.ac.manchester.cs.openphacts.queryexpander</groupId>
     <artifactId>query.expander.bundle</artifactId>
     <packaging>pom</packaging>
@@ -99,12 +99,13 @@
         </snapshots>
     </repository>
   </repositories>
-    
+
   <pluginRepositories>
-        <pluginRepository> 
-            <id>onejar-maven-plugin.googlecode.com</id>
-            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-        </pluginRepository>
+      <!--googlecode.com is now dead-->
+      <!--<pluginRepository> -->
+            <!--<id>onejar-maven-plugin.googlecode.com</id>-->
+            <!--<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>-->
+        <!--</pluginRepository>-->
   </pluginRepositories>
   <scm>
     <connection>scm:git:https://github.com/openphacts/queryExpander.git</connection>
