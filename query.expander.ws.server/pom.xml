@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>query.expander.ws.server</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>IMS SPARQL Query Expander WS Server</name>
 
     <parent>
