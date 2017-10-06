@@ -36,11 +36,14 @@ To run the query expander the easiest way is via the webservice:
 	Drop QueryExpander.war into Tomcat
 
 To run QueryExpander without a WS
+
+```{java}
 	HardCodedGraphResolver resolver = new HardCodedGraphResolver();
 	SQLAccess sqlAccess = SqlFactory.createSQLAccess();
 	URLMapper urlMapper =new SQLUrlMapper(false, sqlAccess, new MySQLSpecific());
 	IMSMapper imsMapper = new BridgeDBMapper (resolver.getAllowedNamespaces(), urlMapper);
 	QueryExpander queryExpander = new QueryExpanderImpl(imsMapper);
+```
 	 
 To run using the WS and a client see:
     QueryExpanderClientFactory
